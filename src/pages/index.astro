@@ -1,0 +1,11 @@
+---
+import Layout from '../layouts/Layout.astro';
+import HomeHero from '../components/HomeHero';
+import HomeFeatures from '../components/HomeFeatures';
+import '../styles/global.css';
+---
+
+<Layout title="Portfolio | Home">
+  <HomeHero client:only="react" />
+  <HomeFeatures client:only="react" />
+</Layout>

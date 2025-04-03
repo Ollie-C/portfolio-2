@@ -1,0 +1,56 @@
+---
+import SocialSidebar from '../components/SocialSidebar';
+import ProjectNavDots from '../components/ProjectNavDots';
+import QueryProvider from '../components/QueryProvider';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = "A portfolio website showcasing creative development" } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content={description} />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body class="bg-white text-gray-900">
+    <QueryProvider client:only="react">
+      <div class="min-h-screen flex flex-col">
+        <header class="py-6">
+          <div class="container mx-auto px-4 md:px-6">
+            <nav class="flex justify-between items-center">
+              <a href="/" class="text-3xl font-bold">OLLIE C.</a>
+              <div class="flex gap-8">
+                <a href="/about" class="hover:text-blue-500 transition-colors font-medium">ABOUT</a>
+                <a href="/projects" class="hover:text-blue-500 transition-colors font-medium">PROJECTS</a>
+                <a href="/skills" class="hover:text-blue-500 transition-colors font-medium">SKILLS</a>
+                <a href="/contact" class="hover:text-blue-500 transition-colors font-medium">CONTACT</a>
+              </div>
+              <a href="/cv" class="bg-white border border-gray-300 rounded-full px-4 py-1 flex items-center font-medium hover:bg-gray-100 transition-colors">
+                <span>CV</span>
+              </a>
+            </nav>
+          </div>
+        </header>
+        <SocialSidebar client:only="react" />
+        <ProjectNavDots client:only="react" />
+        <main class="flex-1 container mx-auto px-4 md:px-6">
+          <slot />
+        </main>
+        <footer class="py-6 mt-12">
+          <div class="container mx-auto px-4 md:px-6 text-center text-sm">
+            <p>&copy; {new Date().getFullYear()} OLLIE C. ALL RIGHTS RESERVED</p>
+          </div>
+        </footer>
+      </div>
+    </QueryProvider>
+  </body>
+</html> 
