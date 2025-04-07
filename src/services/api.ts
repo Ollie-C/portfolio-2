@@ -1,8 +1,4 @@
-// This file will contain API functions to fetch data from your CMS
-// Replace with actual API calls once your CMS is set up
-
-import { sanityClient } from '../lib/sanity';
-import { client, urlFor } from '../lib/sanity-astro';
+import { client, urlFor } from '../lib/sanity';
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
 export interface Project {
@@ -60,7 +56,6 @@ export interface CMSContent {
   contactEmail?: string;
 }
 
-// Helper function to normalize Sanity's response format
 const normalizeProject = (project: Project): NormalizedProject => ({
   id: project._id,
   title: project.title,
@@ -87,7 +82,7 @@ const normalizeSkill = (skill: Skill): NormalizedSkill => ({
 // Fetch all projects
 export async function fetchProjects(): Promise<NormalizedProject[]> {
   try {
-    const projects = await sanityClient.fetch<Project[]>(`
+    const projects = await client.fetch<Project[]>(`
       *[_type == "project"] {
         _id,
         title,
@@ -159,12 +154,11 @@ export async function fetchProjects(): Promise<NormalizedProject[]> {
   }
 }
 
-// Fetch a single project by slug
 export async function fetchProjectBySlug(
   slug: string
 ): Promise<NormalizedProject | null> {
   try {
-    const projects = await sanityClient.fetch<Project[]>(`
+    const projects = await client.fetch<Project[]>(`
       *[_type == "project" && slug.current == "${slug}"] {
         _id,
         title,
@@ -198,7 +192,7 @@ export async function fetchProjectBySlug(
 // Fetch site content
 export async function fetchContent(): Promise<CMSContent> {
   try {
-    const homePageData = await sanityClient.fetch<any>(`
+    const homePageData = await client.fetch<any>(`
       *[_type == "homePage"][0] {
         heroTitle,
         heroSubtitle,
@@ -225,7 +219,7 @@ export async function fetchContent(): Promise<CMSContent> {
 // Fetch skills
 export async function fetchSkills(): Promise<NormalizedSkill[]> {
   try {
-    const skills = await sanityClient.fetch<Skill[]>(`
+    const skills = await client.fetch<Skill[]>(`
       *[_type == "skill"] {
         _id,
         name,

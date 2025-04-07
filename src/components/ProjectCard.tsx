@@ -1,4 +1,5 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 export interface ProjectProps {
   title: string;
@@ -7,6 +8,9 @@ export interface ProjectProps {
   tags: string[];
   demoUrl?: string;
   sourceUrl?: string;
+  featured?: boolean;
+  category?: string;
+  index: number;
 }
 
 export default function ProjectCard({
@@ -16,57 +20,108 @@ export default function ProjectCard({
   tags,
   demoUrl,
   sourceUrl,
+  featured,
+  category,
+  index,
 }: ProjectProps) {
+  // Animation variants
+  const cardVariants = {
+    hidden: { opacity: 0, y: 50 },
+    visible: (i: number) => ({
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: i * 0.1,
+        duration: 0.5,
+        ease: [0.22, 1, 0.36, 1],
+      },
+    }),
+    hover: {
+      y: -8,
+      transition: {
+        duration: 0.2,
+      },
+    },
+  };
+
   return (
-    <div className='flex flex-col overflow-hidden rounded-lg border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-800 shadow-md hover:shadow-lg transition-shadow'>
+    <motion.div
+      custom={index}
+      initial='hidden'
+      animate='visible'
+      whileHover='hover'
+      variants={cardVariants}
+      className='bg-base-dark/90 backdrop-blur-sm rounded-xl overflow-hidden shadow-lg border border-gray-700/50 h-full flex flex-col'>
       {imageUrl && (
-        <div className='h-48 overflow-hidden'>
-          <img
+        <div className='relative overflow-hidden h-60'>
+          <motion.img
             src={imageUrl}
             alt={title}
-            className='w-full h-full object-cover object-center'
+            className='w-full h-full object-cover'
+            whileHover={{ scale: 1.05 }}
+            transition={{ duration: 0.3 }}
           />
+          {category && (
+            <div className='absolute top-4 right-4 bg-black/60 backdrop-blur-sm text-white px-3 py-1 text-xs rounded-full'>
+              {category}
+            </div>
+          )}
+          {featured && (
+            <div className='absolute top-4 left-4 bg-teal-500/80 backdrop-blur-sm text-white px-3 py-1 text-xs rounded-full'>
+              Featured
+            </div>
+          )}
         </div>
       )}
-      <div className='flex flex-col flex-grow p-6'>
-        <h3 className='text-xl font-semibold mb-2'>{title}</h3>
-        <p className='text-gray-600 dark:text-gray-400 flex-grow mb-4'>
-          {description}
-        </p>
+
+      <div className='p-6 flex flex-col flex-grow'>
+        <h3 className='text-xl font-bold mb-3 text-white'>{title}</h3>
+        <p className='text-gray-300 mb-4 text-sm flex-grow'>{description}</p>
 
         {tags.length > 0 && (
-          <div className='flex flex-wrap gap-2 mb-4'>
-            {tags.map((tag) => (
-              <span
+          <motion.div
+            className='flex flex-wrap gap-2 mb-4'
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: index * 0.1 + 0.2 }}>
+            {tags.map((tag, i) => (
+              <motion.span
                 key={tag}
-                className='px-2 py-1 text-xs font-medium rounded-full bg-gray-100 dark:bg-gray-700 text-gray-800 dark:text-gray-300'>
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: index * 0.1 + 0.3 + i * 0.05 }}
+                className='px-2 py-1 text-xs rounded-full bg-base-dark/70 text-gray-300 backdrop-blur-sm'>
                 {tag}
-              </span>
+              </motion.span>
             ))}
-          </div>
+          </motion.div>
         )}
 
         <div className='flex gap-3 mt-auto'>
           {demoUrl && (
-            <a
+            <motion.a
               href={demoUrl}
               target='_blank'
               rel='noopener noreferrer'
-              className='inline-flex items-center justify-center px-4 py-2 text-sm font-medium bg-blue-600 text-white rounded-md hover:bg-blue-700 transition-colors'>
+              className='inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-white bg-teal-600 hover:bg-teal-700 rounded-lg transition-colors'
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}>
               View Demo
-            </a>
+            </motion.a>
           )}
           {sourceUrl && (
-            <a
+            <motion.a
               href={sourceUrl}
               target='_blank'
               rel='noopener noreferrer'
-              className='inline-flex items-center justify-center px-4 py-2 text-sm font-medium bg-gray-200 dark:bg-gray-700 rounded-md hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors'>
-              View Source
-            </a>
+              className='inline-flex items-center justify-center px-4 py-2 text-sm font-medium text-gray-300 bg-base-dark hover:bg-base-dark/80 rounded-lg transition-colors'
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}>
+              Source Code
+            </motion.a>
           )}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

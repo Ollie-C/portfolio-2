@@ -32,7 +32,7 @@ export function useProject(slug: string) {
   return useQuery({
     queryKey: projectKeys.details(slug),
     queryFn: () => fetchProjectBySlug(slug),
-    enabled: !!slug, // Only run if slug is provided
+    enabled: !!slug,
   });
 }
 

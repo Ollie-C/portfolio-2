@@ -36,16 +36,7 @@ export default function HomeFeatures() {
   return (
     <section className='py-12'>
       <div className='container mx-auto'>
-        <div className='grid grid-cols-1 md:grid-cols-4 gap-8'>
-          {features.map((feature) => (
-            <div
-              key={feature.id}
-              className={`${feature.bgColor} p-6 rounded-lg`}>
-              <h3 className='text-xl font-bold mb-4'>{feature.title}</h3>
-              <p className='text-gray-700 mb-5'>{feature.description}</p>
-            </div>
-          ))}
-        </div>
+        {/* Features will be implemented later */}
       </div>
     </section>
   );
