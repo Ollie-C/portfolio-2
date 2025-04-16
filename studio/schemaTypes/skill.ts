@@ -1,4 +1,4 @@
-import { defineField, defineType } from 'sanity';
+import {defineField, defineType} from 'sanity'
 
 export const skillType = defineType({
   name: 'skill',
@@ -28,11 +28,11 @@ export const skillType = defineType({
       type: 'string',
       options: {
         list: [
-          { title: 'Frontend', value: 'frontend' },
-          { title: 'Backend', value: 'backend' },
-          { title: 'DevOps', value: 'devops' },
-          { title: 'Design', value: 'design' },
-          { title: 'Other', value: 'other' },
+          {title: 'Frontend', value: 'frontend'},
+          {title: 'Full-stack', value: 'fullstack'},
+          {title: 'Tooling & Infrastructure', value: 'tooling'},
+          {title: 'Collaboration', value: 'collaboration'},
+          {title: 'CMS', value: 'cms'},
         ],
       },
     }),
@@ -57,4 +57,4 @@ export const skillType = defineType({
       media: 'icon',
     },
   },
-});
+})

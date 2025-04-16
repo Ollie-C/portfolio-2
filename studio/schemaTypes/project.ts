@@ -18,6 +18,14 @@ export const projectType = defineType({
       },
     }),
     defineField({
+      name: 'note',
+      type: 'text',
+    }),
+    defineField({
+      name: 'summary',
+      type: 'text',
+    }),
+    defineField({
       name: 'description',
       type: 'text',
     }),
@@ -31,10 +39,37 @@ export const projectType = defineType({
       initialValue: false,
     }),
     defineField({
+      name: 'active',
+      title: 'Active',
+      description: 'Set to false to hide this project from the site without deleting it',
+      type: 'boolean',
+      initialValue: true,
+    }),
+    defineField({
+      name: 'legacy',
+      title: 'Legacy Project',
+      description: 'Mark project as legacy (older work)',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
+      name: 'techStack',
+      title: 'Tech Stack',
+      description: 'Technologies used in this project',
+      type: 'array',
+      of: [{type: 'string'}],
+    }),
+    defineField({
+      name: 'features',
+      title: 'Features',
+      description: 'Key features of this project',
+      type: 'array',
+      of: [{type: 'string'}],
+    }),
+    defineField({
       name: 'desktopImages',
       title: 'Desktop Images',
-      description:
-        'Add up to 6 images optimized for desktop view (landscape orientation preferred)',
+      description: 'images optimized for desktop view (landscape orientation preferred)',
       type: 'array',
       of: [
         {
@@ -58,12 +93,11 @@ export const projectType = defineType({
           ],
         },
       ],
-      validation: (Rule) => Rule.max(6),
     }),
     defineField({
       name: 'mobileImages',
       title: 'Mobile Images',
-      description: 'Add up to 6 images optimized for mobile view (portrait orientation preferred)',
+      description: 'images optimized for mobile view (portrait orientation preferred)',
       type: 'array',
       of: [
         {
@@ -87,7 +121,6 @@ export const projectType = defineType({
           ],
         },
       ],
-      validation: (Rule) => Rule.max(6),
     }),
     defineField({
       name: 'projectImages',
@@ -148,6 +181,11 @@ export const projectType = defineType({
     defineField({
       name: 'sourceUrl',
       title: 'Source Code URL',
+      type: 'url',
+    }),
+    defineField({
+      name: 'sourceUrl2',
+      title: 'Source Code URL 2',
       type: 'url',
     }),
     defineField({
