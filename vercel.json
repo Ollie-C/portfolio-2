@@ -1,0 +1,16 @@
+{
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/node",
+      "config": {
+        "installCommand": "npm install --no-optional"
+      }
+    }
+  ],
+  "build": {
+    "env": {
+      "NPM_FLAGS": "--omit=optional --no-fund"
+    }
+  }
+}
