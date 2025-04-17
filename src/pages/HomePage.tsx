@@ -66,7 +66,7 @@ export default function HomePage() {
           {/* About Section */}
           <section
             id='about'
-            className='md:px-28 py-24 bg-muted/30 min-h-[100vh] flex items-center'>
+            className='md:px-28 py-24 section-bg-light min-h-[100vh] flex items-center'>
             <div className='container mx-auto px-8'>
               <motion.div
                 initial='hidden'
@@ -101,13 +101,17 @@ export default function HomePage() {
           </section>
 
           {/* Skills Section */}
-          <section id='skills' className='md:px-28 py-24 overflow-hidden'>
+          <section
+            id='skills'
+            className='md:px-28 py-24 section-bg-dark overflow-hidden'>
             <SkillsSection />
           </section>
 
           {/* Projects Section - Ensure padding is pt-20 pb-32 */}
-          <section id='projects' className='md:px-28 pt-20 pb-32 flex'>
-            <div className='container mx-auto px-4 md:px-8'>
+          <section
+            id='projects'
+            className='md:px-28 pt-20 pb-48 section-bg-light flex'>
+            <div className='container mx-auto px-4 md:px-8 isolate-blur'>
               <motion.div
                 initial='hidden'
                 whileInView='visible'
@@ -121,7 +125,7 @@ export default function HomePage() {
                   003 /
                 </span>
                 <h2 className='text-3xl md:text-4xl font-light mt-2 inline-block relative'>
-                  Projects
+                  {t('sections.projects.title')}
                   <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
                 </h2>
               </motion.div>
@@ -132,7 +136,7 @@ export default function HomePage() {
           {/* Contact Section */}
           <section
             id='contact'
-            className='md:px-28 py-24 min-h-[100vh] flex items-center bg-muted/30'>
+            className='md:px-28 py-24 min-h-[100vh] flex items-center section-bg-dark'>
             <div className='container mx-auto px-8'>
               <motion.div
                 initial='hidden'
@@ -201,8 +205,8 @@ export default function HomePage() {
             </div>
           </section>
         </main>
-        <Footer />
       </AnimatePresence>
+      <Footer />
     </Layout>
   );
 }

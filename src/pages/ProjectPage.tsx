@@ -1,6 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import { useParams, Link, useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout/Layout';
 import { useProject, useProjects } from '../hooks/useProjects';
 import { SparklesIcon } from '@heroicons/react/24/outline';
@@ -8,6 +9,9 @@ import { SparklesIcon } from '@heroicons/react/24/outline';
 const ProjectPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
+  const { i18n, t } = useTranslation();
+  const currentLanguage = i18n.language;
+  const isJapanese = currentLanguage === 'ja';
 
   // Fetch current project data
   const {
@@ -82,6 +86,17 @@ const ProjectPage: React.FC = () => {
     },
   };
 
+  // Function to get localized content
+  const getLocalizedContent = (
+    enContent: string | undefined,
+    jaContent: string | undefined
+  ) => {
+    if (isJapanese && jaContent) {
+      return jaContent;
+    }
+    return enContent || '';
+  };
+
   if (isLoading) {
     return (
       <Layout>
@@ -97,13 +112,13 @@ const ProjectPage: React.FC = () => {
       <Layout>
         <div className='min-h-[60vh] flex flex-col items-center justify-center'>
           <h2 className='text-2xl font-bold mb-4'>Project not found</h2>
-          <p className='text-gray-400 mb-8'>
+          <p className='text-muted-foreground mb-8'>
             Maybe it exists in another dimension?
           </p>
           <button
             onClick={handleBackClick}
             className='bg-accent text-white px-6 py-2 rounded-md hover:bg-accent-dark transition-colors'>
-            Back to Projects
+            {t('projectPage.back')}
           </button>
         </div>
       </Layout>
@@ -135,7 +150,7 @@ const ProjectPage: React.FC = () => {
             <path d='M5 12h14'></path>
             <path d='m12 5 7 7-7 7'></path>
           </svg>
-          <span>Back</span>
+          <span>{t('projectPage.back')}</span>
         </motion.div>
 
         {/* Project header */}
@@ -147,7 +162,7 @@ const ProjectPage: React.FC = () => {
                   PROJECT /
                 </span>
                 <h1 className='text-4xl md:text-5xl font-light mt-2 inline-block relative'>
-                  {project.title}
+                  {getLocalizedContent(project.title, project.titleJa)}
                   <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
                 </h1>
               </div>
@@ -158,7 +173,7 @@ const ProjectPage: React.FC = () => {
                   {project.tags.map((tag) => (
                     <span
                       key={tag}
-                      className='px-3 py-1 text-sm rounded-md bg-base-dark/70 text-gray-300 backdrop-blur-sm border border-gray-700/50'>
+                      className='px-3 py-1 text-sm rounded-md bg-muted text-foreground backdrop-blur-sm border border-muted/50'>
                       {tag}
                     </span>
                   ))}
@@ -230,7 +245,7 @@ const ProjectPage: React.FC = () => {
                   001 /
                 </span>
                 <h2 className='text-3xl font-light mt-2 inline-block relative'>
-                  Overview
+                  {t('projectPage.overview')}
                   <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
                 </h2>
               </div>
@@ -239,17 +254,22 @@ const ProjectPage: React.FC = () => {
             <div className='md:col-span-4 text-muted-foreground'>
               {project.summary && (
                 <p className='text-lg leading-relaxed font-medium mb-4'>
-                  {project.summary}
+                  {getLocalizedContent(project.summary, project.summaryJa)}
                 </p>
               )}
 
               {project.description && (
-                <p className='text-lg leading-relaxed'>{project.description}</p>
+                <p className='text-lg leading-relaxed'>
+                  {getLocalizedContent(
+                    project.description,
+                    project.descriptionJa
+                  )}
+                </p>
               )}
               {project.note && (
                 <p className='text-sm text-muted-foreground italic mt-4'>
                   <span className='font-bold'>NOTE: </span>
-                  {project.note}
+                  {getLocalizedContent(project.note, project.noteJa)}
                 </p>
               )}
             </div>
@@ -269,7 +289,7 @@ const ProjectPage: React.FC = () => {
                   002 /
                 </span>
                 <h2 className='text-3xl font-light mt-2 inline-block relative'>
-                  Details
+                  {t('projectPage.details')}
                   <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
                 </h2>
               </div>
@@ -280,12 +300,14 @@ const ProjectPage: React.FC = () => {
                 {/* Tech Stack */}
                 {project.techStack && project.techStack.length > 0 && (
                   <div>
-                    <h3 className='text-xl font-medium mb-4'>Tech Stack</h3>
+                    <h3 className='text-xl font-medium mb-4'>
+                      {t('projectPage.techStack')}
+                    </h3>
                     <div className='grid grid-cols-2 gap-3'>
                       {project.techStack.map((tech, index) => (
                         <span
                           key={index}
-                          className='px-3 py-1 bg-base-dark rounded-md text-gray-300 border border-gray-700/50'>
+                          className='px-3 py-1 bg-base-dark rounded-md text-foreground border border-muted/50'>
                           {tech}
                         </span>
                       ))}
@@ -294,14 +316,24 @@ const ProjectPage: React.FC = () => {
                 )}
 
                 {/* Features */}
-                {project.features && project.features.length > 0 && (
+                {((project.features && project.features.length > 0) ||
+                  (isJapanese &&
+                    project.featuresJa &&
+                    project.featuresJa.length > 0)) && (
                   <div>
-                    <h3 className='text-xl font-medium mb-4'>Key Features</h3>
-                    <ul className='space-y-2 text-gray-300'>
-                      {project.features.map((feature, index) => (
-                        <li key={index} className='flex items-start'>
-                          <SparklesIcon className='h-5 w-5 text-accent mr-5 mt-1 flex-shrink-0' />
-                          <span>{feature}</span>
+                    <h3 className='text-xl font-medium mb-4'>
+                      {t('projectPage.keyFeatures')}
+                    </h3>
+                    <ul className='space-y-2'>
+                      {(isJapanese && project.featuresJa
+                        ? project.featuresJa
+                        : project.features
+                      )?.map((feature, index) => (
+                        <li key={index} className='flex items-start gap-3'>
+                          <SparklesIcon className='w-5 h-5 text-primary mt-0.5 flex-shrink-0' />
+                          <span className='text-muted-foreground'>
+                            {feature}
+                          </span>
                         </li>
                       ))}
                     </ul>
@@ -327,13 +359,13 @@ const ProjectPage: React.FC = () => {
                     003 /
                   </span>
                   <h2 className='text-3xl font-light mt-2 inline-block relative'>
-                    Gallery
+                    {t('projectPage.gallery')}
                     <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
                   </h2>
                 </div>
 
                 {/* View toggle */}
-                <div className='mt-8 flex bg-base-dark/90 rounded-md border border-gray-700 p-1 md:w-fit'>
+                <div className='mt-8 flex bg-base-dark/90 rounded-md border border-muted p-1 md:w-fit'>
                   {project.desktopImages &&
                     project.desktopImages.length > 0 && (
                       <button
@@ -341,9 +373,9 @@ const ProjectPage: React.FC = () => {
                         className={`px-4 py-1.5 text-sm rounded ${
                           viewMode === 'desktop'
                             ? 'bg-accent text-white'
-                            : 'text-gray-400 hover:text-white'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}>
-                        Desktop
+                        {t('projectPage.desktop')}
                       </button>
                     )}
                   {project.mobileImages && project.mobileImages.length > 0 && (
@@ -352,9 +384,9 @@ const ProjectPage: React.FC = () => {
                       className={`px-4 py-1.5 text-sm rounded ${
                         viewMode === 'mobile'
                           ? 'bg-accent text-white'
-                          : 'text-gray-400 hover:text-white'
+                          : 'text-muted-foreground hover:text-foreground'
                       }`}>
-                      Mobile
+                      {t('projectPage.mobile')}
                     </button>
                   )}
                 </div>
@@ -408,12 +440,12 @@ const ProjectPage: React.FC = () => {
         )}
 
         {/* Prev/Next Navigation */}
-        <div className='mt-20 pt-8 border-t border-gray-700/50 flex justify-between items-center'>
+        <div className='mt-20 pt-8 border-t border-muted/50 flex justify-between items-center'>
           <div>
             {prevSlug && (
               <Link
                 to={`/project/${prevSlug}`}
-                className='group inline-flex items-center text-sm text-gray-400 hover:text-white transition-colors'>
+                className='group inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors'>
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   width='18'
@@ -427,7 +459,7 @@ const ProjectPage: React.FC = () => {
                   className='mr-2 transition-transform group-hover:-translate-x-1'>
                   <polyline points='15 18 9 12 15 6' />
                 </svg>
-                Previous Project
+                {t('projectPage.previousProject')}
               </Link>
             )}
           </div>
@@ -435,8 +467,8 @@ const ProjectPage: React.FC = () => {
             {nextSlug && (
               <Link
                 to={`/project/${nextSlug}`}
-                className='group inline-flex items-center text-sm text-gray-400 hover:text-white transition-colors'>
-                Next Project
+                className='group inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors'>
+                {t('projectPage.nextProject')}
                 <svg
                   xmlns='http://www.w3.org/2000/svg'
                   width='18'

@@ -24,9 +24,10 @@
     "skills": {
       "title": "スキル",
       "frontend": "フロントエンド",
-      "backend": "バックエンド",
-      "database": "データベース",
-      "tools": "ツール＆その他"
+      "fullstack": "フルスタック",
+      "tooling": "ツール＆インフラ",
+      "cms": "CMS",
+      "collaboration": "コラボレーション"
     },
     "contact": {
       "title": "お問い合わせ",
@@ -36,6 +37,28 @@
   "projectCard": {
     "viewProject": "プロジェクトを見る",
     "featured": "おすすめ"
+  },
+  "contactForm": {
+    "name": "お名前",
+    "email": "メールアドレス",
+    "message": "メッセージ",
+    "send": "送信する",
+    "sending": "送信中...",
+    "success": "送信完了",
+    "thankYou": "お問い合わせありがとうございます。できるだけ早くご返信いたします。",
+    "sendAnother": "別のメッセージを送信する"
+  },
+  "projectPage": {
+    "back": "戻る",
+    "overview": "概要",
+    "details": "詳細",
+    "gallery": "ギャラリー",
+    "techStack": "技術スタック",
+    "keyFeatures": "主な機能",
+    "desktop": "デスクトップ",
+    "mobile": "モバイル",
+    "previousProject": "前のプロジェクト",
+    "nextProject": "次のプロジェクト"
   },
   "language": {
     "en": "英語",

@@ -15,7 +15,9 @@ export interface ProjectImage {
 export interface Project {
   _id: string;
   title: string;
+  titleJa?: string;
   description: string;
+  descriptionJa?: string;
   slug: {
     current: string;
   };
@@ -32,8 +34,11 @@ export interface Project {
   mobileImages?: ProjectImage[];
   techStack?: string[];
   features?: string[];
+  featuresJa?: string[];
   summary?: string;
+  summaryJa?: string;
   note?: string;
+  noteJa?: string;
   _createdAt: string;
   _updatedAt: string;
 }
@@ -47,7 +52,9 @@ export interface NormalizedProjectImage {
 export interface NormalizedProject {
   id: string;
   title: string;
+  titleJa: string;
   description: string;
+  descriptionJa: string;
   slug: string;
   category: string;
   tags: string[];
@@ -62,8 +69,11 @@ export interface NormalizedProject {
   mobileImages: NormalizedProjectImage[];
   techStack?: string[];
   features?: string[];
+  featuresJa?: string[];
   summary?: string;
+  summaryJa?: string;
   note?: string;
+  noteJa?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -107,7 +117,9 @@ const normalizeProject = (project: Project): NormalizedProject => {
   return {
     id: project._id,
     title: project.title,
+    titleJa: project.titleJa || project.title, // Fallback to English if Japanese not available
     description: project.description,
+    descriptionJa: project.descriptionJa || project.description, // Fallback to English if Japanese not available
     slug: project.slug.current,
     category: project.category,
     tags: project.tags || [],
@@ -119,8 +131,11 @@ const normalizeProject = (project: Project): NormalizedProject => {
     imageUrl: mainImageUrl,
     techStack: project.techStack || [],
     features: project.features || [],
+    featuresJa: project.featuresJa || project.features || [], // Fallback to English features
     summary: project.summary,
+    summaryJa: project.summaryJa || project.summary, // Fallback to English if Japanese not available
     note: project.note,
+    noteJa: project.noteJa || project.note, // Fallback to English if Japanese not available
     images: project.projectImages
       ? project.projectImages.map((image) => ({
           url: urlFor(image).url(),
@@ -162,10 +177,14 @@ export async function fetchProjects(): Promise<NormalizedProject[]> {
       *[_type == "project" && (active == true || !defined(active))] | order(featured desc, _createdAt desc) {
         _id,
         title,
+        titleJa,
         slug,
         description,
+        descriptionJa,
         summary,
+        summaryJa,
         note,
+        noteJa,
         category,
         tags,
         featured,
@@ -175,6 +194,7 @@ export async function fetchProjects(): Promise<NormalizedProject[]> {
         sourceUrl,
         techStack,
         features,
+        featuresJa,
         image,
         projectImages[] {
           _key,
@@ -218,14 +238,19 @@ export async function fetchProjectBySlug(
       *[_type == "project" && slug.current == "${slug}" && (active == true || !defined(active))] {
         _id,
         title,
+        titleJa,
         slug,
         description,
+        descriptionJa,
         summary,
+        summaryJa,
         note,
+        noteJa,
         category,
         tags,
         techStack,
         features,
+        featuresJa,
         featured,
         active,
         legacy,

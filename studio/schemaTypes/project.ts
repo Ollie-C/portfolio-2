@@ -10,6 +10,11 @@ export const projectType = defineType({
       type: 'string',
     }),
     defineField({
+      name: 'titleJa',
+      title: 'Title (Japanese)',
+      type: 'string',
+    }),
+    defineField({
       name: 'slug',
       type: 'slug',
       options: {
@@ -22,11 +27,26 @@ export const projectType = defineType({
       type: 'text',
     }),
     defineField({
+      name: 'noteJa',
+      title: 'Note (Japanese)',
+      type: 'text',
+    }),
+    defineField({
       name: 'summary',
       type: 'text',
     }),
     defineField({
+      name: 'summaryJa',
+      title: 'Summary (Japanese)',
+      type: 'text',
+    }),
+    defineField({
       name: 'description',
+      type: 'text',
+    }),
+    defineField({
+      name: 'descriptionJa',
+      title: 'Description (Japanese)',
       type: 'text',
     }),
     defineField({
@@ -63,6 +83,13 @@ export const projectType = defineType({
       name: 'features',
       title: 'Features',
       description: 'Key features of this project',
+      type: 'array',
+      of: [{type: 'string'}],
+    }),
+    defineField({
+      name: 'featuresJa',
+      title: 'Features (Japanese)',
+      description: 'Key features of this project in Japanese',
       type: 'array',
       of: [{type: 'string'}],
     }),

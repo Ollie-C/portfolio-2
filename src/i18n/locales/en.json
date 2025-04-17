@@ -40,6 +40,28 @@
     "viewProject": "View Project",
     "featured": "Featured"
   },
+  "contactForm": {
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send message",
+    "sending": "Sending...",
+    "success": "Message sent",
+    "thankYou": "Thank you for reaching out. I'll get back to you as soon as possible.",
+    "sendAnother": "Send another message"
+  },
+  "projectPage": {
+    "back": "Back",
+    "overview": "Overview",
+    "details": "Details",
+    "gallery": "Gallery",
+    "techStack": "Tech Stack",
+    "keyFeatures": "Key Features",
+    "desktop": "Desktop",
+    "mobile": "Mobile",
+    "previousProject": "Previous Project",
+    "nextProject": "Next Project"
+  },
   "language": {
     "en": "English",
     "ja": "Japanese"

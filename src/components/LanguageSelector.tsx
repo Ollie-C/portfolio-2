@@ -13,12 +13,12 @@ const LanguageSelector = () => {
 
   return (
     <motion.button
-      className='w-10 h-10 rounded bg-transparent shadow-lg flex items-center justify-center border-4 border-gray-700 hover:bg-primary/10 transition-colors'
+      className='w-11 h-10 rounded bg-transparent shadow-lg flex items-center justify-center border-3 border-gray-700 hover:bg-primary/10 transition-colors'
       onClick={toggleLanguage}
       whileHover={{ scale: 1.05 }}
       whileTap={{ scale: 0.95 }}
       aria-label={`Switch to ${currentLanguage === 'en' ? 'Japanese' : 'English'}`}>
-      <span className='text-lg font-medium'>
+      <span className='text-[18px] font-medium'>
         {currentLanguage === 'en' ? 'あ' : 'A'}
       </span>
     </motion.button>

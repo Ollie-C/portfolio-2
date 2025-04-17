@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { useTranslation } from 'react-i18next';
 
 export default function ProjectsList() {
   const { data: projects, isLoading, error } = useProjects();
@@ -13,6 +14,8 @@ export default function ProjectsList() {
   );
   const isDesktop = useMediaQuery('(min-width: 1200px)');
   const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const { i18n } = useTranslation();
+  const isJapanese = i18n.language === 'ja';
 
   useEffect(() => {
     setSelectedProject(null);
@@ -99,6 +102,17 @@ export default function ProjectsList() {
     },
   };
 
+  // Helper function to get localized title
+  const getLocalizedTitle = (project: any) => {
+    return isJapanese && project.titleJa ? project.titleJa : project.title;
+  };
+
+  // Function to get the first letter of the title for the fallback image
+  const getTitleFirstLetter = (project: any) => {
+    const title = getLocalizedTitle(project);
+    return title[0].toUpperCase();
+  };
+
   return (
     <div className='relative gap-x-8 min-h-[50vh]'>
       {/* Project filter toggle */}
@@ -160,33 +174,41 @@ export default function ProjectsList() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className='relative bg-background/20 backdrop-blur-md p-6 rounded border border-muted/20 shadow-sm w-[750px] '>
+                        className='relative bg-background/20 backdrop-blur-md p-6 rounded-sm border border-muted/20 shadow-sm w-[750px] z-50 isolate-blur'>
                         <div key={project.id}>
                           <div className='aspect-video rounded overflow-hidden mb-6 shadow-lg border border-muted/10'>
                             {project.imageUrl ? (
                               <img
                                 src={project.imageUrl}
-                                alt={project.title}
+                                alt={getLocalizedTitle(project)}
                                 className='w-full h-full object-cover'
                               />
                             ) : (
                               <div
                                 className='w-full h-full flex items-center justify-center'
-                                style={generateGradient(project.title)}>
+                                style={generateGradient(
+                                  getLocalizedTitle(project)
+                                )}>
                                 <span className='text-4xl font-light'>
-                                  {project.title[0].toUpperCase()}
+                                  {getTitleFirstLetter(project)}
                                 </span>
                               </div>
                             )}
                           </div>
 
                           <p className='text-muted-foreground text-base mb-6 leading-relaxed line-clamp-3'>
-                            {project.description}
+                            {isJapanese && project.descriptionJa
+                              ? project.descriptionJa
+                              : project.description}
                           </p>
                           <Link
                             to={`/project/${project.slug}`}
                             className='group inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors'>
-                            <span>View Project</span>
+                            <span>
+                              {isJapanese
+                                ? 'プロジェクトを見る'
+                                : 'View Project'}
+                            </span>
                             <ArrowRightIcon className='w-4 h-4 transition-transform group-hover:translate-x-1' />
                           </Link>
                         </div>
@@ -215,13 +237,15 @@ export default function ProjectsList() {
                   }}
                   transition={{ duration: 0.2 }}
                   onClick={() => handleProjectClick(project.id, index)}>
-                  {project.title}
+                  {getLocalizedTitle(project)}
                 </motion.h3>
 
                 {project.tags && project.tags.length > 0 && (
                   <div className='flex flex-wrap gap-2 max-w-[250px]'>
                     {project.tags.map((tag) => (
-                      <span className='text-xs text-muted-foreground inline-block'>
+                      <span
+                        key={`${project.id}-${tag}`}
+                        className='text-xs text-muted-foreground inline-block'>
                         #{tag}
                       </span>
                     ))}
@@ -242,22 +266,26 @@ export default function ProjectsList() {
                         {project.imageUrl ? (
                           <img
                             src={project.imageUrl}
-                            alt={project.title}
+                            alt={getLocalizedTitle(project)}
                             className='w-full h-full object-cover'
                           />
                         ) : (
                           <div
                             className='w-full h-full flex items-center justify-center'
-                            style={generateGradient(project.title)}>
+                            style={generateGradient(
+                              getLocalizedTitle(project)
+                            )}>
                             <span className='text-4xl font-light'>
-                              {project.title[0].toUpperCase()}
+                              {getTitleFirstLetter(project)}
                             </span>
                           </div>
                         )}
                       </div>
 
                       <p className='text-muted-foreground text-base mb-6 leading-relaxed'>
-                        {project.description}
+                        {isJapanese && project.descriptionJa
+                          ? project.descriptionJa
+                          : project.description}
                       </p>
 
                       <Link to={`/project/${project.slug}`} className='block'>
@@ -266,7 +294,11 @@ export default function ProjectsList() {
                             className='flex items-center gap-2 text-sm text-primary'
                             whileHover={{ x: 5 }}
                             transition={{ duration: 0.2 }}>
-                            <span>View project</span>
+                            <span>
+                              {isJapanese
+                                ? 'プロジェクトを見る'
+                                : 'View project'}
+                            </span>
                             <svg
                               xmlns='http://www.w3.org/2000/svg'
                               width='16'

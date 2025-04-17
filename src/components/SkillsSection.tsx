@@ -257,11 +257,9 @@ export default function SkillsSection() {
                       return (
                         <motion.div
                           key={skill.id}
-                          className='group flex flex-col items-center gap-2 p-3 rounded-lg transition-all duration-300 border border-transparent hover:shadow-lg bg-background/30 hover:border-primary/20'
+                          className='group flex items-center gap-2 p-3 rounded-lg transition-all duration-300 border border-foreground/50 hover:shadow-lg hover:border-primary/20'
                           whileHover={{
                             y: -5,
-                            backgroundColor: `hsla(${hue}, 40%, 96%, 0.08)`,
-                            borderColor: `hsla(${hue}, 70%, 60%, 0.4)`,
                           }}
                           initial={{ opacity: 0, y: 10 }}
                           animate={{ opacity: 1, y: 0 }}
@@ -273,7 +271,7 @@ export default function SkillsSection() {
                             backdropFilter: 'blur(5px)',
                           }}>
                           {/* Icon container */}
-                          <div className='rounded-full p-3 w-14 h-14 flex items-center justify-center bg-gradient-to-br from-background/90 to-background/50 border border-muted/30 shadow-inner'>
+                          <div className='rounded-full p-3 w-14 h-14 flex items-center justify-center border border-muted/30 shadow-inner'>
                             {iconUrl ? (
                               <img
                                 src={iconUrl}
@@ -305,7 +303,7 @@ export default function SkillsSection() {
                           </div>
 
                           {/* Skill name */}
-                          <span className='text-xs text-center text-muted-foreground group-hover:text-foreground transition-colors mt-1 px-1'>
+                          <span className='text-xs text-center text-foreground/80 group-hover:text-foreground transition-colors mt-1 px-1'>
                             {skill.name}
                           </span>
                         </motion.div>

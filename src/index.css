@@ -232,3 +232,29 @@ button:focus-visible {
 .container {
   max-width: 1600px !important;
 }
+
+/* Special effect classes */
+.section-bg-dark {
+  /* background-color: rgba(0, 0, 0, 0.05); */
+  backdrop-filter: blur(2px);
+}
+
+.section-bg-light {
+  background-color: rgba(0, 0, 0, 0.05);
+  backdrop-filter: blur(2px);
+}
+
+.light .section-bg-light {
+  background-color: rgba(245, 245, 245, 0.25);
+  backdrop-filter: blur(2px);
+}
+
+.dark .section-bg-dark {
+  /* background-color: rgba(0, 0, 0, 0.1); */
+  backdrop-filter: blur(2px);
+}
+
+/* Prevent any children from being affected by backdrop-blur from parent elements */
+.isolate-blur {
+  isolation: isolate;
+}

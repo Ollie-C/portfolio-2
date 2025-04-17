@@ -6,6 +6,7 @@ import {educationType} from './education'
 import {testimonialType} from './testimonial'
 import {profileType} from './profile'
 import {siteSettingsType} from './siteSettings'
+import {contactMessageType} from './contactMessage'
 
 export const schemaTypes = [
   blockContentType,
@@ -16,4 +17,5 @@ export const schemaTypes = [
   testimonialType,
   profileType,
   siteSettingsType,
+  contactMessageType,
 ]

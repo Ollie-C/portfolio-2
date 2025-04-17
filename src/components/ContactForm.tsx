@@ -2,6 +2,9 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
+// API URL for contact form submissions - adjust based on your deployment
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+
 export default function ContactForm() {
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
@@ -29,8 +32,20 @@ export default function ContactForm() {
     setError('');
 
     try {
-      // Temporary placeholder until Express backend is implemented
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      // Send the form data to our Express backend
+      const response = await fetch(`${API_URL}/api/contact`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.message || 'Failed to submit form');
+      }
 
       setSubmitted(true);
       setFormData({ name: '', email: '', message: '' });
@@ -49,15 +64,14 @@ export default function ContactForm() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           className='bg-primary/10 border border-primary/20 p-6 rounded-sm'>
-          <h3 className='text-xl font-light text-primary mb-2'>Message sent</h3>
-          <p className='text-muted-foreground'>
-            Thank you for reaching out. I'll get back to you as soon as
-            possible.
-          </p>
+          <h3 className='text-xl font-light text-primary mb-2'>
+            {t('contactForm.success')}
+          </h3>
+          <p className='text-muted-foreground'>{t('contactForm.thankYou')}</p>
           <button
             onClick={() => setSubmitted(false)}
             className='mt-4 text-sm text-primary hover:underline'>
-            Send another message
+            {t('contactForm.sendAnother')}
           </button>
         </motion.div>
       ) : (
@@ -66,7 +80,7 @@ export default function ContactForm() {
             <label
               htmlFor='name'
               className='block text-xs uppercase tracking-wider text-primary opacity-60 font-mono mb-2'>
-              Name
+              {t('contactForm.name')}
             </label>
             <input
               type='text'
@@ -83,7 +97,7 @@ export default function ContactForm() {
             <label
               htmlFor='email'
               className='block text-xs uppercase tracking-wider text-primary opacity-60 font-mono mb-2'>
-              Email
+              {t('contactForm.email')}
             </label>
             <input
               type='email'
@@ -100,7 +114,7 @@ export default function ContactForm() {
             <label
               htmlFor='message'
               className='block text-xs uppercase tracking-wider text-primary opacity-60 font-mono mb-2'>
-              Message
+              {t('contactForm.message')}
             </label>
             <textarea
               id='message'
@@ -123,7 +137,9 @@ export default function ContactForm() {
               whileHover={{ x: 5 }}
               transition={{ duration: 0.2 }}>
               <span className='text-sm'>
-                {isSubmitting ? 'Sending...' : 'Send message'}
+                {isSubmitting
+                  ? t('contactForm.sending')
+                  : t('contactForm.send')}
               </span>
               <svg
                 xmlns='http://www.w3.org/2000/svg'
