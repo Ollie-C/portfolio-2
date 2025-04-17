@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import { motion, AnimatePresence } from 'framer-motion';

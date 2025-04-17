@@ -1,9 +1,8 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useSkills } from '../hooks/useSkills';
-import { urlFor } from '../lib/sanity';
-import { useMediaQuery } from '../hooks/useMediaQuery';
+import { urlFor, SanityImageSource } from '../lib/sanity';
 
 // Import necessary icons from react-icons or another icon library
 import {
@@ -101,11 +100,18 @@ const skillIconsMap: Record<string, string> = {
   jira: 'https://seeklogo.com/images/J/jira-logo-C71F8C0324-seeklogo.com.png',
 };
 
+// Define a type for skill data
+interface SkillData {
+  id: string;
+  name: string;
+  category: string;
+  icon?: SanityImageSource;
+}
+
 export default function SkillsSection() {
   const { t } = useTranslation();
   const { data: allSkills, isLoading } = useSkills();
   const sectionRef = useRef<HTMLDivElement>(null);
-  const isMobile = useMediaQuery('(max-width: 768px)');
 
   // Skill category definitions
   const categories: SkillCategory[] = [
@@ -154,7 +160,7 @@ export default function SkillsSection() {
     {} as Record<string, typeof allSkills>
   );
 
-  const getSkillIconUrl = (skill: any): string | undefined => {
+  const getSkillIconUrl = (skill: SkillData): string | undefined => {
     // First priority: Use image from Sanity if available
     if (skill.icon && typeof skill.icon === 'object') {
       try {
@@ -221,7 +227,7 @@ export default function SkillsSection() {
       </motion.div>
 
       <div className='mt-16 space-y-1'>
-        {categories.map((category, categoryIndex) => {
+        {categories.map((category) => {
           const skills = skillsByCategory?.[category.key] || [];
 
           // Skip empty categories
@@ -252,7 +258,6 @@ export default function SkillsSection() {
                   <div className='grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4'>
                     {skills.map((skill, index) => {
                       const iconUrl = getSkillIconUrl(skill);
-                      const hue = (categoryIndex * 60 + index * 15) % 360;
 
                       return (
                         <motion.div

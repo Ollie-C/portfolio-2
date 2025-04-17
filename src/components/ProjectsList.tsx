@@ -6,6 +6,18 @@ import { useMediaQuery } from '../hooks/useMediaQuery';
 import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 
+// Define a type for project data structure
+interface ProjectData {
+  id: string;
+  title: string;
+  titleJa?: string;
+  description: string;
+  descriptionJa?: string;
+  slug: string;
+  tags?: string[];
+  imageUrl?: string;
+}
+
 export default function ProjectsList() {
   const { data: projects, isLoading, error } = useProjects();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
@@ -103,12 +115,12 @@ export default function ProjectsList() {
   };
 
   // Helper function to get localized title
-  const getLocalizedTitle = (project: any) => {
+  const getLocalizedTitle = (project: ProjectData) => {
     return isJapanese && project.titleJa ? project.titleJa : project.title;
   };
 
   // Function to get the first letter of the title for the fallback image
-  const getTitleFirstLetter = (project: any) => {
+  const getTitleFirstLetter = (project: ProjectData) => {
     const title = getLocalizedTitle(project);
     return title[0].toUpperCase();
   };

@@ -1,8 +1,6 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import LanguageSelector from '../LanguageSelector';
 import { motion, AnimatePresence } from 'framer-motion';
-import { useThemeStore } from '../../store/themeStore';
 
 type MobileMenuProps = {
   isOpen: boolean;
@@ -18,11 +16,6 @@ const MobileMenu = ({
   const { t } = useTranslation();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
-  const { modeTheme: theme, setModeTheme: setTheme } = useThemeStore();
-
-  const toggleTheme = () => {
-    setTheme(theme === 'dark' ? 'light' : 'dark');
-  };
 
   const socialLinks = [
     {

@@ -10,7 +10,6 @@ interface ProjectCardProps {
   slug: string;
   featured?: boolean;
   category?: string;
-  index: number;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -21,7 +20,6 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   slug,
   featured,
   category,
-  index,
 }) => {
   const [imageError, setImageError] = useState(false);
 

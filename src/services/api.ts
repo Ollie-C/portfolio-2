@@ -1,5 +1,4 @@
-import { client, urlFor } from '../lib/sanity';
-import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
+import { client, urlFor, SanityImageSource } from '../lib/sanity';
 
 export interface ProjectImage {
   _key: string;
@@ -83,7 +82,7 @@ export interface Skill {
   name: string;
   category: string;
   level: number;
-  icon?: any; // Sanity image reference
+  icon?: SanityImageSource;
 }
 
 export interface NormalizedSkill {
@@ -91,7 +90,7 @@ export interface NormalizedSkill {
   name: string;
   category: string;
   level: number;
-  icon?: any; // Keep the Sanity image reference intact
+  icon?: SanityImageSource;
 }
 
 export interface CMSContent {
@@ -299,7 +298,15 @@ export async function fetchProjectBySlug(
 // Fetch site content
 export async function fetchContent(): Promise<CMSContent> {
   try {
-    const homePageData = await client.fetch<any>(`
+    // Define a type for the CMS home page data
+    interface HomePageData {
+      heroTitle: string;
+      heroSubtitle: string;
+      aboutText?: string;
+      contactEmail?: string;
+    }
+
+    const homePageData = await client.fetch<HomePageData>(`
       *[_type == "homePage"][0] {
         heroTitle,
         heroSubtitle,

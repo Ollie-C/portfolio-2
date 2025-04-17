@@ -1,5 +1,6 @@
 import { createClient } from '@sanity/client';
 import imageUrlBuilder from '@sanity/image-url';
+import { SanityImageSource as OriginalSanityImageSource } from '@sanity/image-url/lib/types/types';
 
 export const client = createClient({
   projectId: import.meta.env.VITE_SANITY_PROJECT_ID || 'your-project-id',
@@ -10,7 +11,10 @@ export const client = createClient({
 
 const builder = imageUrlBuilder(client);
 
-export function urlFor(source: any) {
+// Re-export the SanityImageSource type from @sanity/image-url
+export type SanityImageSource = OriginalSanityImageSource;
+
+export function urlFor(source: SanityImageSource) {
   if (!source) {
     return {
       url: () => '',
