@@ -1,11 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { fetchSkills, NormalizedSkill } from '../services/api';
+import { fetchSkills } from '../services/api';
 
 export const skillKeys = {
   all: ['skills'] as const,
   byCategory: (category: string) => [...skillKeys.all, { category }] as const,
 };
 
+// GET skills
 export function useSkills(category?: string) {
   return useQuery({
     queryKey: category ? skillKeys.byCategory(category) : skillKeys.all,

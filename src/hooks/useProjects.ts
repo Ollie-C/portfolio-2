@@ -1,6 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
 import { fetchProjects, fetchProjectBySlug } from '../services/api';
-import type { NormalizedProject } from '../services/api';
 
 // Query keys
 export const projectKeys = {
@@ -9,7 +8,7 @@ export const projectKeys = {
   filtered: (category: string) => [...projectKeys.all, { category }] as const,
 };
 
-// Hook to fetch all projects
+// GET all projects
 export function useProjects(category?: string) {
   return useQuery({
     queryKey: category ? projectKeys.filtered(category) : projectKeys.all,
@@ -27,7 +26,7 @@ export function useProjects(category?: string) {
   });
 }
 
-// Hook to fetch a single project by slug
+// GET one project
 export function useProject(slug: string) {
   return useQuery({
     queryKey: projectKeys.details(slug),
@@ -36,7 +35,7 @@ export function useProject(slug: string) {
   });
 }
 
-// Hook to fetch featured projects
+// GET featured projects
 export function useFeaturedProjects() {
   return useQuery({
     queryKey: [...projectKeys.all, 'featured'],

@@ -1,8 +1,11 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
+import { useThemeStore } from '../../store/themeStore';
 
 export default function RainAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { modeTheme } = useThemeStore();
+  const isDarkMode = modeTheme === 'dark';
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -50,8 +53,9 @@ export default function RainAnimation() {
       // Random depth
       positions[i3 + 2] = (Math.random() - 0.3) * 10;
 
-      // Random raindrop size
-      sizes[i] = Math.random() * 0.04 + 0.01;
+      // Random raindrop size - slightly larger in light mode for visibility
+      sizes[i] =
+        Math.random() * (isDarkMode ? 0.04 : 0.06) + (isDarkMode ? 0.01 : 0.02);
 
       // Random velocity (falling speed)
       velocities[i] = Math.random() * 0.005 + 0.01;
@@ -63,21 +67,28 @@ export default function RainAnimation() {
     );
     rainGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
+    // Choose the appropriate color based on mode
+    const rainColor = isDarkMode
+      ? new THREE.Color(0x5599cc) // Blue for dark mode
+      : new THREE.Color(0x1155aa); // Darker blue for light mode for better visibility
+
     // Create a custom shader material for raindrops
     const rainMaterial = new THREE.ShaderMaterial({
       transparent: true,
       depthWrite: false,
       uniforms: {
         time: { value: 0 },
-        color: { value: new THREE.Color(0x5599cc) },
+        color: { value: rainColor },
+        isDarkMode: { value: isDarkMode ? 1.0 : 0.0 },
       },
       vertexShader: `
         attribute float size;
         varying vec3 vColor;
         uniform float time;
+        uniform float isDarkMode;
         
         void main() {
-          vColor = vec3(1, 1, 1); // Darker blue color
+          vColor = vec3(0.33, 0.6, 0.9); // Base blue color
           
           // Compute position with time-based animation
           vec3 pos = position;
@@ -90,6 +101,7 @@ export default function RainAnimation() {
       `,
       fragmentShader: `
         varying vec3 vColor;
+        uniform float isDarkMode;
         
         void main() {
           // Create a raindrop shape (elongated at bottom)
@@ -105,8 +117,11 @@ export default function RainAnimation() {
             alpha *= smoothstep(0.25, 0.0, coord.y * coord.y * 2.0 + coord.x * coord.x);
           }
           
+          // Different opacity based on mode
+          float opacity = isDarkMode > 0.5 ? 0.6 : 0.85;
+          
           // Final color with gradient and transparency
-          gl_FragColor = vec4(vColor, alpha * 0.6);
+          gl_FragColor = vec4(vColor, alpha * opacity);
         }
       `,
     });
@@ -149,7 +164,7 @@ export default function RainAnimation() {
       rainMaterial.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [isDarkMode]);
 
   return (
     <div

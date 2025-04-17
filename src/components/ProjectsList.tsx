@@ -1,180 +1,299 @@
-import React, { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useProjects } from '../hooks/useProjects';
-import FloatingCube from './three/FloatingCube';
-import FloatingSphere from './three/FloatingSphere';
-import { motion } from 'framer-motion';
-import ProjectCard from './ProjectCard';
-
-type CategoryFilter = 'ALL' | 'REACT' | 'FULL-STACK' | 'OTHER' | 'FEATURED';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
+import { useMediaQuery } from '../hooks/useMediaQuery';
+import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 
 export default function ProjectsList() {
-  const [activeFilter, setActiveFilter] = useState<CategoryFilter>('ALL');
-  const {
-    data: projects,
-    isLoading,
-    error,
-  } = useProjects(
-    activeFilter === 'ALL'
-      ? undefined
-      : activeFilter === 'FEATURED'
-        ? undefined
-        : activeFilter
+  const { data: projects, isLoading, error } = useProjects();
+  const [selectedProject, setSelectedProject] = useState<string | null>(null);
+  const [projectFilter, setProjectFilter] = useState<'recent' | 'legacy'>(
+    'recent'
+  );
+  const isDesktop = useMediaQuery('(min-width: 1200px)');
+  const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+  useEffect(() => {
+    setSelectedProject(null);
+  }, [isDesktop, projectFilter]);
+
+  if (isLoading) {
+    return (
+      <div className='py-12 flex items-center justify-center'>
+        <div className='h-6 w-6 border-2 border-primary border-t-transparent rounded-full animate-spin'></div>
+        <span className='ml-3 text-muted-foreground text-sm'>Loading...</span>
+      </div>
+    );
+  }
+
+  if (error || !projects || projects.length === 0) {
+    return (
+      <div className='py-12 text-center text-muted-foreground'>
+        <p>No projects found.</p>
+      </div>
+    );
+  }
+
+  // Filter projects based on the selected filter
+  const filteredProjects = projects.filter((project) =>
+    projectFilter === 'recent' ? !project.legacy : project.legacy
   );
 
-  // If using FEATURED filter, filter the results after fetching
-  const filteredProjects =
-    activeFilter === 'FEATURED' && projects
-      ? projects.filter((project) => project.featured)
-      : projects;
+  const generateGradient = (title: string) => {
+    const hash = title.split('').reduce((acc, char) => {
+      return char.charCodeAt(0) + ((acc << 5) - acc);
+    }, 0);
+    const hue = Math.abs(hash % 360);
 
-  const handleFilterChange = (filter: CategoryFilter) => {
-    setActiveFilter(filter);
+    return {
+      background: `linear-gradient(135deg, hsla(${hue}, 70%, 40%, 0.8), hsla(${(hue + 40) % 360}, 70%, 40%, 0.4))`,
+      color: `hsl(${hue}, 80%, 85%)`,
+    };
   };
 
-  // Animation variants for container
-  const containerVariants = {
+  const handleProjectClick = (projectId: string, index: number) => {
+    const currentSelected = selectedProject === projectId ? null : projectId;
+    setSelectedProject(currentSelected);
+
+    const element = projectRefs.current[index];
+    if (currentSelected && element) {
+      setTimeout(() => {
+        if (!isDesktop) {
+          const elementRect = element.getBoundingClientRect();
+          const offset = window.innerHeight * 0.1;
+          const targetScrollY = window.scrollY + elementRect.top - offset;
+
+          window.scrollTo({
+            top: targetScrollY,
+            behavior: 'smooth',
+          });
+        } else {
+          element.scrollIntoView({
+            behavior: 'smooth',
+            block: 'center',
+          });
+        }
+      }, 50);
+    }
+  };
+
+  const listVariants = {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
+        staggerChildren: 0.15,
       },
     },
   };
 
-  if (isLoading) {
-    return (
-      <div className='text-center py-12'>
-        <motion.div
-          className='inline-block h-8 w-8 animate-spin rounded-full border-4 border-solid border-teal-400 border-r-transparent'
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}></motion.div>
-        <motion.p
-          className='mt-4'
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}>
-          Loading projects...
-        </motion.p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <motion.div
-        className='text-center py-12 text-red-400'
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}>
-        <p>Error loading projects. Please try again later.</p>
-      </motion.div>
-    );
-  }
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5,
+      },
+    },
+  };
 
   return (
-    <div className='relative'>
-      {/* Decorative 3D elements */}
-      <div className='absolute -top-20 -left-20 opacity-70 hidden lg:block'>
-        <FloatingSphere
-          size={100}
-          color='#2dd4bf'
-          speed={0.7}
-          position={[0, 0, -1]}
-        />
-      </div>
-
-      <div className='absolute -bottom-20 -right-20 opacity-70 hidden lg:block'>
-        <FloatingCube
-          size={120}
-          color='#a855f7'
-          speed={0.8}
-          position={[0, 0, -1]}
-        />
-      </div>
-
-      <motion.div
-        className='mb-12 relative z-10'
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.5 }}>
-        <div className='flex gap-4 flex-wrap'>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`px-6 py-2 rounded-full ${
-              activeFilter === 'FEATURED'
-                ? 'bg-teal-500 text-white shadow-md'
-                : 'bg-base-dark/80 backdrop-blur-sm border border-gray-700 hover:border-teal-600 text-gray-300'
-            } transition-all`}
-            onClick={() => handleFilterChange('FEATURED')}>
-            Featured
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`px-6 py-2 rounded-full ${
-              activeFilter === 'REACT'
-                ? 'bg-teal-500 text-white shadow-md'
-                : 'bg-base-dark/80 backdrop-blur-sm border border-gray-700 hover:border-teal-600 text-gray-300'
-            } transition-all`}
-            onClick={() => handleFilterChange('REACT')}>
-            React
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`px-6 py-2 rounded-full ${
-              activeFilter === 'FULL-STACK'
-                ? 'bg-teal-500 text-white shadow-md'
-                : 'bg-base-dark/80 backdrop-blur-sm border border-gray-700 hover:border-teal-600 text-gray-300'
-            } transition-all`}
-            onClick={() => handleFilterChange('FULL-STACK')}>
-            Full-stack
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`px-6 py-2 rounded-full ${
-              activeFilter === 'OTHER'
-                ? 'bg-teal-500 text-white shadow-md'
-                : 'bg-base-dark/80 backdrop-blur-sm border border-gray-700 hover:border-teal-600 text-gray-300'
-            } transition-all`}
-            onClick={() => handleFilterChange('OTHER')}>
-            Other
-          </motion.button>
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            className={`px-6 py-2 rounded-full ${
-              activeFilter === 'ALL'
-                ? 'bg-teal-500 text-white shadow-md'
-                : 'bg-base-dark/80 backdrop-blur-sm border border-gray-700 hover:border-teal-600 text-gray-300'
-            } transition-all`}
-            onClick={() => handleFilterChange('ALL')}>
-            All
-          </motion.button>
+    <div className='relative gap-x-8 min-h-[50vh]'>
+      {/* Project filter toggle */}
+      <div className='flex justify-start mb-8 pl-16 md:pl-28'>
+        <div className='relative h-8'>
+          <AnimatePresence mode='wait' initial={false}>
+            {projectFilter === 'recent' ? (
+              <motion.div
+                key='recent'
+                className='flex items-center gap-2 absolute cursor-pointer'
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => setProjectFilter('legacy')}>
+                <span className='text-foreground'>Recent</span>
+                <ArrowRightIcon className='h-4 w-4 text-primary ml-1' />
+              </motion.div>
+            ) : (
+              <motion.div
+                key='legacy'
+                className='flex items-center gap-2 absolute cursor-pointer'
+                initial={{ opacity: 0, x: 20 }}
+                animate={{ opacity: 1, x: 0 }}
+                exit={{ opacity: 0, x: 20 }}
+                transition={{ duration: 0.3 }}
+                onClick={() => setProjectFilter('recent')}>
+                <ArrowLeftIcon className='h-4 w-4 text-primary mr-1' />
+                <span className='text-foreground'>Legacy</span>
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
-      </motion.div>
+      </div>
 
       <motion.div
-        className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10'
-        variants={containerVariants}
+        className='md:col-span-5 relative z-20 pl-16 md:pl-28 h-fit'
+        variants={listVariants}
         initial='hidden'
         animate='visible'>
-        {filteredProjects?.map((project, index) => (
-          <ProjectCard
-            key={project.id}
-            title={project.title}
-            description={project.description}
-            imageUrl={project.imageUrl}
-            tags={project.tags}
-            demoUrl={project.demoUrl}
-            sourceUrl={project.sourceUrl}
-            featured={project.featured}
-            category={project.category}
-            index={index}
-          />
-        ))}
+        {filteredProjects.length > 0 ? (
+          filteredProjects.map((project, index) => (
+            <motion.div
+              key={project.id}
+              ref={(el) => {
+                projectRefs.current[index] = el;
+              }}
+              initial='hidden'
+              animate='visible'
+              variants={itemVariants}
+              className='relative mb-8 cursor-pointer'>
+              {isDesktop && (
+                <div className='absolute right-0 top-[50%] -translate-y-1/2 z-20'>
+                  <AnimatePresence mode='wait'>
+                    {selectedProject && selectedProject === project.id && (
+                      <motion.div
+                        key={selectedProject}
+                        initial={{ opacity: 0, y: 20 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        exit={{ opacity: 0, y: -20 }}
+                        transition={{ duration: 0.3, ease: 'easeInOut' }}
+                        className='relative bg-background/20 backdrop-blur-md p-6 rounded border border-muted/20 shadow-sm w-[750px] '>
+                        <div key={project.id}>
+                          <div className='aspect-video rounded overflow-hidden mb-6 shadow-lg border border-muted/10'>
+                            {project.imageUrl ? (
+                              <img
+                                src={project.imageUrl}
+                                alt={project.title}
+                                className='w-full h-full object-cover'
+                              />
+                            ) : (
+                              <div
+                                className='w-full h-full flex items-center justify-center'
+                                style={generateGradient(project.title)}>
+                                <span className='text-4xl font-light'>
+                                  {project.title[0].toUpperCase()}
+                                </span>
+                              </div>
+                            )}
+                          </div>
+
+                          <p className='text-muted-foreground text-base mb-6 leading-relaxed line-clamp-3'>
+                            {project.description}
+                          </p>
+                          <Link
+                            to={`/project/${project.slug}`}
+                            className='group inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors'>
+                            <span>View Project</span>
+                            <ArrowRightIcon className='w-4 h-4 transition-transform group-hover:translate-x-1' />
+                          </Link>
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </div>
+              )}
+              <div className='absolute -left-8 md:-left-12 top-1 opacity-60'>
+                <span className='text-xs font-mono text-primary'>
+                  {String(index + 1).padStart(2, '0')}
+                </span>
+              </div>
+
+              <div className={`group block py-1`}>
+                <motion.h3
+                  className={`text-2xl font-light transition-all duration-300 max-w-[200px] mb-2 ${
+                    selectedProject === project.id
+                      ? 'text-primary'
+                      : 'text-foreground'
+                  }`}
+                  animate={{
+                    fontSize:
+                      selectedProject === project.id ? '2rem' : '1.5rem',
+                    x: selectedProject === project.id && isDesktop ? 8 : 0,
+                  }}
+                  transition={{ duration: 0.2 }}
+                  onClick={() => handleProjectClick(project.id, index)}>
+                  {project.title}
+                </motion.h3>
+
+                {project.tags && project.tags.length > 0 && (
+                  <div className='flex flex-wrap gap-2 max-w-[250px]'>
+                    {project.tags.map((tag) => (
+                      <span className='text-xs text-muted-foreground inline-block'>
+                        #{tag}
+                      </span>
+                    ))}
+                  </div>
+                )}
+              </div>
+
+              {!isDesktop && (
+                <AnimatePresence>
+                  {selectedProject === project.id && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: 'auto', opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.3 }}
+                      className='mt-4 overflow-hidden'>
+                      <div className='aspect-video rounded-md overflow-hidden mb-6 shadow-sm'>
+                        {project.imageUrl ? (
+                          <img
+                            src={project.imageUrl}
+                            alt={project.title}
+                            className='w-full h-full object-cover'
+                          />
+                        ) : (
+                          <div
+                            className='w-full h-full flex items-center justify-center'
+                            style={generateGradient(project.title)}>
+                            <span className='text-4xl font-light'>
+                              {project.title[0].toUpperCase()}
+                            </span>
+                          </div>
+                        )}
+                      </div>
+
+                      <p className='text-muted-foreground text-base mb-6 leading-relaxed'>
+                        {project.description}
+                      </p>
+
+                      <Link to={`/project/${project.slug}`} className='block'>
+                        <div className='mt-4 mb-8 flex justify-end'>
+                          <motion.div
+                            className='flex items-center gap-2 text-sm text-primary'
+                            whileHover={{ x: 5 }}
+                            transition={{ duration: 0.2 }}>
+                            <span>View project</span>
+                            <svg
+                              xmlns='http://www.w3.org/2000/svg'
+                              width='16'
+                              height='16'
+                              viewBox='0 0 24 24'
+                              fill='none'
+                              stroke='currentColor'
+                              strokeWidth='2'
+                              strokeLinecap='round'
+                              strokeLinejoin='round'>
+                              <path d='M5 12h14'></path>
+                              <path d='m12 5 7 7-7 7'></path>
+                            </svg>
+                          </motion.div>
+                        </div>
+                      </Link>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              )}
+            </motion.div>
+          ))
+        ) : (
+          <div className='py-8 text-muted-foreground'>
+            <p>No {projectFilter} projects available.</p>
+          </div>
+        )}
       </motion.div>
     </div>
   );

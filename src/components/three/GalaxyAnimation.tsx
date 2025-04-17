@@ -1,8 +1,11 @@
-import React, { useRef, useEffect } from 'react';
+import { useRef, useEffect } from 'react';
 import * as THREE from 'three';
+import { useThemeStore } from '../../store/themeStore';
 
 export default function GalaxyAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
+  const { modeTheme } = useThemeStore();
+  const isDarkMode = modeTheme === 'dark';
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -39,9 +42,14 @@ export default function GalaxyAnimation() {
       count: 18000, // Good balance of performance and visual density
       size: 0.035, // Smaller particles for a more starry appearance
       radius: 8, // Slightly larger radius for a wider galaxy
-      branches: 8, // 3 spiral arms looks good
-      colorInside: new THREE.Color('#443223'), // Warm center
-      colorOutside: new THREE.Color('#25307f'), // White edges
+      branches: 8, // 8 spiral arms looks good
+      // Different colors based on theme
+      colorInside: isDarkMode
+        ? new THREE.Color('#443223') // Dark mode: Warm center
+        : new THREE.Color('#111111'), // Light mode: Soft purple-blue center
+      colorOutside: isDarkMode
+        ? new THREE.Color('#25307f') // Dark mode: Deep blue edges
+        : new THREE.Color('#25307f'), // Light mode: Muted blue edges
       randomnessPower: 4, // Increased for more natural spread
       insideColor: 0xffffff,
       outsideColor: 0xffffff,
@@ -127,7 +135,7 @@ export default function GalaxyAnimation() {
         new THREE.BufferAttribute(scales, 1)
       );
 
-      // Material
+      // Material - with adjusted blending based on theme
       particlesMaterial = new THREE.PointsMaterial({
         size: params.size,
         sizeAttenuation: true,
@@ -136,6 +144,8 @@ export default function GalaxyAnimation() {
         vertexColors: true,
         transparent: true,
         alphaMap: createCircleTexture(),
+        // Adjust opacity based on theme
+        opacity: isDarkMode ? 1.0 : 0.7,
       });
 
       // Points
@@ -238,7 +248,7 @@ export default function GalaxyAnimation() {
       particlesMaterial.dispose();
       renderer.dispose();
     };
-  }, []);
+  }, [isDarkMode]);
 
   return (
     <div

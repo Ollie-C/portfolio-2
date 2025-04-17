@@ -1,47 +1,33 @@
-import { lazy, Suspense } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import Layout from './components/Layout/Layout';
+import { useEffect, Suspense, lazy } from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { applyThemeEffects } from './store/themeStore';
+import './i18n';
 
-// Lazy loaded components
 const HomePage = lazy(() => import('./pages/HomePage'));
-const ProjectsPage = lazy(() => import('./pages/ProjectsPage'));
-const AboutPage = lazy(() => import('./pages/AboutPage'));
-const SkillsPage = lazy(() => import('./pages/SkillsPage'));
-const ContactPage = lazy(() => import('./pages/ContactPage'));
+const ProjectPage = lazy(() => import('./pages/ProjectPage'));
 const NotFoundPage = lazy(() => import('./pages/NotFoundPage'));
 
-// Placeholder components - can be replaced with actual implementations later
-const PlaceholderPage = ({ title }: { title: string }) => (
-  <Layout>
-    <div className='container mx-auto px-4 py-20'>
-      <h1 className='text-4xl font-bold mb-6'>{title}</h1>
-      <p className='text-lg text-gray-600'>This page is coming soon.</p>
-    </div>
-  </Layout>
-);
-
-// Loading fallback
 const LoadingFallback = () => (
-  <div className='flex items-center justify-center min-h-screen'>
-    <div className='animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-600'></div>
+  <div className='fixed inset-0 flex items-center justify-center bg-background'>
+    <div className='animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full'></div>
   </div>
 );
 
 function App() {
+  useEffect(() => {
+    applyThemeEffects();
+  }, []);
+
   return (
-    <BrowserRouter>
+    <Router>
       <Suspense fallback={<LoadingFallback />}>
         <Routes>
           <Route path='/' element={<HomePage />} />
-          <Route path='/projects' element={<ProjectsPage />} />
-          <Route path='/about' element={<AboutPage />} />
-          <Route path='/skills' element={<SkillsPage />} />
-          <Route path='/contact' element={<ContactPage />} />
-          <Route path='/cv' element={<PlaceholderPage title='CV' />} />
+          <Route path='/project/:slug' element={<ProjectPage />} />
           <Route path='*' element={<NotFoundPage />} />
         </Routes>
       </Suspense>
-    </BrowserRouter>
+    </Router>
   );
 }
 

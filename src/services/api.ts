@@ -1,6 +1,17 @@
 import { client, urlFor } from '../lib/sanity';
 import type { SanityImageSource } from '@sanity/image-url/lib/types/types';
 
+export interface ProjectImage {
+  _key: string;
+  _type: 'image';
+  asset: {
+    _ref: string;
+    _type: 'reference';
+  };
+  alt?: string;
+  caption?: string;
+}
+
 export interface Project {
   _id: string;
   title: string;
@@ -11,11 +22,26 @@ export interface Project {
   category: string;
   tags: string[];
   featured: boolean;
+  active: boolean;
+  legacy?: boolean;
   demoUrl?: string;
   sourceUrl?: string;
   image?: SanityImageSource;
+  projectImages?: ProjectImage[];
+  desktopImages?: ProjectImage[];
+  mobileImages?: ProjectImage[];
+  techStack?: string[];
+  features?: string[];
+  summary?: string;
+  note?: string;
   _createdAt: string;
   _updatedAt: string;
+}
+
+export interface NormalizedProjectImage {
+  url: string;
+  alt?: string;
+  caption?: string;
 }
 
 export interface NormalizedProject {
@@ -26,9 +52,18 @@ export interface NormalizedProject {
   category: string;
   tags: string[];
   featured: boolean;
+  active: boolean;
+  legacy?: boolean;
   demoUrl?: string;
   sourceUrl?: string;
   imageUrl?: string;
+  images: NormalizedProjectImage[];
+  desktopImages: NormalizedProjectImage[];
+  mobileImages: NormalizedProjectImage[];
+  techStack?: string[];
+  features?: string[];
+  summary?: string;
+  note?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -38,7 +73,7 @@ export interface Skill {
   name: string;
   category: string;
   level: number;
-  icon?: string;
+  icon?: any; // Sanity image reference
 }
 
 export interface NormalizedSkill {
@@ -46,7 +81,7 @@ export interface NormalizedSkill {
   name: string;
   category: string;
   level: number;
-  icon?: string;
+  icon?: any; // Keep the Sanity image reference intact
 }
 
 export interface CMSContent {
@@ -56,44 +91,112 @@ export interface CMSContent {
   contactEmail?: string;
 }
 
-const normalizeProject = (project: Project): NormalizedProject => ({
-  id: project._id,
-  title: project.title,
-  description: project.description,
-  slug: project.slug.current,
-  category: project.category,
-  tags: project.tags || [],
-  featured: project.featured || false,
-  demoUrl: project.demoUrl,
-  sourceUrl: project.sourceUrl,
-  imageUrl: project.image ? urlFor(project.image).url() : undefined,
-  createdAt: project._createdAt,
-  updatedAt: project._updatedAt,
-});
+const normalizeProject = (project: Project): NormalizedProject => {
+  // First try to use the main image, then try the first project image,
+  // then try the first desktop image, then use empty string to trigger fallback
+  let mainImageUrl = '';
+
+  if (project.image) {
+    mainImageUrl = urlFor(project.image).url();
+  } else if (project.projectImages && project.projectImages.length > 0) {
+    mainImageUrl = urlFor(project.projectImages[0]).url();
+  } else if (project.desktopImages && project.desktopImages.length > 0) {
+    mainImageUrl = urlFor(project.desktopImages[0]).url();
+  }
+
+  return {
+    id: project._id,
+    title: project.title,
+    description: project.description,
+    slug: project.slug.current,
+    category: project.category,
+    tags: project.tags || [],
+    featured: project.featured || false,
+    active: project.active !== undefined ? project.active : true,
+    legacy: project.legacy || false,
+    demoUrl: project.demoUrl,
+    sourceUrl: project.sourceUrl,
+    imageUrl: mainImageUrl,
+    techStack: project.techStack || [],
+    features: project.features || [],
+    summary: project.summary,
+    note: project.note,
+    images: project.projectImages
+      ? project.projectImages.map((image) => ({
+          url: urlFor(image).url(),
+          alt: image.alt,
+          caption: image.caption,
+        }))
+      : [],
+    desktopImages: project.desktopImages
+      ? project.desktopImages.map((image) => ({
+          url: urlFor(image).url(),
+          alt: image.alt,
+          caption: image.caption,
+        }))
+      : [],
+    mobileImages: project.mobileImages
+      ? project.mobileImages.map((image) => ({
+          url: urlFor(image).url(),
+          alt: image.alt,
+          caption: image.caption,
+        }))
+      : [],
+    createdAt: project._createdAt,
+    updatedAt: project._updatedAt,
+  };
+};
 
 const normalizeSkill = (skill: Skill): NormalizedSkill => ({
   id: skill._id,
   name: skill.name,
   category: skill.category,
   level: skill.level,
-  icon: skill.icon,
+  icon: skill.icon, // Pass through the icon object as is
 });
 
 // Fetch all projects
 export async function fetchProjects(): Promise<NormalizedProject[]> {
   try {
     const projects = await client.fetch<Project[]>(`
-      *[_type == "project"] {
+      *[_type == "project" && (active == true || !defined(active))] | order(featured desc, _createdAt desc) {
         _id,
         title,
         slug,
         description,
+        summary,
+        note,
         category,
         tags,
         featured,
+        active,
+        legacy,
         demoUrl,
         sourceUrl,
+        techStack,
+        features,
         image,
+        projectImages[] {
+          _key,
+          _type,
+          asset,
+          alt,
+          caption
+        },
+        desktopImages[] {
+          _key,
+          _type,
+          asset,
+          alt,
+          caption
+        },
+        mobileImages[] {
+          _key,
+          _type,
+          asset,
+          alt,
+          caption
+        },
         _createdAt,
         _updatedAt
       }
@@ -103,54 +206,7 @@ export async function fetchProjects(): Promise<NormalizedProject[]> {
   } catch (error) {
     console.error('Error fetching projects:', error);
 
-    // Return mock data if the API is not available
-    return [
-      {
-        id: '1',
-        title: 'Sushi Murasaki',
-        description:
-          'Web design project for a local Japanese restaurant. An early project, but a lot of fun.',
-        imageUrl:
-          'https://images.unsplash.com/photo-1579871494447-9811cf80d66c?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8M3x8c3VzaGl8ZW58MHx8MHx8&auto=format&fit=crop&w=500&q=60',
-        category: 'OTHER',
-        tags: ['Other', 'Photoshop', 'SASS', 'UI/UX'],
-        slug: 'sushi-murasaki',
-        featured: true,
-        createdAt: '2023-01-15T00:00:00Z',
-        updatedAt: '2023-01-20T00:00:00Z',
-      },
-      {
-        id: '2',
-        title: 'myyu',
-        description:
-          '[Under construction] A social movie ranker for list and movie enthusiasts',
-        imageUrl:
-          'https://images.unsplash.com/photo-1616530940355-351fabd9524b?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80',
-        category: 'FULL-STACK',
-        tags: ['Full-stack', 'Next', 'TypeScript', 'GraphQL', 'Apollo', 'Jest'],
-        slug: 'myyu',
-        featured: true,
-        demoUrl: '#',
-        sourceUrl: 'https://github.com/example/myyu',
-        createdAt: '2023-03-10T00:00:00Z',
-        updatedAt: '2023-04-05T00:00:00Z',
-      },
-      {
-        id: '3',
-        title: 'FLix',
-        description:
-          "Youtube's better looking younger sibling. Home-grown API using Express and heavy focus on validation",
-        imageUrl:
-          'https://images.unsplash.com/photo-1611162616475-46b635cb6868?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1074&q=80',
-        category: 'FULL-STACK',
-        tags: ['Full-stack', 'React', 'Express'],
-        slug: 'flix',
-        featured: true,
-        demoUrl: '#',
-        createdAt: '2023-02-01T00:00:00Z',
-        updatedAt: '2023-02-15T00:00:00Z',
-      },
-    ];
+    return [];
   }
 }
 
@@ -159,17 +215,44 @@ export async function fetchProjectBySlug(
 ): Promise<NormalizedProject | null> {
   try {
     const projects = await client.fetch<Project[]>(`
-      *[_type == "project" && slug.current == "${slug}"] {
+      *[_type == "project" && slug.current == "${slug}" && (active == true || !defined(active))] {
         _id,
         title,
         slug,
         description,
+        summary,
+        note,
         category,
         tags,
+        techStack,
+        features,
         featured,
+        active,
+        legacy,
         demoUrl,
         sourceUrl,
         image,
+        projectImages[] {
+          _key,
+          _type,
+          asset,
+          alt,
+          caption
+        },
+        desktopImages[] {
+          _key,
+          _type,
+          asset,
+          alt,
+          caption
+        },
+        mobileImages[] {
+          _key,
+          _type,
+          asset,
+          alt,
+          caption
+        },
         _createdAt,
         _updatedAt
       }
@@ -183,7 +266,6 @@ export async function fetchProjectBySlug(
   } catch (error) {
     console.error(`Error fetching project with slug ${slug}:`, error);
 
-    // Return mock data if the API is not available
     const projects = await fetchProjects();
     return projects.find((project) => project.slug === slug) || null;
   }
@@ -225,7 +307,7 @@ export async function fetchSkills(): Promise<NormalizedSkill[]> {
         name,
         category,
         level,
-        icon
+        "icon": icon
       }
     `);
 
