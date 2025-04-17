@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 
 // API URL for contact form submissions - adjust based on your deployment
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001';
+const API_URL = import.meta.env.VITE_API_URL || '/';
 
 export default function ContactForm() {
   const { t } = useTranslation();
@@ -33,7 +33,7 @@ export default function ContactForm() {
 
     try {
       // Send the form data to our Express backend
-      const response = await fetch(`${API_URL}/api/contact`, {
+      const response = await fetch(`${API_URL}api/contact`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
