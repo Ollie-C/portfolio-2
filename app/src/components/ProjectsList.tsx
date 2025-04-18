@@ -142,7 +142,7 @@ export default function ProjectsList() {
                 exit={{ opacity: 0, x: -20 }}
                 transition={{ duration: 0.3 }}
                 onClick={() => setProjectFilter('legacy')}>
-                <span className='text-foreground'>Recent</span>
+                <span className='text-foreground'>Legacy</span>
                 <ArrowRightIcon className='h-4 w-4 text-primary ml-1' />
               </motion.div>
             ) : (
@@ -155,7 +155,7 @@ export default function ProjectsList() {
                 transition={{ duration: 0.3 }}
                 onClick={() => setProjectFilter('recent')}>
                 <ArrowLeftIcon className='h-4 w-4 text-primary mr-1' />
-                <span className='text-foreground'>Legacy</span>
+                <span className='text-foreground'>Recent</span>
               </motion.div>
             )}
           </AnimatePresence>

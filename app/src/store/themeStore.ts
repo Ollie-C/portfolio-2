@@ -12,7 +12,7 @@ interface ThemeState {
 
 export const useThemeStore = create<ThemeState>((set) => ({
   animationTheme: 'galaxy',
-  modeTheme: 'dark',
+  modeTheme: 'light',
 
   setAnimationTheme: (theme) => set({ animationTheme: theme }),
   setModeTheme: (theme) => set({ modeTheme: theme }),

@@ -77,7 +77,7 @@ const Options = ({ onAnimationChange }: OptionsProps) => {
 
       {/* Container for expanded options */}
       <div
-        className='absolute bottom-full right-0 mb-2'
+        className='absolute bottom-full md:right-0 right-auto left-0 md:left-auto mb-2'
         onMouseLeave={() => setIsOpen(false)}>
         <AnimatePresence>
           {isOpen && (
@@ -98,14 +98,24 @@ const Options = ({ onAnimationChange }: OptionsProps) => {
                   <button
                     onClick={toggleLightDarkMode}
                     className={`flex items-center gap-2 px-3 py-1.5 bg-muted dark:bg-muted rounded transition-colors `}
-                    aria-label={`Switch to ${modeTheme === 'dark' ? 'light' : 'dark'} mode`}>
+                    aria-label={`Switch to ${
+                      modeTheme === 'dark' ? 'light' : 'dark'
+                    } mode`}>
                     <Moon
                       size={12}
-                      className={`${modeTheme === 'dark' ? 'text-primary-light' : 'text-primary-dark'}`}
+                      className={`${
+                        modeTheme === 'dark'
+                          ? 'text-primary-light'
+                          : 'text-primary-dark'
+                      }`}
                     />
                     <Sun
                       size={12}
-                      className={`${modeTheme === 'dark' ? 'text-primary-dark' : 'text-primary-dark'}`}
+                      className={`${
+                        modeTheme === 'dark'
+                          ? 'text-primary-dark'
+                          : 'text-primary-dark'
+                      }`}
                     />
                   </button>
                 </div>

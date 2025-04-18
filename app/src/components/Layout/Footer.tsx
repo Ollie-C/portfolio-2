@@ -17,14 +17,14 @@ const Footer: React.FC = () => {
           </div>
           <div className='flex space-x-4'>
             <a
-              href='https://github.com/olliecross'
+              href='https://github.com/Ollie-C'
               target='_blank'
               rel='noopener noreferrer'
               className='text-[var(--text-secondary)] hover:text-teal-400 transition-colors'>
               GitHub
             </a>
             <a
-              href='https://linkedin.com/in/olliecross'
+              href='https://linkedin.com/in/oliver-cross'
               target='_blank'
               rel='noopener noreferrer'
               className='text-[var(--text-secondary)] hover:text-teal-400 transition-colors'>

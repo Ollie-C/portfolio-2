@@ -140,31 +140,78 @@ const ProjectPage: React.FC = () => {
   return (
     <Layout>
       <motion.div
-        className='max-w-6xl mx-auto px-5 pt-10 pb-20'
+        className='max-w-6xl mx-auto px-5 pt-10 pb-5 md:pb-20 section-bg-dark'
         variants={containerVariants}
         initial='hidden'
         animate='visible'>
-        {/* Back button */}
-        <motion.div
-          className='flex items-center gap-2 text-sm text-primary mb-20 cursor-pointer'
-          whileHover={{ x: -5 }}
-          transition={{ duration: 0.2 }}
-          onClick={handleBackClick}>
-          <svg
-            xmlns='http://www.w3.org/2000/svg'
-            width='16'
-            height='16'
-            viewBox='0 0 24 24'
-            fill='none'
-            className='rotate-180'
-            stroke='currentColor'
-            strokeWidth='2'
-            strokeLinecap='round'
-            strokeLinejoin='round'>
-            <path d='M5 12h14'></path>
-            <path d='m12 5 7 7-7 7'></path>
-          </svg>
-          <span>{t('projectPage.back')}</span>
+        {/* Navigation controls - Back button and project navigation */}
+        <motion.div className='flex items-center justify-between mb-10 md:mb-20'>
+          {/* Back button */}
+          <motion.div
+            className='flex items-center gap-2 text-sm text-primary cursor-pointer'
+            whileHover={{ x: -5 }}
+            transition={{ duration: 0.2 }}
+            onClick={handleBackClick}>
+            <svg
+              xmlns='http://www.w3.org/2000/svg'
+              width='16'
+              height='16'
+              viewBox='0 0 24 24'
+              fill='none'
+              className='rotate-180'
+              stroke='currentColor'
+              strokeWidth='2'
+              strokeLinecap='round'
+              strokeLinejoin='round'>
+              <path d='M5 12h14'></path>
+              <path d='m12 5 7 7-7 7'></path>
+            </svg>
+            <span>{t('projectPage.back')}</span>
+          </motion.div>
+
+          {/* Project navigation */}
+          <div className='flex items-center gap-6'>
+            {prevSlug && (
+              <Link
+                to={`/project/${prevSlug}`}
+                className='group inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors'>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='16'
+                  height='16'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  className='mr-2 transition-transform group-hover:-translate-x-1'>
+                  <polyline points='15 18 9 12 15 6' />
+                </svg>
+                {t('projectPage.previousProject')}
+              </Link>
+            )}
+            {nextSlug && (
+              <Link
+                to={`/project/${nextSlug}`}
+                className='group inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors'>
+                {t('projectPage.nextProject')}
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='16'
+                  height='16'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'
+                  className='ml-2 transition-transform group-hover:translate-x-1'>
+                  <polyline points='9 18 15 12 9 6' />
+                </svg>
+              </Link>
+            )}
+          </div>
         </motion.div>
 
         {/* Project header */}
@@ -444,56 +491,6 @@ const ProjectPage: React.FC = () => {
             </div>
           </motion.section>
         )}
-
-        {/* Prev/Next Navigation */}
-        <motion.div
-          variants={itemVariants}
-          className='pt-16 mt-16 border-t border-muted/20 grid grid-cols-2 gap-4'>
-          <div>
-            {prevSlug && (
-              <Link
-                to={`/project/${prevSlug}`}
-                className='group inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='18'
-                  height='18'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  className='mr-2 transition-transform group-hover:-translate-x-1'>
-                  <polyline points='15 18 9 12 15 6' />
-                </svg>
-                {t('projectPage.previousProject')}
-              </Link>
-            )}
-          </div>
-          <div>
-            {nextSlug && (
-              <Link
-                to={`/project/${nextSlug}`}
-                className='group inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors'>
-                {t('projectPage.nextProject')}
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='18'
-                  height='18'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  className='ml-2 transition-transform group-hover:translate-x-1'>
-                  <polyline points='9 18 15 12 9 6' />
-                </svg>
-              </Link>
-            )}
-          </div>
-        </motion.div>
       </motion.div>
 
       {/* Image lightbox */}

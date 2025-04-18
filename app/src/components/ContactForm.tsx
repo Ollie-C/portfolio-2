@@ -156,17 +156,6 @@ export default function ContactForm() {
               </svg>
             </motion.button>
           </div>
-
-          <div className='text-xs text-muted-foreground mt-8'>
-            <p>
-              For direct contact, please email:{' '}
-              <a
-                href='mailto:contact@olliec.dev'
-                className='text-primary hover:underline'>
-                contact@olliec.dev
-              </a>
-            </p>
-          </div>
         </form>
       )}
     </div>

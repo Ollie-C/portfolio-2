@@ -148,17 +148,14 @@ export default function SkillsSection() {
   ];
 
   // Group skills by category
-  const skillsByCategory = allSkills?.reduce(
-    (acc, skill) => {
-      const category = skill.category.toLowerCase();
-      if (!acc[category]) {
-        acc[category] = [];
-      }
-      acc[category].push(skill);
-      return acc;
-    },
-    {} as Record<string, typeof allSkills>
-  );
+  const skillsByCategory = allSkills?.reduce((acc, skill) => {
+    const category = skill.category.toLowerCase();
+    if (!acc[category]) {
+      acc[category] = [];
+    }
+    acc[category].push(skill);
+    return acc;
+  }, {} as Record<string, typeof allSkills>);
 
   const getSkillIconUrl = (skill: SkillData): string | undefined => {
     // First priority: Use image from Sanity if available
@@ -262,7 +259,7 @@ export default function SkillsSection() {
                       return (
                         <motion.div
                           key={skill.id}
-                          className='group flex items-center gap-2 p-3 rounded-lg transition-all duration-300 border border-foreground/50 hover:shadow-lg hover:border-primary/20'
+                          className='group flex items-center gap-2 p-3 rounded-lg transition-all duration-300 bg-card/60 border border-foreground/50 hover:shadow-lg hover:border-primary/20'
                           whileHover={{
                             y: -5,
                           }}
@@ -273,7 +270,7 @@ export default function SkillsSection() {
                             duration: 0.3,
                           }}
                           style={{
-                            backdropFilter: 'blur(5px)',
+                            backdropFilter: 'blur(8px)',
                           }}>
                           {/* Icon container */}
                           <div className='rounded-full p-3 w-14 h-14 flex items-center justify-center border border-muted/30 shadow-inner'>
