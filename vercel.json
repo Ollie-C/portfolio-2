@@ -1,16 +1,26 @@
 {
+  "version": 2,
   "builds": [
     {
-      "src": "package.json",
-      "use": "@vercel/node",
+      "src": "app/api/contact.ts",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "app/package.json",
+      "use": "@vercel/static-build",
       "config": {
-        "installCommand": "npm install --no-optional"
+        "distDir": "dist"
       }
     }
   ],
-  "build": {
-    "env": {
-      "NPM_FLAGS": "--omit=optional --no-fund"
+  "routes": [
+    {
+      "src": "/api/contact",
+      "dest": "app/api/contact.ts"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "app/$1"
     }
-  }
+  ]
 }

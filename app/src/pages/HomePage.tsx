@@ -166,7 +166,7 @@ export default function HomePage() {
                       <ContactForm />
                     </div>
 
-                    <div className='flex items-center flex-wrap gap-10 mb-10'>
+                    <div className='flex items-center flex-wrap gap-10 my-14'>
                       <a
                         href='https://github.com/Ollie-C'
                         target='_blank'
@@ -177,7 +177,7 @@ export default function HomePage() {
                             GITHUB
                           </span>
                           <span className='h-px w-8 bg-muted-foreground/30'></span>
-                          <span className='text-lg text-foreground group-hover:text-primary transition-colors'>
+                          <span className='text-foreground group-hover:text-primary transition-colors'>
                             github.com/Ollie-C
                           </span>
                         </div>
@@ -193,7 +193,7 @@ export default function HomePage() {
                             LINKEDIN
                           </span>
                           <span className='h-px w-8 bg-muted-foreground/30'></span>
-                          <span className='text-lg text-foreground group-hover:text-primary transition-colors'>
+                          <span className='text-foreground group-hover:text-primary transition-colors'>
                             linkedin.com/in/oliver-cross
                           </span>
                         </div>

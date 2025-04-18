@@ -1,6 +1,10 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
+import CodewarsIcon from '../../assets/codewars.svg';
+import CodewarsIconWhite from '../../assets/codewars-white.svg';
+import CV from '../../assets/ollie_cross_cv.pdf';
+import { useThemeStore } from '../../store/themeStore';
 
 type MobileMenuProps = {
   isOpen: boolean;
@@ -16,6 +20,8 @@ const MobileMenu = ({
   const { t } = useTranslation();
   const location = useLocation();
   const isHomePage = location.pathname === '/';
+  const { modeTheme } = useThemeStore();
+  const isDarkMode = modeTheme === 'dark';
 
   const socialLinks = [
     {
@@ -55,6 +61,18 @@ const MobileMenu = ({
         </svg>
       ),
       url: 'https://linkedin.com/in/olliecross',
+    },
+    {
+      name: 'Codewars',
+      icon: (
+        <img
+          src={isDarkMode ? CodewarsIconWhite : CodewarsIcon}
+          alt='Codewars'
+          width='26'
+          height='26'
+        />
+      ),
+      url: 'https://www.codewars.com/users/olliecross',
     },
   ];
 
@@ -187,9 +205,10 @@ const MobileMenu = ({
                   }}
                   className='w-full mt-10'>
                   <a
-                    href='/resume.pdf'
+                    href={CV}
                     target='_blank'
                     rel='noopener noreferrer'
+                    download='ollie_cross_cv.pdf'
                     className='flex items-center group'>
                     <span className='font-mono text-primary text-xs opacity-60 w-12'>
                       CV /

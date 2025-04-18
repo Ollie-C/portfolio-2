@@ -62,7 +62,9 @@ export default function ProjectsList() {
     const hue = Math.abs(hash % 360);
 
     return {
-      background: `linear-gradient(135deg, hsla(${hue}, 70%, 40%, 0.8), hsla(${(hue + 40) % 360}, 70%, 40%, 0.4))`,
+      background: `linear-gradient(135deg, hsla(${hue}, 70%, 40%, 0.8), hsla(${
+        (hue + 40) % 360
+      }, 70%, 40%, 0.4))`,
       color: `hsl(${hue}, 80%, 85%)`,
     };
   };
@@ -242,26 +244,46 @@ export default function ProjectsList() {
                       ? 'text-primary'
                       : 'text-foreground'
                   }`}
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{
+                    duration: 0.5,
+                    delay: 0.1 * index,
+                  }}
                   animate={{
                     fontSize:
                       selectedProject === project.id ? '2rem' : '1.5rem',
                     x: selectedProject === project.id && isDesktop ? 8 : 0,
                   }}
-                  transition={{ duration: 0.2 }}
                   onClick={() => handleProjectClick(project.id, index)}>
                   {getLocalizedTitle(project)}
                 </motion.h3>
 
                 {project.tags && project.tags.length > 0 && (
-                  <div className='flex flex-wrap gap-2 max-w-[250px]'>
-                    {project.tags.map((tag) => (
-                      <span
+                  <motion.div
+                    className='flex flex-wrap gap-2 max-w-[250px]'
+                    initial={{ opacity: 0, y: 10 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true }}
+                    transition={{
+                      duration: 0.4,
+                      delay: 0.1 * index + 0.2, // Slight delay after the title
+                    }}>
+                    {project.tags.map((tag, tagIndex) => (
+                      <motion.span
                         key={`${project.id}-${tag}`}
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        transition={{
+                          duration: 0.3,
+                          delay: 0.05 * tagIndex + (0.1 * index + 0.3), // Additional delay for each tag
+                        }}
                         className='text-xs text-muted-foreground inline-block'>
                         #{tag}
-                      </span>
+                      </motion.span>
                     ))}
-                  </div>
+                  </motion.div>
                 )}
               </div>
 

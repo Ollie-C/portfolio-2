@@ -127,9 +127,34 @@ const ProjectPage: React.FC = () => {
 
   if (!project) return null;
 
+  // Define animation variants for page sections
+  const containerVariants = {
+    hidden: { opacity: 0 },
+    visible: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.2,
+        delayChildren: 0.1,
+      },
+    },
+  };
+
+  const itemVariants = {
+    hidden: { opacity: 0, y: 20 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.6, ease: 'easeOut' },
+    },
+  };
+
   return (
     <Layout>
-      <div className='max-w-6xl mx-auto px-5 pt-10 pb-20'>
+      <motion.div
+        className='max-w-6xl mx-auto px-5 pt-10 pb-20'
+        variants={containerVariants}
+        initial='hidden'
+        animate='visible'>
         {/* Back button */}
         <motion.div
           className='flex items-center gap-2 text-sm text-primary mb-20 cursor-pointer'
@@ -154,7 +179,7 @@ const ProjectPage: React.FC = () => {
         </motion.div>
 
         {/* Project header */}
-        <header className='mb-16'>
+        <motion.header variants={itemVariants} className='mb-16'>
           <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12'>
             <div className='space-y-6'>
               <div className='space-x-4'>
@@ -230,14 +255,10 @@ const ProjectPage: React.FC = () => {
               )}
             </div>
           </div>
-        </header>
+        </motion.header>
 
         {/* Project overview */}
-        <motion.section
-          initial='hidden'
-          animate='visible'
-          variants={fadeIn}
-          className='mb-20'>
+        <motion.section variants={itemVariants} className='mb-20'>
           <div className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
             <div className='md:col-span-2'>
               <div className='space-x-4'>
@@ -277,11 +298,7 @@ const ProjectPage: React.FC = () => {
         </motion.section>
 
         {/* Technical details */}
-        <motion.section
-          initial='hidden'
-          animate='visible'
-          variants={fadeIn}
-          className='mb-20'>
+        <motion.section variants={itemVariants} className='mb-20'>
           <div className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
             <div className='md:col-span-2'>
               <div className='space-x-4'>
@@ -347,11 +364,7 @@ const ProjectPage: React.FC = () => {
         {/* Image gallery */}
         {(project.desktopImages.length > 0 ||
           project.mobileImages.length > 0) && (
-          <motion.section
-            initial='hidden'
-            animate='visible'
-            variants={fadeIn}
-            className='mb-20'>
+          <motion.section variants={itemVariants} className='mb-20'>
             <div className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
               <div className='md:col-span-2'>
                 <div className='space-x-4'>
@@ -394,7 +407,11 @@ const ProjectPage: React.FC = () => {
 
               <div className='md:col-span-4'>
                 <div
-                  className={`grid gap-4 ${viewMode === 'mobile' ? 'grid-cols-3 md:grid-cols-4' : 'grid-cols-1 md:grid-cols-2'}`}>
+                  className={`grid gap-4 ${
+                    viewMode === 'mobile'
+                      ? 'grid-cols-3 md:grid-cols-4'
+                      : 'grid-cols-1 md:grid-cols-2'
+                  }`}>
                   {filteredImages.map((image, index) => (
                     <motion.div
                       key={`${image.url}-${index}`}
@@ -440,7 +457,9 @@ const ProjectPage: React.FC = () => {
         )}
 
         {/* Prev/Next Navigation */}
-        <div className='mt-20 pt-8 border-t border-muted/50 flex justify-between items-center'>
+        <motion.div
+          variants={itemVariants}
+          className='pt-16 mt-16 border-t border-muted/20 grid grid-cols-2 gap-4'>
           <div>
             {prevSlug && (
               <Link
@@ -485,8 +504,8 @@ const ProjectPage: React.FC = () => {
               </Link>
             )}
           </div>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
 
       {/* Image lightbox */}
       {activeImageUrl && (

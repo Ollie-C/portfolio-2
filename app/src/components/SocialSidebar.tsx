@@ -1,6 +1,12 @@
 import { motion } from 'framer-motion';
+import CodewarsIcon from '../assets/codewars.svg';
+import CodewarsIconWhite from '../assets/codewars-white.svg';
+import { useThemeStore } from '../store/themeStore';
 
 const SocialSidebar = () => {
+  const { modeTheme } = useThemeStore();
+  const isDarkMode = modeTheme === 'dark';
+
   const socialLinks = [
     {
       name: 'GitHub',
@@ -43,18 +49,13 @@ const SocialSidebar = () => {
     {
       name: 'Codewars',
       icon: (
-        <svg
-          width='20'
-          height='20'
-          viewBox='0 0 24 24'
-          xmlns='http://www.w3.org/2000/svg'
-          fill='none'
-          stroke='currentColor'
-          strokeWidth='2'
-          strokeLinecap='round'
-          strokeLinejoin='round'>
-          <path d='M12 2L9.09 6.91 3 8.18 7.5 12.18 6.9 18.27 12 15.27 17.1 18.27 16.5 12.18 21 8.18 14.91 6.91 12 2z' />
-        </svg>
+        <img
+          src={isDarkMode ? CodewarsIconWhite : CodewarsIcon}
+          alt='Codewars'
+          width='26'
+          height='26'
+          className='stroke-primary'
+        />
       ),
       url: 'https://www.codewars.com/users/olliecross',
     },
