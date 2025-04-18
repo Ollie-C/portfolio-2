@@ -1,7 +1,7 @@
 {
-  "name": "portfolio-monorepo",
+  "name": "portfolio-2",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "scripts": {
     "dev": "npm --prefix app run dev",
     "build": "npm --prefix app run build",
@@ -10,5 +10,15 @@
   },
   "engines": {
     "node": ">=20.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^20.9.0",
+    "@types/react": "^18.2.37",
+    "@vercel/node": "^3.0.0",
+    "typescript": "^5.0.0"
+  },
+  "dependencies": {
+    "@sanity/client": "^6.29.0",
+    "next": "^14.0.3"
   }
 }

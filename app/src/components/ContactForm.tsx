@@ -1,11 +1,10 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
-
-// API URL for contact form submissions - adjust based on your deployment
-const API_URL = import.meta.env.VITE_API_URL || '/';
+import emailjs from '@emailjs/browser';
 
 export default function ContactForm() {
+  const formRef = useRef<HTMLFormElement>(null);
   const { t } = useTranslation();
   const [formData, setFormData] = useState({
     name: '',
@@ -32,29 +31,30 @@ export default function ContactForm() {
     setError('');
 
     try {
-      // Send the form data to our Express backend
-      const response = await fetch(`${API_URL}api/contact`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Failed to submit form');
+      if (formRef.current) {
+        await emailjs.sendForm(
+          import.meta.env.VITE_EMAILJS_SERVICE_ID,
+          import.meta.env.VITE_EMAILJS_TEMPLATE_ID,
+          formRef.current,
+          import.meta.env.VITE_EMAILJS_PUBLIC_KEY
+        );
       }
 
       setSubmitted(true);
       setFormData({ name: '', email: '', message: '' });
     } catch (err) {
-      setError('Something went wrong. Please try again later.');
-      console.error(err);
+      console.error('Form submission error:', err);
+      setError(
+        'Something went wrong. Please try again later or email me directly at contact@olliec.dev'
+      );
     } finally {
       setIsSubmitting(false);
     }
+  };
+
+  const resetForm = () => {
+    setSubmitted(false);
+    setError('');
   };
 
   return (
@@ -69,13 +69,13 @@ export default function ContactForm() {
           </h3>
           <p className='text-muted-foreground'>{t('contactForm.thankYou')}</p>
           <button
-            onClick={() => setSubmitted(false)}
+            onClick={resetForm}
             className='mt-4 text-sm text-primary hover:underline'>
             {t('contactForm.sendAnother')}
           </button>
         </motion.div>
       ) : (
-        <form onSubmit={handleSubmit} className='space-y-6'>
+        <form ref={formRef} onSubmit={handleSubmit} className='space-y-6'>
           <div>
             <label
               htmlFor='name'
@@ -155,6 +155,17 @@ export default function ContactForm() {
                 <path d='m12 5 7 7-7 7'></path>
               </svg>
             </motion.button>
+          </div>
+
+          <div className='text-xs text-muted-foreground mt-8'>
+            <p>
+              For direct contact, please email:{' '}
+              <a
+                href='mailto:contact@olliec.dev'
+                className='text-primary hover:underline'>
+                contact@olliec.dev
+              </a>
+            </p>
           </div>
         </form>
       )}
