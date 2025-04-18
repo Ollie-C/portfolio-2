@@ -75,17 +75,6 @@ const ProjectPage: React.FC = () => {
   // Combine errors (simplified)
   const error = errorCurrent || errorAll || (!isLoading && !project);
 
-  // Animation variants
-  const fadeIn = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        duration: 0.8,
-      },
-    },
-  };
-
   // Function to get localized content
   const getLocalizedContent = (
     enContent: string | undefined,

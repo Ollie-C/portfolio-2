@@ -93,18 +93,25 @@ const isRateLimited = (ip: string): boolean => {
   return false;
 };
 
+// Define contact form data type
+interface ContactFormData {
+  name: string;
+  email: string;
+  message: string;
+}
+
 interface Request {
   method: string;
   headers: {
     [key: string]: string | undefined;
   };
-  body: any;
+  body: ContactFormData;
 }
 
 interface Response {
   setHeader: (name: string, value: string | boolean | string[]) => void;
   status: (code: number) => Response;
-  json: (data: any) => void;
+  json: <T extends Record<string, unknown>>(data: T) => void;
   end: () => void;
 }
 
