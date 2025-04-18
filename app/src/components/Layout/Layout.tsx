@@ -116,7 +116,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       </div>
 
       {/* Sidebars - Only visible on desktop */}
-      <div className='fixed bottom-16 left-0 right-0 py-4 z-10 pointer-events-none'>
+      <div className='fixed bottom-12 md:bottom-16 left-0 right-0 py-4 z-10 pointer-events-none'>
         <div className='w-full container mx-auto flex justify-between items-end px-5'>
           {!isMobile && <SocialSidebar />}
           <Options

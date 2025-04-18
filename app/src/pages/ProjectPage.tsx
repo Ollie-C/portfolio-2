@@ -275,7 +275,7 @@ const ProjectPage: React.FC = () => {
                   href={project.sourceUrl}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='inline-flex items-center justify-center px-5 py-2 font-medium text-gray-300 bg-base-dark hover:bg-base-dark/80 rounded-md transition-colors border border-gray-700'
+                  className='inline-flex items-center justify-center px-5 py-2 font-medium text-gray-300 bg-card text-primary hover:bg-base-dark/80 rounded-md transition-colors border border-gray-700'
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}>
                   <svg
