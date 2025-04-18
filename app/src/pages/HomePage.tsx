@@ -166,14 +166,14 @@ export default function HomePage() {
                       <ContactForm />
                     </div>
 
-                    <div className='flex items-center flex-wrap gap-10 my-14'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 gap-6 my-14'>
                       <a
                         href='https://github.com/Ollie-C'
                         target='_blank'
                         rel='noopener noreferrer'
                         className='block group'>
                         <div className='flex items-center gap-4'>
-                          <span className='text-primary opacity-60 font-mono text-sm'>
+                          <span className='text-primary opacity-60 font-mono text-sm w-20'>
                             GITHUB
                           </span>
                           <span className='h-px w-8 bg-muted-foreground/30'></span>
@@ -189,7 +189,7 @@ export default function HomePage() {
                         rel='noopener noreferrer'
                         className='block group'>
                         <div className='flex items-center gap-4'>
-                          <span className='text-primary opacity-60 font-mono text-sm'>
+                          <span className='text-primary opacity-60 font-mono text-sm w-20'>
                             LINKEDIN
                           </span>
                           <span className='h-px w-8 bg-muted-foreground/30'></span>

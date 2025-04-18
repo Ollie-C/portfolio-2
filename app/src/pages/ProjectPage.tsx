@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
@@ -12,6 +12,11 @@ const ProjectPage: React.FC = () => {
   const { i18n, t } = useTranslation();
   const currentLanguage = i18n.language;
   const isJapanese = currentLanguage === 'ja';
+
+  // Scroll to top when component mounts or slug changes
+  useEffect(() => {
+    window.scrollTo(0, 0);
+  }, [slug]);
 
   // Fetch current project data
   const {
@@ -140,7 +145,7 @@ const ProjectPage: React.FC = () => {
   return (
     <Layout>
       <motion.div
-        className='max-w-6xl mx-auto px-5 pt-10 pb-5 md:pb-20 section-bg-dark'
+        className='max-w-6xl mx-auto px-5 pt-10 pb-20 section-bg-dark'
         variants={containerVariants}
         initial='hidden'
         animate='visible'>

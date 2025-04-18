@@ -70,28 +70,67 @@ export default function ProjectsList() {
   };
 
   const handleProjectClick = (projectId: string, index: number) => {
-    const currentSelected = selectedProject === projectId ? null : projectId;
-    setSelectedProject(currentSelected);
+    // If we're clicking the same project that's already selected, just close it
+    if (selectedProject === projectId) {
+      setSelectedProject(null);
+      return;
+    }
 
     const element = projectRefs.current[index];
-    if (currentSelected && element) {
-      setTimeout(() => {
-        if (!isDesktop) {
-          const elementRect = element.getBoundingClientRect();
-          const offset = window.innerHeight * 0.1;
-          const targetScrollY = window.scrollY + elementRect.top - offset;
+    // If another project is already open, first close it before opening the new one
+    if (selectedProject !== null) {
+      // Close current preview
+      setSelectedProject(null);
 
-          window.scrollTo({
-            top: targetScrollY,
-            behavior: 'smooth',
-          });
-        } else {
-          element.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-          });
+      // Then after a short delay, open the new preview and scroll to it
+      setTimeout(() => {
+        setSelectedProject(projectId);
+
+        if (element) {
+          setTimeout(() => {
+            if (!isDesktop) {
+              const elementRect = element.getBoundingClientRect();
+              const headerOffset = 120;
+              const targetScrollY =
+                window.scrollY + elementRect.top - headerOffset;
+
+              window.scrollTo({
+                top: targetScrollY,
+                behavior: 'smooth',
+              });
+            } else {
+              element.scrollIntoView({
+                behavior: 'smooth',
+                block: 'center',
+              });
+            }
+          }, 50); // Short delay to allow DOM to update
         }
-      }, 50);
+      }, 300); // Wait for close animation to mostly complete
+    } else {
+      // No project is currently open, simply open the selected one
+      setSelectedProject(projectId);
+
+      if (element) {
+        setTimeout(() => {
+          if (!isDesktop) {
+            const elementRect = element.getBoundingClientRect();
+            const headerOffset = 120;
+            const targetScrollY =
+              window.scrollY + elementRect.top - headerOffset;
+
+            window.scrollTo({
+              top: targetScrollY,
+              behavior: 'smooth',
+            });
+          } else {
+            element.scrollIntoView({
+              behavior: 'smooth',
+              block: 'center',
+            });
+          }
+        }, 50);
+      }
     }
   };
 
@@ -323,7 +362,7 @@ export default function ProjectsList() {
                       </p>
 
                       <Link to={`/project/${project.slug}`} className='block'>
-                        <div className='mt-4 mb-8 flex justify-end'>
+                        <div className='mt-4 mb-8 flex justify-start'>
                           <motion.div
                             className='flex items-center gap-2 text-sm text-primary'
                             whileHover={{ x: 5 }}

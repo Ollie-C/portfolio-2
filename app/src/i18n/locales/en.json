@@ -59,8 +59,8 @@
     "keyFeatures": "Key Features",
     "desktop": "Desktop",
     "mobile": "Mobile",
-    "previousProject": "Previous Project",
-    "nextProject": "Next Project"
+    "previousProject": "Previous",
+    "nextProject": "Next"
   },
   "language": {
     "en": "English",

@@ -57,8 +57,8 @@
     "keyFeatures": "主な機能",
     "desktop": "デスクトップ",
     "mobile": "モバイル",
-    "previousProject": "前のプロジェクト",
-    "nextProject": "次のプロジェクト"
+    "previousProject": "前",
+    "nextProject": "次"
   },
   "language": {
     "en": "英語",
