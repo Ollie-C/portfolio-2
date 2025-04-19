@@ -12,12 +12,16 @@ import Footer from '../components/Footer';
 // Define learning tech icons
 const learningTech = [
   {
-    name: 'Python',
-    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+    name: 'Svelte',
+    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/svelte/svelte-original.svg',
   },
   {
     name: 'Three.js',
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg',
+  },
+  {
+    name: 'Astro',
+    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/astro/astro-original.svg',
   },
 ];
 
