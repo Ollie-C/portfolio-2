@@ -52,11 +52,6 @@ export default function ContactForm() {
     }
   };
 
-  const resetForm = () => {
-    setSubmitted(false);
-    setError('');
-  };
-
   return (
     <div className='space-y-8'>
       {submitted ? (

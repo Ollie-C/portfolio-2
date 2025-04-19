@@ -4,8 +4,6 @@ import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout/Layout';
 import { useProject, useProjects } from '../hooks/useProjects';
-import { SparklesIcon } from '@heroicons/react/24/outline';
-import { useMediaQuery } from '../hooks/useMediaQuery';
 import { SquareArrowOutUpRight } from 'lucide-react';
 
 const ProjectPage: React.FC = () => {
@@ -14,7 +12,6 @@ const ProjectPage: React.FC = () => {
   const { i18n, t } = useTranslation();
   const currentLanguage = i18n.language;
   const isJapanese = currentLanguage === 'ja';
-  const isMobile = useMediaQuery('(max-width: 768px)');
 
   // Scroll to top when component mounts or slug changes
   useEffect(() => {
