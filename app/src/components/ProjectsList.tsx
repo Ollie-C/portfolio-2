@@ -5,7 +5,7 @@ import { Link } from 'react-router-dom';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
-
+import { SquareArrowOutUpRight } from 'lucide-react';
 // Define a type for project data structure
 interface ProjectData {
   id: string;
@@ -16,6 +16,8 @@ interface ProjectData {
   slug: string;
   tags?: string[];
   imageUrl?: string;
+  sourceUrl?: string; // GitHub URL
+  demoUrl?: string; // Live demo URL
 }
 
 export default function ProjectsList() {
@@ -216,7 +218,7 @@ export default function ProjectsList() {
               initial='hidden'
               animate='visible'
               variants={itemVariants}
-              className='relative mb-8 cursor-pointer'>
+              className='relative mb-14 cursor-pointer'>
               {isDesktop && (
                 <div className='absolute right-0 top-[50%] -translate-y-1/2 z-20'>
                   <AnimatePresence mode='wait'>
@@ -277,53 +279,83 @@ export default function ProjectsList() {
               </div>
 
               <div className={`group block py-1`}>
-                <motion.h3
-                  className={`text-2xl font-light transition-all duration-300 max-w-[200px] mb-2 ${
-                    selectedProject === project.id
-                      ? 'text-primary'
-                      : 'text-foreground'
-                  }`}
+                <motion.div
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
                   transition={{
                     duration: 0.5,
                     delay: 0.1 * index,
-                  }}
-                  animate={{
-                    fontSize:
-                      selectedProject === project.id ? '2rem' : '1.5rem',
-                    x: selectedProject === project.id && isDesktop ? 8 : 0,
-                  }}
-                  onClick={() => handleProjectClick(project.id, index)}>
-                  {getLocalizedTitle(project)}
-                </motion.h3>
+                  }}>
+                  <motion.h3
+                    className={`text-2xl font-light transition-all duration-300 max-w-[240px] mb-2 ${
+                      selectedProject === project.id
+                        ? 'text-primary'
+                        : 'text-foreground'
+                    }`}
+                    animate={{
+                      fontSize:
+                        selectedProject === project.id ? '2rem' : '1.5rem',
+                      x: selectedProject === project.id && isDesktop ? 8 : 0,
+                    }}
+                    onClick={() => handleProjectClick(project.id, index)}>
+                    {getLocalizedTitle(project)}
 
-                {project.tags && project.tags.length > 0 && (
-                  <motion.div
-                    className='flex flex-wrap gap-2 max-w-[250px]'
-                    initial={{ opacity: 0, y: 10 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{
-                      duration: 0.4,
-                      delay: 0.1 * index + 0.2, // Slight delay after the title
-                    }}>
-                    {project.tags.map((tag, tagIndex) => (
-                      <motion.span
-                        key={`${project.id}-${tag}`}
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        transition={{
-                          duration: 0.3,
-                          delay: 0.05 * tagIndex + (0.1 * index + 0.3), // Additional delay for each tag
-                        }}
-                        className='text-xs text-muted-foreground inline-block'>
-                        #{tag}
-                      </motion.span>
-                    ))}
-                  </motion.div>
-                )}
+                    {/* Add project links */}
+                    <span className='inline-flex ml-4 gap-4'>
+                      {project.sourceUrl && (
+                        <a
+                          href={project.sourceUrl}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          onClick={(e) => e.stopPropagation()}
+                          className='text-muted-foreground hover:text-primary transition-colors'>
+                          <svg
+                            xmlns='http://www.w3.org/2000/svg'
+                            width='13'
+                            height='13'
+                            viewBox='0 0 24 24'
+                            fill='none'
+                            stroke='currentColor'
+                            strokeWidth='2'
+                            strokeLinecap='round'
+                            strokeLinejoin='round'>
+                            <path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22' />
+                          </svg>
+                        </a>
+                      )}
+
+                      {project.demoUrl && (
+                        <a
+                          href={project.demoUrl}
+                          target='_blank'
+                          rel='noopener noreferrer'
+                          onClick={(e) => e.stopPropagation()}
+                          className='text-muted-foreground hover:text-primary transition-colors'>
+                          <SquareArrowOutUpRight size={13} />
+                        </a>
+                      )}
+                    </span>
+                  </motion.h3>
+
+                  {project.tags && project.tags.length > 0 && (
+                    <div className='flex flex-wrap gap-2 max-w-[250px]'>
+                      {project.tags.map((tag, tagIndex) => (
+                        <motion.span
+                          key={`${project.id}-${tag}`}
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          transition={{
+                            duration: 0.3,
+                            delay: 0.05 * tagIndex,
+                          }}
+                          className='text-xs text-muted-foreground inline-block'>
+                          #{tag}
+                        </motion.span>
+                      ))}
+                    </div>
+                  )}
+                </motion.div>
               </div>
 
               {!isDesktop && (

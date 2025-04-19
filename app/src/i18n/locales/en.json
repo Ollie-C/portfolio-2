@@ -21,7 +21,8 @@
       "paragraph1": "I'm a full-stack developer with frontend bias....or a frontend developer with some full-stack experience...Anyway, I love to code and build things. I started teaching myself in 2020 following along on the infamous University of Michigan CS50 course. A few online courses later I thought I had an idea of what was going on. In hindsight, I did not. But I built some cool stuff and decided to focus full-time on a software development course done in-person in London in 2022. A couple of years working as a developer in a creative agency followed and I've never felt more at home doing what I do now.",
       "paragraph2": "I'm extremely passionate about biodiversity and the environment and love to travel. Lived in Japan for a few years where a lot of my inspiration now comes from. Other boxes that we can tick off are that I love gaming, snowboarding (when mountains are present), coffee, and movies (and ranking them). These are all done in moderation because my absolute favourite thing to do is spend time with my son.",
       "subtitle": "",
-      "paragraph3": ""
+      "paragraph3": "",
+      "currentlyLearning": "Currently Learning"
     },
     "skills": {
       "title": "Skills",
@@ -47,8 +48,7 @@
     "send": "Send message",
     "sending": "Sending...",
     "success": "Message sent",
-    "thankYou": "Thank you for reaching out. I'll get back to you as soon as possible.",
-    "sendAnother": "Send another message"
+    "thankYou": "I've got your message! I'll get back to you as soon as I can. . . :)"
   },
   "projectPage": {
     "back": "Back",

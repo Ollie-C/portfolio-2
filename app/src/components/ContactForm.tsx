@@ -61,18 +61,21 @@ export default function ContactForm() {
     <div className='space-y-8'>
       {submitted ? (
         <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          className='bg-primary/10 border border-primary/20 p-6 rounded-sm'>
-          <h3 className='text-xl font-light text-primary mb-2'>
-            {t('contactForm.success')}
-          </h3>
-          <p className='text-muted-foreground'>{t('contactForm.thankYou')}</p>
-          <button
-            onClick={resetForm}
-            className='mt-4 text-sm text-primary hover:underline'>
-            {t('contactForm.sendAnother')}
-          </button>
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5 }}
+          className='bg-card/60 backdrop-blur-md border border-primary/20 p-8 rounded-md shadow-lg relative overflow-hidden'>
+          <div className='absolute inset-0 bg-gradient-to-br from-primary/5 to-transparent z-0'></div>
+          <div className='relative z-10'>
+            <div className='flex items-center gap-2 mb-4'>
+              <h3 className='text-2xl font-light text-foreground'>
+                {t('contactForm.success')}
+              </h3>
+            </div>
+            <p className='text-muted-foreground mb-6'>
+              {t('contactForm.thankYou')}
+            </p>
+          </div>
         </motion.div>
       ) : (
         <form ref={formRef} onSubmit={handleSubmit} className='space-y-6'>
@@ -136,10 +139,10 @@ export default function ContactForm() {
               className='group relative flex items-center gap-2 bg-transparent text-primary'
               whileHover={{ x: 5 }}
               transition={{ duration: 0.2 }}>
-              <span className='text-sm'>
+              <span className='text-sm font-light'>
                 {isSubmitting
                   ? t('contactForm.sending')
-                  : t('contactForm.send')}
+                  : t('contactForm.send').toUpperCase()}
               </span>
               <svg
                 xmlns='http://www.w3.org/2000/svg'

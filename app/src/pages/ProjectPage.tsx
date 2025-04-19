@@ -5,6 +5,8 @@ import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout/Layout';
 import { useProject, useProjects } from '../hooks/useProjects';
 import { SparklesIcon } from '@heroicons/react/24/outline';
+import { useMediaQuery } from '../hooks/useMediaQuery';
+import { SquareArrowOutUpRight } from 'lucide-react';
 
 const ProjectPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -12,6 +14,7 @@ const ProjectPage: React.FC = () => {
   const { i18n, t } = useTranslation();
   const currentLanguage = i18n.language;
   const isJapanese = currentLanguage === 'ja';
+  const isMobile = useMediaQuery('(max-width: 768px)');
 
   // Scroll to top when component mounts or slug changes
   useEffect(() => {
@@ -221,30 +224,15 @@ const ProjectPage: React.FC = () => {
 
         {/* Project header */}
         <motion.header variants={itemVariants} className='mb-16'>
-          <div className='flex flex-col md:flex-row md:items-center justify-between gap-4 mb-12'>
-            <div className='space-y-6'>
-              <div className='space-x-4'>
-                <span className='font-mono text-primary text-sm tracking-wider'>
-                  PROJECT /
-                </span>
-                <h1 className='text-4xl md:text-5xl font-light mt-2 inline-block relative'>
-                  {getLocalizedContent(project.title, project.titleJa)}
-                  <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
-                </h1>
-              </div>
-
-              {/* Tags */}
-              {project.tags && project.tags.length > 0 && (
-                <div className='flex flex-wrap gap-2'>
-                  {project.tags.map((tag) => (
-                    <span
-                      key={tag}
-                      className='px-3 py-1 text-sm rounded-md bg-muted text-foreground backdrop-blur-sm border border-muted/50'>
-                      {tag}
-                    </span>
-                  ))}
-                </div>
-              )}
+          <div className='flex items-center justify-between gap-4 mb-12'>
+            <div className='space-x-4 mt-4'>
+              <span className='font-mono text-primary text-sm tracking-wider'>
+                PROJECT /
+              </span>
+              <h1 className='text-4xl md:text-5xl font-light inline-block relative'>
+                {getLocalizedContent(project.title, project.titleJa)}
+                <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
+              </h1>
             </div>
 
             <div className='flex gap-3'>
@@ -253,21 +241,10 @@ const ProjectPage: React.FC = () => {
                   href={project.demoUrl}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='inline-flex items-center justify-center px-3 py-2 font-medium text-white bg-accent hover:bg-accent-dark rounded-md transition-colors'
-                  whileHover={{ scale: 1.05 }}
+                  className='inline-flex items-center justify-center p-2 px-3 font-medium text-sm text-gray-300 bg-card text-primary hover:bg-base-dark/80 rounded-md transition-colors border border-gray-700'
+                  whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    width='18'
-                    height='18'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'>
-                    <path d='M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6M15 3h6v6M10 14L21 3' />
-                  </svg>
+                  <SquareArrowOutUpRight size={16} />
                 </motion.a>
               )}
               {project.sourceUrl && (
@@ -275,23 +252,21 @@ const ProjectPage: React.FC = () => {
                   href={project.sourceUrl}
                   target='_blank'
                   rel='noopener noreferrer'
-                  className='inline-flex items-center justify-center px-5 py-2 font-medium text-gray-300 bg-card text-primary hover:bg-base-dark/80 rounded-md transition-colors border border-gray-700'
-                  whileHover={{ scale: 1.05 }}
+                  className='inline-flex items-center justify-center p-2 px-3 font-medium text-sm text-gray-300 bg-card text-primary hover:bg-base-dark/80 rounded-md transition-colors border border-gray-700'
+                  whileHover={{ scale: 1.1 }}
                   whileTap={{ scale: 0.95 }}>
                   <svg
                     xmlns='http://www.w3.org/2000/svg'
-                    width='18'
-                    height='18'
+                    width='16'
+                    height='16'
                     viewBox='0 0 24 24'
                     fill='none'
                     stroke='currentColor'
                     strokeWidth='2'
                     strokeLinecap='round'
-                    strokeLinejoin='round'
-                    className='mr-2'>
+                    strokeLinejoin='round'>
                     <path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22' />
                   </svg>
-                  Github
                 </motion.a>
               )}
             </div>
@@ -306,7 +281,7 @@ const ProjectPage: React.FC = () => {
                 <span className='font-mono text-primary text-sm tracking-wider'>
                   001 /
                 </span>
-                <h2 className='text-3xl font-light mt-2 inline-block relative'>
+                <h2 className='text-3xl font-light inline-block relative'>
                   {t('projectPage.overview')}
                   <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
                 </h2>
@@ -330,7 +305,6 @@ const ProjectPage: React.FC = () => {
               )}
               {project.note && (
                 <p className='text-sm text-muted-foreground italic mt-4'>
-                  <span className='font-bold'>NOTE: </span>
                   {getLocalizedContent(project.note, project.noteJa)}
                 </p>
               )}
@@ -361,11 +335,11 @@ const ProjectPage: React.FC = () => {
                     <h3 className='text-xl font-medium mb-4'>
                       {t('projectPage.techStack')}
                     </h3>
-                    <div className='grid grid-cols-2 gap-3'>
+                    <div className='grid grid-cols-2 md:grid-cols-1 gap-3'>
                       {project.techStack.map((tech, index) => (
                         <span
                           key={index}
-                          className='px-3 py-1 bg-base-dark rounded-md text-foreground border border-muted/50'>
+                          className='px-3 py-1 bg-base-dark rounded text-foreground border border-border'>
                           {tech}
                         </span>
                       ))}
@@ -382,13 +356,16 @@ const ProjectPage: React.FC = () => {
                     <h3 className='text-xl font-medium mb-4'>
                       {t('projectPage.keyFeatures')}
                     </h3>
-                    <ul className='space-y-2'>
+                    <ul className='space-y-5'>
                       {(isJapanese && project.featuresJa
                         ? project.featuresJa
                         : project.features
                       )?.map((feature, index) => (
-                        <li key={index} className='flex items-start gap-3'>
-                          <SparklesIcon className='w-5 h-5 text-primary mt-0.5 flex-shrink-0' />
+                        <li key={index} className='flex items-center gap-8'>
+                          <span className='text-sm'>
+                            {' '}
+                            {String(index + 1).padStart(2, '0')}
+                          </span>
                           <span className='text-muted-foreground'>
                             {feature}
                           </span>

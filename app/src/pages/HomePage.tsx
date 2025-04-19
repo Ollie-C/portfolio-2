@@ -9,6 +9,18 @@ import SkillsSection from '../components/SkillsSection';
 import ContactForm from '../components/ContactForm';
 import Footer from '../components/Footer';
 
+// Define learning tech icons
+const learningTech = [
+  {
+    name: 'Python',
+    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg',
+  },
+  {
+    name: 'Three.js',
+    icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg',
+  },
+];
+
 export default function HomePage() {
   const { t } = useTranslation();
   const location = useLocation();
@@ -43,9 +55,20 @@ export default function HomePage() {
 
       if (sectionElement) {
         const timer = setTimeout(() => {
-          sectionElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          // Calculate a better scroll position with offset for header height
+          const headerOffset = 100; // Adjust this value as needed
+          const elementPosition = sectionElement.getBoundingClientRect().top;
+          const offsetPosition =
+            elementPosition + window.pageYOffset - headerOffset;
+
+          // Use scrollTo instead of scrollIntoView for more control
+          window.scrollTo({
+            top: offsetPosition,
+            behavior: 'smooth',
+          });
+
           window.history.replaceState({}, document.title);
-        }, 100);
+        }, 300); // Increased timeout to ensure all content is rendered
 
         return () => clearTimeout(timer);
       }
@@ -95,6 +118,47 @@ export default function HomePage() {
                   <p className='text-lg leading-relaxed'>
                     {t('sections.about.paragraph2')}
                   </p>
+
+                  {/* Currently Learning Section */}
+                  <div className='mt-12'>
+                    <h3 className='text-xl font-light text-foreground mb-6 flex items-center'>
+                      <span className='w-6 h-px bg-primary mr-3'></span>
+                      {t('sections.about.currentlyLearning')}
+                    </h3>
+
+                    <div className='flex gap-6'>
+                      {learningTech.map((tech, index) => (
+                        <motion.div
+                          key={tech.name}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ delay: index * 0.1, duration: 0.5 }}
+                          className='flex flex-col items-center gap-2'>
+                          <div className='rounded-full p-4 bg-card/80 border border-muted/30 shadow-inner w-16 h-16 flex items-center justify-center'>
+                            <img
+                              src={tech.icon}
+                              alt={tech.name}
+                              className='w-10 h-10 object-contain'
+                              onError={(e) => {
+                                // If image fails to load, show the first letter
+                                e.currentTarget.style.display = 'none';
+                                e.currentTarget.parentElement?.classList.add(
+                                  'show-letter'
+                                );
+                              }}
+                            />
+                            <span className='hidden text-lg font-mono'>
+                              {tech.name.charAt(0)}
+                            </span>
+                          </div>
+                          <span className='text-sm text-foreground/80'>
+                            {tech.name}
+                          </span>
+                        </motion.div>
+                      ))}
+                    </div>
+                  </div>
                 </motion.div>
               </motion.div>
             </div>

@@ -18,7 +18,7 @@
 @layer base {
   :root {
     /* Core theme colors */
-    --background: 221 21% 11%;
+    --background: 221 21% 3%;
     --foreground: 220 10% 93%;
     --card: 222 18% 17%;
     --card-foreground: 220 10% 98%;
@@ -55,7 +55,7 @@
 
   .light {
     /* Core theme colors */
-    --background: 0 0% 100%;
+    --background: 0 0% 93%;
     --foreground: 220 10% 15%;
     --card: 0 0% 95%;
     --card-foreground: 220 10% 20%;
