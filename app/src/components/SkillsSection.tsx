@@ -259,7 +259,7 @@ export default function SkillsSection() {
                       return (
                         <motion.div
                           key={skill.id}
-                          className='group flex items-center gap-2 p-3 rounded-lg transition-all duration-300 bg-card/60 border border-foreground/50 hover:shadow-lg hover:border-primary/20'
+                          className='flex flex-col items-center gap-2'
                           whileHover={{
                             y: -5,
                           }}
@@ -268,17 +268,14 @@ export default function SkillsSection() {
                           transition={{
                             delay: index * 0.05 + 0.1,
                             duration: 0.3,
-                          }}
-                          style={{
-                            backdropFilter: 'blur(8px)',
                           }}>
-                          {/* Icon container */}
-                          <div className='rounded-full p-3 w-14 h-14 flex items-center justify-center border border-muted/30 shadow-inner'>
+                          {/* Icon container - matching Currently Learning style */}
+                          <div className='rounded-full p-4 bg-card/80 border border-muted/30 shadow-inner w-16 h-16 flex items-center justify-center'>
                             {iconUrl ? (
                               <img
                                 src={iconUrl}
                                 alt={skill.name}
-                                className='w-7 h-7 object-contain opacity-80 group-hover:opacity-100 transition-opacity'
+                                className='w-10 h-10 object-contain'
                                 onError={(e) => {
                                   // If image fails to load, try to use fallback or default to first letter
                                   const fallbackUrl =
@@ -298,14 +295,14 @@ export default function SkillsSection() {
                                 }}
                               />
                             ) : (
-                              <span className='w-7 h-7 flex items-center justify-center text-md font-mono opacity-80 group-hover:opacity-100 transition-opacity'>
+                              <span className='text-lg font-mono'>
                                 {skill.name.charAt(0)}
                               </span>
                             )}
                           </div>
 
                           {/* Skill name */}
-                          <span className='text-xs text-center text-foreground/80 group-hover:text-foreground transition-colors mt-1 px-1'>
+                          <span className='text-sm text-foreground/80'>
                             {skill.name}
                           </span>
                         </motion.div>

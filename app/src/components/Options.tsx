@@ -21,6 +21,7 @@ const Options = ({ onAnimationChange }: OptionsProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const { animationTheme, modeTheme, setAnimationTheme, setModeTheme } =
     useThemeStore();
+  const [showLanguageSelector, setShowLanguageSelector] = useState(false);
 
   // Call the callback if provided when animation changes
   useEffect(() => {
@@ -64,8 +65,7 @@ const Options = ({ onAnimationChange }: OptionsProps) => {
   return (
     <div className='relative flex items-center gap-2 pointer-events-auto'>
       {/* Language selector */}
-      <LanguageSelector />
-
+      {showLanguageSelector && <LanguageSelector />}
       {/* Settings button */}
       <button
         className='w-11 h-10 rounded bg-transparent shadow-lg flex items-center justify-center border-3 border-gray-700 hover:bg-primary/10 transition-colors p-0'

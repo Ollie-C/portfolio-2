@@ -31,6 +31,20 @@ const ProjectPage: React.FC = () => {
     error: errorAll,
   } = useProjects();
 
+  // Add a useEffect to handle the case when project is not found
+  useEffect(() => {
+    if (!isLoadingCurrent && !project && !errorCurrent) {
+      // This means the project wasn't found, but we're not in error state yet
+      // Wait a bit to make sure it's not just loading delay
+      const timer = setTimeout(() => {
+        if (!project) {
+          navigate('/'); // Redirect to home when project not found
+        }
+      }, 2000);
+      return () => clearTimeout(timer);
+    }
+  }, [isLoadingCurrent, project, errorCurrent, navigate]);
+
   // Memoize calculation of prev/next slugs
   const { prevSlug, nextSlug } = useMemo(() => {
     if (!project || !allProjects || allProjects.length === 0) {

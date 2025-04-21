@@ -232,66 +232,26 @@ export async function fetchProjects(): Promise<NormalizedProject[]> {
 export async function fetchProjectBySlug(
   slug: string
 ): Promise<NormalizedProject | null> {
-  try {
-    const projects = await client.fetch<Project[]>(`
-      *[_type == "project" && slug.current == "${slug}" && (active == true || !defined(active))] {
-        _id,
-        title,
-        titleJa,
-        slug,
-        description,
-        descriptionJa,
-        summary,
-        summaryJa,
-        note,
-        noteJa,
-        category,
-        tags,
-        techStack,
-        features,
-        featuresJa,
-        featured,
-        active,
-        legacy,
-        demoUrl,
-        sourceUrl,
-        image,
-        projectImages[] {
-          _key,
-          _type,
-          asset,
-          alt,
-          caption
-        },
-        desktopImages[] {
-          _key,
-          _type,
-          asset,
-          alt,
-          caption
-        },
-        mobileImages[] {
-          _key,
-          _type,
-          asset,
-          alt,
-          caption
-        },
-        _createdAt,
-        _updatedAt
-      }
-    `);
+  if (!slug) {
+    console.warn('Attempted to fetch project with empty slug');
+    return null;
+  }
 
-    if (!projects.length) {
+  try {
+    const project = await client.fetch<Project | null>(
+      `*[_type == "project" && slug.current == $slug][0]`,
+      { slug }
+    );
+
+    if (!project) {
+      console.warn(`Project with slug "${slug}" not found`);
       return null;
     }
 
-    return normalizeProject(projects[0]);
+    return normalizeProject(project);
   } catch (error) {
-    console.error(`Error fetching project with slug ${slug}:`, error);
-
-    const projects = await fetchProjects();
-    return projects.find((project) => project.slug === slug) || null;
+    console.error('Error fetching project by slug:', error);
+    throw error;
   }
 }
 

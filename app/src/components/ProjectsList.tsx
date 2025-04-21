@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from 'react';
 import { useProjects } from '../hooks/useProjects';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
@@ -28,12 +28,39 @@ export default function ProjectsList() {
   );
   const isDesktop = useMediaQuery('(min-width: 1200px)');
   const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const sectionRef = useRef<HTMLDivElement>(null);
+  const isInView = useInView(sectionRef, { amount: 0.2, once: true });
   const { i18n } = useTranslation();
   const isJapanese = i18n.language === 'ja';
+  const firstProjectShown = useRef(false);
 
+  // Reset selection when viewport changes or filter changes
   useEffect(() => {
     setSelectedProject(null);
+    firstProjectShown.current = false;
   }, [isDesktop, projectFilter]);
+
+  // Auto-focus the first project when section comes into view
+  useEffect(() => {
+    if (
+      isInView &&
+      !firstProjectShown.current &&
+      isDesktop &&
+      projects?.length &&
+      projectFilter === 'recent'
+    ) {
+      const filteredProjects = projects.filter((project) =>
+        projectFilter === 'recent' ? !project.legacy : project.legacy
+      );
+
+      if (filteredProjects.length > 0) {
+        setTimeout(() => {
+          setSelectedProject(filteredProjects[0].id);
+          firstProjectShown.current = true;
+        }, 1000); // Delay to ensure animation is completed
+      }
+    }
+  }, [isInView, projects, isDesktop, projectFilter]);
 
   if (isLoading) {
     return (
@@ -169,7 +196,7 @@ export default function ProjectsList() {
   };
 
   return (
-    <div className='relative gap-x-8 min-h-[50vh]'>
+    <div className='relative gap-x-8 min-h-[50vh]' ref={sectionRef}>
       {/* Project filter toggle */}
       <div className='flex justify-start mb-8 pl-16 md:pl-28'>
         <div className='relative h-8'>
@@ -203,6 +230,7 @@ export default function ProjectsList() {
         </div>
       </div>
 
+      {/* Project preview */}
       <motion.div
         className='md:col-span-5 relative z-20 pl-16 md:pl-28 h-fit'
         variants={listVariants}
@@ -288,7 +316,7 @@ export default function ProjectsList() {
                     delay: 0.1 * index,
                   }}>
                   <motion.h3
-                    className={`text-2xl font-light transition-all duration-300 max-w-[240px] mb-2 ${
+                    className={`text-2xl font-medium transition-all duration-300 max-w-[240px] mb-2 ${
                       selectedProject === project.id
                         ? 'text-primary'
                         : 'text-foreground'
