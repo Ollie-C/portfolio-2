@@ -116,12 +116,35 @@ export default function HomePage() {
                 <motion.div
                   variants={fadeIn}
                   className='md:col-span-4 text-muted-foreground'>
-                  <p className='text-lg leading-relaxed mb-6'>
-                    {t('sections.about.paragraph1')}
-                  </p>
-                  <p className='text-lg leading-relaxed'>
-                    {t('sections.about.paragraph2')}
-                  </p>
+                  <div className='mb-10'>
+                    <h3 className='text-xl font-light text-foreground mb-4 flex items-center'>
+                      <span className='w-6 h-px bg-primary mr-3'></span>
+                      {t('sections.about.myJourney')}
+                    </h3>
+                    <p className='text-lg leading-relaxed mb-6'>
+                      {t('sections.about.paragraph1')}
+                    </p>
+                  </div>
+
+                  <div className='mb-10'>
+                    <h3 className='text-xl font-light text-foreground mb-4 flex items-center'>
+                      <span className='w-6 h-px bg-primary mr-3'></span>
+                      {t('sections.about.personalInterests')}
+                    </h3>
+                    <p className='text-lg leading-relaxed mb-6'>
+                      {t('sections.about.paragraph2')}
+                    </p>
+                  </div>
+
+                  <div className='mb-10'>
+                    <h3 className='text-xl font-light text-foreground mb-4 flex items-center'>
+                      <span className='w-6 h-px bg-primary mr-3'></span>
+                      {t('sections.about.myTech')}
+                    </h3>
+                    <p className='text-lg leading-relaxed mb-6'>
+                      {t('sections.about.paragraph3')}
+                    </p>
+                  </div>
 
                   {/* Currently Learning Section */}
                   <div className='mt-12'>

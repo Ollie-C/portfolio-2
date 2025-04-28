@@ -235,7 +235,7 @@ button:focus-visible {
 
 .light .section-bg-light {
   background-color: rgba(245, 245, 245, 0.25);
-  backdrop-filter: blur(3px);
+  backdrop-filter: blur(5px);
 }
 
 .dark .section-bg-dark {

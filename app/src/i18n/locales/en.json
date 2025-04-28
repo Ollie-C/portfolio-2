@@ -18,10 +18,12 @@
     },
     "about": {
       "title": "About Me",
-      "paragraph1": "I'm a full-stack developer with frontend bias....or a frontend developer with some full-stack experience...Anyway, I love to code and build things. I started teaching myself in 2020 following along on the infamous University of Michigan CS50 course. A few online courses later I thought I had an idea of what was going on. In hindsight, I did not. But I built some cool stuff and decided to focus full-time on a software development course done in-person in London in 2022. A couple of years working as a developer in a creative agency followed and I've never felt more at home doing what I do now.",
-      "paragraph2": "I'm extremely passionate about biodiversity and the environment and love to travel. Lived in Japan for a few years where a lot of my inspiration now comes from. Other boxes that we can tick off are that I love gaming, snowboarding (when mountains are present), coffee, and movies (and ranking them). These are all done in moderation because my absolute favourite thing to do is spend time with my son.",
-      "subtitle": "",
-      "paragraph3": "",
+      "myJourney": "My Journey",
+      "paragraph1": "I'm a software developer based in London and relocating to Japan in September 2025. It all began in the midst of the pandemic when we were homebound. I decided to give the infamous CS50 course a go. Why not? A few online courses later, the only thing I was certain of was that I absolutely loved it. Closures? Not a clue. I threw myself into and embarked on a full-time diploma and built some cool stuff and met some cool people. I found myself working for a creative agency where my code became prettier and produced prettier looking things…",
+      "personalInterests": "Personal Interests",
+      "paragraph2": "I'm extremely passionate about biodiversity and the environment and love to travel. I lived in Tokyo and Fukuoka for a few years from where a lot of my inspiration is now derived. I love gaming, snowboarding, coffee and movies (and ranking them). But spending time with my son makes all of that pale in comparison.",
+      "myTech": "Tech & Projects",
+      "paragraph3": "I work with React most of the time. I've released a productivity app onto Android, I'm creating a movie ranking application and I'm always looking at what's new in the land of frameworks.",
       "currentlyLearning": "Currently Learning"
     },
     "skills": {
@@ -34,7 +36,7 @@
     },
     "contact": {
       "title": "Get In Touch",
-      "description": "I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision. Feel free to contact me using the information below."
+      "description": "I'm always open to discussing new projects, creative ideas, or opportunities to be part of your vision. Feel free to contact me using the form below."
     }
   },
   "projectCard": {

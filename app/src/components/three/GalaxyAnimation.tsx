@@ -39,8 +39,8 @@ export default function GalaxyAnimation() {
 
     // Galaxy parameters - optimized for visual appeal
     const params = {
-      count: 18000, // Good balance of performance and visual density
-      size: 0.035, // Smaller particles for a more starry appearance
+      count: 12000, // Good balance of performance and visual density
+      size: 0.025, // Smaller particles for a more starry appearance
       radius: 8, // Slightly larger radius for a wider galaxy
       branches: 8, // 8 spiral arms looks good
       // Different colors based on theme
