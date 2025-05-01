@@ -19,11 +19,11 @@
     "about": {
       "title": "About Me",
       "myJourney": "My Journey",
-      "paragraph1": "I'm a software developer based in London and relocating to Japan in September 2025. It all began in the midst of the pandemic when we were homebound. I decided to give the infamous CS50 course a go. Why not? A few online courses later, the only thing I was certain of was that I absolutely loved it. Closures? Not a clue. I threw myself into and embarked on a full-time diploma and built some cool stuff and met some cool people. I found myself working for a creative agency where my code became prettier and produced prettier looking things…",
+      "paragraph1": "I'm a software developer based in London and relocating to Japan in September 2025. Life as a dev began in the midst of the pandemic when we were homebound. I decided to give the infamous CS50 course a go. Why not? A few online courses later, the only thing I was certain of was that I absolutely loved it. Closures? Not a clue. I threw myself into and embarked on a full-time diploma and built some cool stuff and met some cool people. I found myself working for a creative agency where my code became prettier and produced prettier looking things…",
       "personalInterests": "Personal Interests",
       "paragraph2": "I'm extremely passionate about biodiversity and the environment and love to travel. I lived in Tokyo and Fukuoka for a few years from where a lot of my inspiration is now derived. I love gaming, snowboarding, coffee and movies (and ranking them). But spending time with my son makes all of that pale in comparison.",
       "myTech": "Tech & Projects",
-      "paragraph3": "I work with React most of the time. I've released a productivity app onto Android, I'm creating a movie ranking application and I'm always looking at what's new in the land of frameworks.",
+      "paragraph3": "I work with React most of the time but I'm always looking at ways to make code cleaner, faster and more efficient. I've produced work for companies such as Sony, Lenovo, Hitachi and Juniper ranging from landing pages to full-blown full-stack applications. I've built Express APIs and worked with Symfony. I've also built smaller apps and games in Svelte and Three.js.",
       "currentlyLearning": "Currently Learning"
     },
     "skills": {
