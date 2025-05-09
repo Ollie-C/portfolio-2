@@ -11,7 +11,7 @@ interface ThemeState {
 }
 
 export const useThemeStore = create<ThemeState>((set) => ({
-  animationTheme: 'galaxy',
+  animationTheme: 'none',
   modeTheme: 'light',
 
   setAnimationTheme: (theme) => set({ animationTheme: theme }),
