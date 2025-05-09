@@ -3,7 +3,7 @@ import { useProjects } from '../hooks/useProjects';
 import { motion, AnimatePresence, useInView } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useMediaQuery } from '../hooks/useMediaQuery';
-import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { SquareArrowOutUpRight } from 'lucide-react';
 // Define a type for project data structure
@@ -199,34 +199,26 @@ export default function ProjectsList() {
     <div className='relative gap-x-8 min-h-[50vh]' ref={sectionRef}>
       {/* Project filter toggle */}
       <div className='flex justify-start mb-8 pl-16 md:pl-28'>
-        <div className='relative h-8'>
-          <AnimatePresence mode='wait' initial={false}>
-            {projectFilter === 'recent' ? (
-              <motion.div
-                key='recent'
-                className='flex items-center gap-2 absolute cursor-pointer'
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.3 }}
-                onClick={() => setProjectFilter('legacy')}>
-                <span className='text-foreground'>Legacy</span>
-                <ArrowRightIcon className='h-4 w-4 text-primary ml-1' />
-              </motion.div>
-            ) : (
-              <motion.div
-                key='legacy'
-                className='flex items-center gap-2 absolute cursor-pointer'
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ duration: 0.3 }}
-                onClick={() => setProjectFilter('recent')}>
-                <ArrowLeftIcon className='h-4 w-4 text-primary mr-1' />
-                <span className='text-foreground'>Recent</span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+        <div className='flex items-center gap-2 text-base'>
+          <span
+            onClick={() => setProjectFilter('recent')}
+            className={`cursor-pointer transition-all duration-200 ${
+              projectFilter === 'recent'
+                ? 'font-bold text-foreground'
+                : 'opacity-50 text-muted-foreground'
+            }`}>
+            Recent
+          </span>
+          <span className='text-muted-foreground mx-1'>/</span>
+          <span
+            onClick={() => setProjectFilter('legacy')}
+            className={`cursor-pointer transition-all duration-200 ${
+              projectFilter === 'legacy'
+                ? 'font-bold text-foreground'
+                : 'opacity-50 text-muted-foreground'
+            }`}>
+            Legacy
+          </span>
         </div>
       </div>
 
