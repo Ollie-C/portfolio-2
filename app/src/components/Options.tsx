@@ -11,6 +11,7 @@ import {
   Orbit,
 } from 'lucide-react';
 import { useThemeStore, AnimationTheme } from '../store/themeStore';
+import LanguageSelector from './LanguageSelector';
 
 interface OptionsProps {
   onAnimationChange?: (animation: string) => void;
@@ -64,7 +65,7 @@ const Options = ({ onAnimationChange }: OptionsProps) => {
   return (
     <div className='relative flex items-center gap-2 pointer-events-auto'>
       {/* Language selector / Disabled for now */}
-      {/* <LanguageSelector /> */}
+      <LanguageSelector />
       {/* Settings button */}
       <button
         className='w-11 h-10 rounded bg-transparent shadow-lg flex items-center justify-center border-3 border-gray-700 hover:bg-primary/10 transition-colors p-0'

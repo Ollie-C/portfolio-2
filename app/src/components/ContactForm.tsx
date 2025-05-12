@@ -45,7 +45,7 @@ export default function ContactForm() {
     } catch (err) {
       console.error('Form submission error:', err);
       setError(
-        'Something went wrong. Please try again later or email me directly at contact@olliec.dev'
+        'Something went wrong. Please try again later or email me directly at iio.olivercross@gmail.com'
       );
     } finally {
       setIsSubmitting(false);

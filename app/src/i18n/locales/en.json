@@ -12,10 +12,6 @@
     "scrollDown": "Scroll down"
   },
   "sections": {
-    "projects": {
-      "title": "Projects",
-      "subtitle": "A collection of my recent work showcasing my skills in web development and design."
-    },
     "about": {
       "title": "About Me",
       "myJourney": "My Journey",
@@ -33,6 +29,12 @@
       "tooling": "Tooling & Infrastructure",
       "cms": "CMS",
       "collaboration": "Collaboration"
+    },
+    "projects": {
+      "title": "Projects",
+      "subtitle": "A collection of my recent work showcasing my skills in web development and design.",
+      "recent": "Recent",
+      "legacy": "Legacy"
     },
     "contact": {
       "title": "Get In Touch",

@@ -67,6 +67,7 @@ const ProjectPage: React.FC = () => {
 
   // State for the lightbox and view mode
   const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
+  const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
   const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
 
   // Filter images based on view mode
@@ -84,6 +85,26 @@ const ProjectPage: React.FC = () => {
   };
 
   const filteredImages = getFilteredImages();
+
+  // Navigation functions for lightbox
+  const showPrevImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (filteredImages.length <= 1) return;
+
+    const newIndex =
+      (activeImageIndex - 1 + filteredImages.length) % filteredImages.length;
+    setActiveImageIndex(newIndex);
+    setActiveImageUrl(filteredImages[newIndex].url);
+  };
+
+  const showNextImage = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (filteredImages.length <= 1) return;
+
+    const newIndex = (activeImageIndex + 1) % filteredImages.length;
+    setActiveImageIndex(newIndex);
+    setActiveImageUrl(filteredImages[newIndex].url);
+  };
 
   const handleBackClick = () => {
     navigate('/', { state: { scrollTo: 'projects' } });
@@ -407,29 +428,30 @@ const ProjectPage: React.FC = () => {
                 </div>
 
                 {/* View toggle */}
-                <div className='mt-8 flex bg-base-dark/90 rounded-md border border-muted p-1 md:w-fit'>
+                <div className='mt-8 flex p-1 md:w-fit'>
                   {project.desktopImages &&
                     project.desktopImages.length > 0 && (
-                      <button
+                      <span
                         onClick={() => setViewMode('desktop')}
-                        className={`px-4 py-1.5 text-sm rounded ${
+                        className={`cursor-pointer transition-all duration-200 ${
                           viewMode === 'desktop'
-                            ? 'bg-accent text-white'
-                            : 'text-muted-foreground hover:text-foreground'
+                            ? 'font-bold text-foreground'
+                            : 'opacity-50 text-muted-foreground'
                         }`}>
                         {t('projectPage.desktop')}
-                      </button>
+                      </span>
                     )}
+                  <span className='mx-1'>/</span>
                   {project.mobileImages && project.mobileImages.length > 0 && (
-                    <button
+                    <span
                       onClick={() => setViewMode('mobile')}
-                      className={`px-4 py-1.5 text-sm rounded ${
+                      className={`cursor-pointer transition-all duration-200 ${
                         viewMode === 'mobile'
-                          ? 'bg-accent text-white'
-                          : 'text-muted-foreground hover:text-foreground'
+                          ? 'font-bold text-foreground'
+                          : 'opacity-50 text-muted-foreground'
                       }`}>
                       {t('projectPage.mobile')}
-                    </button>
+                    </span>
                   )}
                 </div>
               </div>
@@ -448,7 +470,10 @@ const ProjectPage: React.FC = () => {
                         viewMode === 'desktop' && 'aspect-video'
                       }`}
                       whileHover={{ scale: 1.02 }}
-                      onClick={() => setActiveImageUrl(image.url)}
+                      onClick={() => {
+                        setActiveImageUrl(image.url);
+                        setActiveImageIndex(index);
+                      }}
                       initial={{ opacity: 0, y: 20 }}
                       animate={{ opacity: 1, y: 0 }}
                       transition={{ delay: index * 0.1 }}>
@@ -493,7 +518,7 @@ const ProjectPage: React.FC = () => {
           onClick={() => setActiveImageUrl(null)}>
           <div className='relative max-w-6xl max-h-[90vh]'>
             <button
-              className='absolute top-4 right-4 text-white p-2 rounded-full bg-black/50'
+              className='absolute top-4 right-4 text-white p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors'
               onClick={(e) => {
                 e.stopPropagation();
                 setActiveImageUrl(null);
@@ -512,6 +537,54 @@ const ProjectPage: React.FC = () => {
                 <line x1='6' y1='6' x2='18' y2='18'></line>
               </svg>
             </button>
+
+            {/* Previous image button */}
+            {filteredImages.length > 1 && (
+              <button
+                className='absolute left-4 top-1/2 -translate-y-1/2 text-white p-3 rounded-full bg-black/50 hover:bg-black/70 transition-colors'
+                onClick={showPrevImage}>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='24'
+                  height='24'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'>
+                  <polyline points='15 18 9 12 15 6'></polyline>
+                </svg>
+              </button>
+            )}
+
+            {/* Next image button */}
+            {filteredImages.length > 1 && (
+              <button
+                className='absolute right-4 top-1/2 -translate-y-1/2 text-white p-3 rounded-full bg-black/50 hover:bg-black/70 transition-colors'
+                onClick={showNextImage}>
+                <svg
+                  xmlns='http://www.w3.org/2000/svg'
+                  width='24'
+                  height='24'
+                  viewBox='0 0 24 24'
+                  fill='none'
+                  stroke='currentColor'
+                  strokeWidth='2'
+                  strokeLinecap='round'
+                  strokeLinejoin='round'>
+                  <polyline points='9 18 15 12 9 6'></polyline>
+                </svg>
+              </button>
+            )}
+
+            {/* Image counter */}
+            {filteredImages.length > 1 && (
+              <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/50 px-3 py-1 rounded-full text-sm'>
+                {activeImageIndex + 1} / {filteredImages.length}
+              </div>
+            )}
+
             <img
               src={activeImageUrl}
               alt='Enlarged view'

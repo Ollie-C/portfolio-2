@@ -69,7 +69,9 @@ const SocialSidebar = () => {
           href={link.url}
           target='_blank'
           rel='noopener noreferrer'
-          className='text-muted-foreground hover:text-primary transition-colors'
+          className={`text-muted-foreground hover:text-primary transition-colors ${
+            link.name === 'Codewars' ? 'ml-[-4px]' : ''
+          }`}
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: i * 0.1 + 0.3 }}

@@ -10,10 +10,10 @@ export default function Hero() {
       <div className='container mx-auto relative z-10'>
         <div className='text-right'>
           <h1 className='font-medium'>
-            <span className='block uppercase tracking-widest mb-0 text-[#4752a8] text-6xl'>
+            <span className='block uppercase tracking-widest mb-2 text-[#4752a8] text-4xl md:text-7xl'>
               {t('hero.title')}
             </span>
-            <div className='text-5xl md:text-6xl lg:text-9xl mt-0'>
+            <div className='text-4xl md:text-6xl lg:text-9xl mt-0'>
               <span className='block text-text-primary'>
                 {t('hero.subtitle')}
               </span>

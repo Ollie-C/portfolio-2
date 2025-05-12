@@ -21,6 +21,8 @@ interface ProjectData {
 }
 
 export default function ProjectsList() {
+  const { i18n, t } = useTranslation();
+
   const { data: projects, isLoading, error } = useProjects();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [projectFilter, setProjectFilter] = useState<'recent' | 'legacy'>(
@@ -30,7 +32,6 @@ export default function ProjectsList() {
   const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
   const isInView = useInView(sectionRef, { amount: 0.2, once: true });
-  const { i18n } = useTranslation();
   const isJapanese = i18n.language === 'ja';
   const firstProjectShown = useRef(false);
 
@@ -196,7 +197,7 @@ export default function ProjectsList() {
   };
 
   return (
-    <div className='relative gap-x-8 min-h-[50vh]' ref={sectionRef}>
+    <div className='relative gap-x-8 min-h-[50vh] py-10' ref={sectionRef}>
       {/* Project filter toggle */}
       <div className='flex justify-start mb-8 pl-16 md:pl-28'>
         <div className='flex items-center gap-2 text-base'>
@@ -207,7 +208,7 @@ export default function ProjectsList() {
                 ? 'font-bold text-foreground'
                 : 'opacity-50 text-muted-foreground'
             }`}>
-            Recent
+            {t('sections.projects.recent')}
           </span>
           <span className='text-muted-foreground mx-1'>/</span>
           <span
@@ -217,7 +218,7 @@ export default function ProjectsList() {
                 ? 'font-bold text-foreground'
                 : 'opacity-50 text-muted-foreground'
             }`}>
-            Legacy
+            {t('sections.projects.legacy')}
           </span>
         </div>
       </div>
