@@ -8,6 +8,7 @@ import Hero from '../components/Hero';
 import SkillsSection from '../components/SkillsSection';
 import ContactForm from '../components/ContactForm';
 import Footer from '../components/Footer';
+import SEO from '../components/SEO';
 
 // Define learning tech icons
 const learningTech = [
@@ -81,6 +82,24 @@ export default function HomePage() {
 
   return (
     <Layout>
+      <SEO
+        title='Ollie Cross | Full-Stack Developer'
+        description='Full-stack developer based in London, specializing in React, TypeScript, and modern web technologies. View my projects and get in touch.'
+        keywords={[
+          'developer',
+          'react',
+          'typescript',
+          'full-stack',
+          'web development',
+          'portfolio',
+          'london',
+          'freelance',
+          'frontend',
+          'backend',
+        ]}
+        url='https://olliecross.dev'
+        type='website'
+      />
       <AnimatePresence>
         <main className='flex-grow pt-20 md:pt-28'>
           {/* Hero Section */}

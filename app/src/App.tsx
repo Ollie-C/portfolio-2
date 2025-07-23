@@ -1,7 +1,9 @@
 import { useEffect, Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { applyThemeEffects } from './store/themeStore';
 import './i18n';
+import SEO from './components/SEO';
 
 const HomePage = lazy(() => import('./pages/HomePage'));
 const ProjectPage = lazy(() => import('./pages/ProjectPage'));
@@ -19,15 +21,18 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <Suspense fallback={<LoadingFallback />}>
-        <Routes>
-          <Route path='/' element={<HomePage />} />
-          <Route path='/project/:slug' element={<ProjectPage />} />
-          <Route path='*' element={<NotFoundPage />} />
-        </Routes>
-      </Suspense>
-    </Router>
+    <HelmetProvider>
+      <SEO />
+      <Router>
+        <Suspense fallback={<LoadingFallback />}>
+          <Routes>
+            <Route path='/' element={<HomePage />} />
+            <Route path='/project/:slug' element={<ProjectPage />} />
+            <Route path='*' element={<NotFoundPage />} />
+          </Routes>
+        </Suspense>
+      </Router>
+    </HelmetProvider>
   );
 }
 

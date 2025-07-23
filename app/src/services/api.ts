@@ -93,6 +93,24 @@ export interface NormalizedSkill {
   icon?: SanityImageSource;
 }
 
+export interface HeroUpdate {
+  enabled: boolean;
+  message?: string;
+  messageJa?: string;
+  link?: string;
+  linkText?: string;
+}
+
+export interface SiteSettings {
+  title?: string;
+  description?: string;
+  keywords?: string[];
+  author?: string;
+  heroUpdate?: HeroUpdate;
+  contactEmail?: string;
+  googleAnalyticsId?: string;
+}
+
 export interface CMSContent {
   heroTitle: string;
   heroSubtitle: string;

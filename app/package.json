@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "NODE_OPTIONS=\"--max-old-space-size=4096\" tsc -b && vite build",
+    "build": "NODE_OPTIONS=\"--max-old-space-size=4096\" tsc -b && vite build && npm run generate-sitemap",
     "preview": "vite preview",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "generate-sitemap": "node scripts/generate-sitemap.js"
   },
   "dependencies": {
     "@emailjs/browser": "^4.4.1",
@@ -21,6 +22,7 @@
     "lucide-react": "^0.487.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react-helmet-async": "^2.0.5",
     "react-i18next": "^15.4.1",
     "react-router-dom": "^7.5.0",
     "three": "^0.175.0",

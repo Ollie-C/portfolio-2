@@ -39,7 +39,7 @@ const Options = ({ onAnimationChange }: OptionsProps) => {
     {
       value: 'none',
       label: 'None',
-      icon: <Minus size={16} />,
+      icon: null,
     },
     {
       value: 'particles',
@@ -68,7 +68,7 @@ const Options = ({ onAnimationChange }: OptionsProps) => {
       <LanguageSelector />
       {/* Settings button */}
       <button
-        className='w-11 h-10 rounded bg-transparent shadow-lg flex items-center justify-center border-3 border-gray-700 hover:bg-primary/10 transition-colors p-0'
+        className='w-11 h-10 rounded bg-transparent flex items-center justify-center hover:bg-primary/10 transition-colors p-0'
         onMouseEnter={() => setIsOpen(true)}
         onClick={() => setIsOpen(!isOpen)}
         aria-label='Theme options'>
@@ -86,44 +86,33 @@ const Options = ({ onAnimationChange }: OptionsProps) => {
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: 10 }}
               transition={{ duration: 0.2 }}
-              className='bg-card backdrop-blur-sm p-4 rounded-md border border-border shadow-xl min-w-[240px]'>
+              className='bg-transparent backdrop-blur-sm p-4 rounded-md border border-border shadow-xl min-w-[240px]'>
               {/* Section: Appearance */}
-              <div className='mb-4'>
-                <h3 className='text-sm font-medium text-foreground mb-3 border-b border-border pb-1'>
-                  Mode
+              <div className='mb-4 flex items-center justify-between'>
+                <h3 className='text-sm font-medium text-foreground mb-3 pb-1'>
+                  Light Mode
                 </h3>
 
                 {/* Light/Dark Mode Toggle */}
                 <div className='flex items-center justify-between mb-3'>
                   <button
                     onClick={toggleLightDarkMode}
-                    className={`flex items-center gap-2 px-3 py-1.5 bg-muted dark:bg-muted rounded transition-colors `}
+                    className={`flex items-center gap-2 px-3 py-1.5 bg-transparent border border-secondary rounded transition-colors `}
                     aria-label={`Switch to ${
                       modeTheme === 'dark' ? 'light' : 'dark'
                     } mode`}>
-                    <Moon
-                      size={12}
-                      className={`${
-                        modeTheme === 'dark'
-                          ? 'text-primary-light'
-                          : 'text-primary-dark'
-                      }`}
-                    />
-                    <Sun
-                      size={12}
-                      className={`${
-                        modeTheme === 'dark'
-                          ? 'text-primary-dark'
-                          : 'text-primary-dark'
-                      }`}
-                    />
+                    {modeTheme === 'dark' ? (
+                      <Sun size={12} />
+                    ) : (
+                      <Moon size={12} />
+                    )}
                   </button>
                 </div>
               </div>
 
               {/* Section: Background Animation */}
               <div>
-                <h3 className='text-sm font-medium text-muted-foreground mb-3 border-b border-border pb-1'>
+                <h3 className='text-sm font-medium text-muted-foreground mb-3 pb-1'>
                   Animation
                 </h3>
                 <div className='grid grid-cols-4 gap-2'>
@@ -131,10 +120,10 @@ const Options = ({ onAnimationChange }: OptionsProps) => {
                     <button
                       key={option.value}
                       onClick={() => setAnimationTheme(option.value)}
-                      className={`flex items-center justify-center gap-1.5 py-2 px-3 text-xs rounded ${
+                      className={`flex items-center justify-center gap-1.5 py-2 px-3 text-xs rounded bg-transparent ${
                         animationTheme === option.value
-                          ? 'bg-primary/30 border border-primary/50 text-primary-foreground'
-                          : 'bg-muted/80 text-muted-foreground hover:bg-muted/90 border-4 border-transparent'
+                          ? 'border border-primary text-primary-foreground'
+                          : 'text-muted-foreground hover:bg-muted/90 border border-border'
                       } transition-colors`}
                       title={option.label}>
                       <span>{option.icon}</span>

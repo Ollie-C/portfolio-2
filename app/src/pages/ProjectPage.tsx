@@ -1,10 +1,27 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import Layout from '../components/Layout/Layout';
 import { useProject, useProjects } from '../hooks/useProjects';
-import { SquareArrowOutUpRight } from 'lucide-react';
+import SEO from '../components/SEO';
+import Breadcrumbs from '../components/Breadcrumbs';
+import {
+  SquareArrowOutUpRight,
+  ChevronDown,
+  ChevronUp,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
+// Import Swiper React components and styles
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, EffectFade } from 'swiper/modules';
+// @ts-ignore
+import 'swiper/css';
+// @ts-ignore
+import 'swiper/css/navigation';
+// @ts-ignore
+import 'swiper/css/effect-fade';
 
 const ProjectPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -68,42 +85,49 @@ const ProjectPage: React.FC = () => {
   // State for the lightbox and view mode
   const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
-  const [viewMode, setViewMode] = useState<'desktop' | 'mobile'>('desktop');
+  const [activeImageType, setActiveImageType] = useState<'desktop' | 'mobile'>(
+    'desktop'
+  );
+  const [detailsExpanded, setDetailsExpanded] = useState<boolean>(false);
 
-  // Filter images based on view mode
-  const getFilteredImages = () => {
-    if (!project) return [];
-
-    switch (viewMode) {
-      case 'desktop':
-        return project.desktopImages.length > 0 ? project.desktopImages : [];
-      case 'mobile':
-        return project.mobileImages.length > 0 ? project.mobileImages : [];
-      default:
-        return project.desktopImages.length > 0 ? project.desktopImages : [];
-    }
+  // Function to open lightbox
+  const openLightbox = (
+    imageUrl: string,
+    index: number,
+    type: 'desktop' | 'mobile'
+  ) => {
+    setActiveImageUrl(imageUrl);
+    setActiveImageIndex(index);
+    setActiveImageType(type);
   };
-
-  const filteredImages = getFilteredImages();
 
   // Navigation functions for lightbox
   const showPrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (filteredImages.length <= 1) return;
+    const images =
+      activeImageType === 'desktop'
+        ? project?.desktopImages || []
+        : project?.mobileImages || [];
 
-    const newIndex =
-      (activeImageIndex - 1 + filteredImages.length) % filteredImages.length;
+    if (images.length <= 1) return;
+
+    const newIndex = (activeImageIndex - 1 + images.length) % images.length;
     setActiveImageIndex(newIndex);
-    setActiveImageUrl(filteredImages[newIndex].url);
+    setActiveImageUrl(images[newIndex].url);
   };
 
   const showNextImage = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (filteredImages.length <= 1) return;
+    const images =
+      activeImageType === 'desktop'
+        ? project?.desktopImages || []
+        : project?.mobileImages || [];
 
-    const newIndex = (activeImageIndex + 1) % filteredImages.length;
+    if (images.length <= 1) return;
+
+    const newIndex = (activeImageIndex + 1) % images.length;
     setActiveImageIndex(newIndex);
-    setActiveImageUrl(filteredImages[newIndex].url);
+    setActiveImageUrl(images[newIndex].url);
   };
 
   const handleBackClick = () => {
@@ -129,6 +153,10 @@ const ProjectPage: React.FC = () => {
   if (isLoading) {
     return (
       <Layout>
+        <SEO
+          title='Loading Project | Ollie Cross'
+          description='Loading project details...'
+        />
         <div className='flex items-center justify-center min-h-[60vh]'>
           <div className='animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full'></div>
         </div>
@@ -139,6 +167,10 @@ const ProjectPage: React.FC = () => {
   if (error) {
     return (
       <Layout>
+        <SEO
+          title='Project Not Found | Ollie Cross'
+          description='The requested project could not be found.'
+        />
         <div className='min-h-[60vh] flex flex-col items-center justify-center'>
           <h2 className='text-2xl font-bold mb-4'>Project not found</h2>
           <p className='text-muted-foreground mb-8'>
@@ -155,6 +187,53 @@ const ProjectPage: React.FC = () => {
   }
 
   if (!project) return null;
+
+  // Generate SEO metadata for the project
+  const projectTitle = getLocalizedContent(project.title, project.titleJa);
+  const projectDescription =
+    getLocalizedContent(project.summary, project.summaryJa) ||
+    getLocalizedContent(project.description, project.descriptionJa);
+  const projectKeywords = [
+    ...(project.techStack || []),
+    ...(project.tags || []),
+    'project',
+    'portfolio',
+    'web development',
+    'ollie cross',
+  ];
+  const projectImage =
+    project.desktopImages?.[0]?.url ||
+    project.mobileImages?.[0]?.url ||
+    '/og-image.jpg';
+
+  // Structured data for the project
+  const projectStructuredData = {
+    '@context': 'https://schema.org',
+    '@type': 'CreativeWork',
+    name: projectTitle,
+    description: projectDescription,
+    author: {
+      '@type': 'Person',
+      name: 'Ollie Cross',
+    },
+    dateCreated: project.createdAt,
+    dateModified: project.updatedAt,
+    url: `https://olliecross.dev/project/${project.slug}`,
+    ...(project.demoUrl && { url: project.demoUrl }),
+    ...(project.sourceUrl && { codeRepository: project.sourceUrl }),
+    ...(project.techStack && {
+      about: project.techStack.map((tech) => ({
+        '@type': 'Thing',
+        name: tech,
+      })),
+    }),
+    ...(projectImage && { image: projectImage }),
+  };
+
+  const hasDesktopImages =
+    project.desktopImages && project.desktopImages.length > 0;
+  const hasMobileImages =
+    project.mobileImages && project.mobileImages.length > 0;
 
   // Define animation variants for page sections
   const containerVariants = {
@@ -177,15 +256,99 @@ const ProjectPage: React.FC = () => {
     },
   };
 
+  const expandVariants = {
+    hidden: { opacity: 0, height: 0, overflow: 'hidden' },
+    visible: {
+      opacity: 1,
+      height: 'auto',
+      transition: { duration: 0.3 },
+    },
+  };
+
   return (
     <Layout>
+      <SEO
+        title={`${projectTitle} | Ollie Cross`}
+        description={projectDescription}
+        keywords={projectKeywords}
+        image={projectImage}
+        url={`https://olliecross.dev/project/${project.slug}`}
+        type='article'
+        publishedTime={project.createdAt}
+        modifiedTime={project.updatedAt}
+        section='Projects'
+        tags={project.tags || []}
+        structuredData={projectStructuredData}
+      />
+      {/* Custom styles for Swiper navigation */}
+      <style>
+        {`
+          .swiper-button-next,
+          .swiper-button-prev {
+            color: var(--color-primary);
+            background: rgba(0, 0, 0, 0.3);
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+          }
+          
+          .swiper-button-next:after,
+          .swiper-button-prev:after {
+            font-size: 16px;
+            font-weight: bold;
+          }
+          
+          .gallery-container {
+            display: flex;
+            flex-direction: column;
+            align-items: stretch;
+          }
+          
+          @media (min-width: 768px) {
+            .gallery-container {
+              flex-direction: row;
+              height: 400px;
+            }
+            
+            .desktop-container {
+              height: 100%;
+              width: 80%;
+            }
+            
+            .mobile-container {
+              height: 100%;
+              width: 20%;
+            }
+            
+            .swiper {
+              height: 100%;
+            }
+            
+            .swiper-slide {
+              height: 100%;
+            }
+          }
+        `}
+      </style>
       <motion.div
         className='max-w-6xl mx-auto px-5 pt-10 pb-20 section-bg-dark'
         variants={containerVariants}
         initial='hidden'
         animate='visible'>
+        {/* Breadcrumbs */}
+        <Breadcrumbs
+          items={[
+            { label: 'Home', href: '/' },
+            { label: 'Projects', href: '/#projects' },
+            { label: projectTitle },
+          ]}
+        />
+
         {/* Navigation controls - Back button and project navigation */}
-        <motion.div className='flex items-center justify-between mb-10 md:mb-20'>
+        <motion.div className='flex items-center justify-between mb-10'>
           {/* Back button */}
           <motion.div
             className='flex items-center gap-2 text-sm text-primary cursor-pointer'
@@ -254,9 +417,82 @@ const ProjectPage: React.FC = () => {
           </div>
         </motion.div>
 
+        {/* Image Gallery Carousels at the top */}
+        {(hasDesktopImages || hasMobileImages) && (
+          <motion.section variants={itemVariants} className='mb-16'>
+            <div className='gallery-container gap-4'>
+              {/* Desktop Carousel - 80% width */}
+              {hasDesktopImages && (
+                <div className='desktop-container w-full'>
+                  <Swiper
+                    modules={[Navigation, EffectFade]}
+                    effect='fade'
+                    navigation={true}
+                    grabCursor={true}
+                    slidesPerView={1}
+                    className='w-full h-full'>
+                    {project.desktopImages.map((image, index) => (
+                      <SwiperSlide key={`desktop-${index}`}>
+                        <div
+                          className='relative w-full h-full cursor-pointer'
+                          onClick={() =>
+                            openLightbox(image.url, index, 'desktop')
+                          }>
+                          <img
+                            src={image.url}
+                            alt={image.alt || `Desktop view ${index + 1}`}
+                            className='w-full h-full object-cover'
+                          />
+                          <div className='absolute inset-0 bg-base-dark/20 opacity-0 hover:opacity-100 transition-opacity'></div>
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                  <div className='mt-2 text-sm text-muted-foreground'>
+                    {t('projectPage.desktop')}
+                  </div>
+                </div>
+              )}
+
+              {/* Mobile Carousel - 20% width */}
+              {hasMobileImages && (
+                <div className='mobile-container w-full'>
+                  <Swiper
+                    modules={[Navigation, EffectFade]}
+                    effect='fade'
+                    navigation={true}
+                    grabCursor={true}
+                    slidesPerView={1}
+                    className='w-full h-full'>
+                    {project.mobileImages.map((image, index) => (
+                      <SwiperSlide key={`mobile-${index}`}>
+                        <div
+                          className='relative w-full h-full cursor-pointer'
+                          onClick={() =>
+                            openLightbox(image.url, index, 'mobile')
+                          }>
+                          <img
+                            src={image.url}
+                            alt={image.alt || `Mobile view ${index + 1}`}
+                            className='w-full h-full object-cover object-center'
+                          />
+                          <div className='absolute inset-0 bg-base-dark/20 opacity-0 hover:opacity-100 transition-opacity'></div>
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
+                  <div className='mt-2 text-sm text-muted-foreground'>
+                    {t('projectPage.mobile')}
+                  </div>
+                </div>
+              )}
+            </div>
+          </motion.section>
+        )}
+
         {/* Project header */}
-        <motion.header variants={itemVariants} className='mb-16'>
-          <div className='flex items-center justify-between gap-4 mb-12'>
+        <motion.header variants={itemVariants} className='mb-10'>
+          <div className='flex items-center justify-between gap-4 mb-8'>
             <div className='space-x-4 mt-4'>
               <span className='font-mono text-primary text-sm tracking-wider'>
                 PROJECT /
@@ -303,212 +539,148 @@ const ProjectPage: React.FC = () => {
               )}
             </div>
           </div>
+
+          {/* Project Details Toggle Button */}
+          <motion.button
+            className='w-full flex items-center justify-center gap-2 py-3 px-4 bg-card hover:bg-card/80 text-primary border border-border rounded-md transition-colors'
+            onClick={() => setDetailsExpanded(!detailsExpanded)}
+            whileHover={{ y: -2 }}
+            whileTap={{ y: 0 }}>
+            {detailsExpanded ? (
+              <>
+                <span>{t('projectPage.hideDetails') || 'Hide Details'}</span>
+                <ChevronUp size={18} />
+              </>
+            ) : (
+              <>
+                <span>{t('projectPage.showDetails') || 'Show Details'}</span>
+                <ChevronDown size={18} />
+              </>
+            )}
+          </motion.button>
         </motion.header>
 
-        {/* Project overview */}
-        <motion.section variants={itemVariants} className='mb-20'>
-          <div className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
-            <div className='md:col-span-2'>
-              <div className='space-x-4'>
-                <span className='font-mono text-primary text-sm tracking-wider'>
-                  001 /
-                </span>
-                <h2 className='text-3xl font-light inline-block relative'>
-                  {t('projectPage.overview')}
-                  <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
-                </h2>
-              </div>
-            </div>
-
-            <div className='md:col-span-4 text-muted-foreground'>
-              {project.summary && (
-                <p className='text-lg leading-relaxed font-medium mb-4'>
-                  {getLocalizedContent(project.summary, project.summaryJa)}
-                </p>
-              )}
-
-              {project.description && (
-                <p className='text-lg leading-relaxed'>
-                  {getLocalizedContent(
-                    project.description,
-                    project.descriptionJa
-                  )}
-                </p>
-              )}
-              {project.note && (
-                <p className='text-sm text-muted-foreground italic mt-4'>
-                  {getLocalizedContent(project.note, project.noteJa)}
-                </p>
-              )}
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Technical details */}
-        <motion.section variants={itemVariants} className='mb-20'>
-          <div className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
-            <div className='md:col-span-2'>
-              <div className='space-x-4'>
-                <span className='font-mono text-primary text-sm tracking-wider'>
-                  002 /
-                </span>
-                <h2 className='text-3xl font-light mt-2 inline-block relative'>
-                  {t('projectPage.details')}
-                  <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
-                </h2>
-              </div>
-            </div>
-
-            <div className='md:col-span-4'>
-              <div className='grid grid-cols-1 md:grid-cols-2 gap-12'>
-                {/* Tech Stack */}
-                {project.techStack && project.techStack.length > 0 && (
-                  <div>
-                    <h3 className='text-xl font-medium mb-4'>
-                      {t('projectPage.techStack')}
-                    </h3>
-                    <div className='grid grid-cols-2 md:grid-cols-1 gap-3'>
-                      {project.techStack.map((tech, index) => (
-                        <span
-                          key={index}
-                          className='px-3 py-1 bg-base-dark rounded text-foreground border border-border'>
-                          {tech}
-                        </span>
-                      ))}
+        {/* Expandable Project Details */}
+        <AnimatePresence>
+          {detailsExpanded && (
+            <motion.div
+              variants={expandVariants}
+              initial='hidden'
+              animate='visible'
+              exit='hidden'>
+              {/* Project overview */}
+              <motion.section variants={itemVariants} className='mb-20'>
+                <div className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
+                  <div className='md:col-span-2'>
+                    <div className='space-x-4'>
+                      <span className='font-mono text-primary text-sm tracking-wider'>
+                        001 /
+                      </span>
+                      <h2 className='text-3xl font-light inline-block relative'>
+                        {t('projectPage.overview')}
+                        <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
+                      </h2>
                     </div>
                   </div>
-                )}
 
-                {/* Features */}
-                {((project.features && project.features.length > 0) ||
-                  (isJapanese &&
-                    project.featuresJa &&
-                    project.featuresJa.length > 0)) && (
-                  <div>
-                    <h3 className='text-xl font-medium mb-4'>
-                      {t('projectPage.keyFeatures')}
-                    </h3>
-                    <ul className='space-y-5'>
-                      {(isJapanese && project.featuresJa
-                        ? project.featuresJa
-                        : project.features
-                      )?.map((feature, index) => (
-                        <li key={index} className='flex items-center gap-8'>
-                          <span className='text-sm'>
-                            {' '}
-                            {String(index + 1).padStart(2, '0')}
-                          </span>
-                          <span className='text-muted-foreground'>
-                            {feature}
-                          </span>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-              </div>
-            </div>
-          </div>
-        </motion.section>
-
-        {/* Image gallery */}
-        {(project.desktopImages.length > 0 ||
-          project.mobileImages.length > 0) && (
-          <motion.section variants={itemVariants} className='mb-20'>
-            <div className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
-              <div className='md:col-span-2'>
-                <div className='space-x-4'>
-                  <span className='font-mono text-primary text-sm tracking-wider'>
-                    003 /
-                  </span>
-                  <h2 className='text-3xl font-light mt-2 inline-block relative'>
-                    {t('projectPage.gallery')}
-                    <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
-                  </h2>
-                </div>
-
-                {/* View toggle */}
-                <div className='mt-8 flex p-1 md:w-fit'>
-                  {project.desktopImages &&
-                    project.desktopImages.length > 0 && (
-                      <span
-                        onClick={() => setViewMode('desktop')}
-                        className={`cursor-pointer transition-all duration-200 ${
-                          viewMode === 'desktop'
-                            ? 'font-bold text-foreground'
-                            : 'opacity-50 text-muted-foreground'
-                        }`}>
-                        {t('projectPage.desktop')}
-                      </span>
+                  <div className='md:col-span-4 text-muted-foreground'>
+                    {project.summary && (
+                      <p className='text-lg leading-relaxed font-medium mb-4'>
+                        {getLocalizedContent(
+                          project.summary,
+                          project.summaryJa
+                        )}
+                      </p>
                     )}
-                  <span className='mx-1'>/</span>
-                  {project.mobileImages && project.mobileImages.length > 0 && (
-                    <span
-                      onClick={() => setViewMode('mobile')}
-                      className={`cursor-pointer transition-all duration-200 ${
-                        viewMode === 'mobile'
-                          ? 'font-bold text-foreground'
-                          : 'opacity-50 text-muted-foreground'
-                      }`}>
-                      {t('projectPage.mobile')}
-                    </span>
-                  )}
-                </div>
-              </div>
 
-              <div className='md:col-span-4'>
-                <div
-                  className={`grid gap-4 ${
-                    viewMode === 'mobile'
-                      ? 'grid-cols-3 md:grid-cols-4'
-                      : 'grid-cols-1 md:grid-cols-2'
-                  }`}>
-                  {filteredImages.map((image, index) => (
-                    <motion.div
-                      key={`${image.url}-${index}`}
-                      className={`relative overflow-hidden rounded-md cursor-pointer group ${
-                        viewMode === 'desktop' && 'aspect-video'
-                      }`}
-                      whileHover={{ scale: 1.02 }}
-                      onClick={() => {
-                        setActiveImageUrl(image.url);
-                        setActiveImageIndex(index);
-                      }}
-                      initial={{ opacity: 0, y: 20 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      transition={{ delay: index * 0.1 }}>
-                      <img
-                        src={image.url}
-                        alt={image.alt || `Project image ${index + 1}`}
-                        className='w-full h-full object-cover'
-                      />
-                      <div className='absolute inset-0 bg-base-dark/50 opacity-0 group-hover:opacity-100 flex items-center justify-center transition-opacity'>
-                        <svg
-                          xmlns='http://www.w3.org/2000/svg'
-                          width='24'
-                          height='24'
-                          viewBox='0 0 24 24'
-                          fill='none'
-                          stroke='currentColor'
-                          strokeWidth='2'
-                          strokeLinecap='round'
-                          strokeLinejoin='round'
-                          className='text-white'>
-                          <path d='M15 3h6v6M14 10l6-6M9 21H3v-6M10 14l-6 6' />
-                        </svg>
-                      </div>
-                      {image.caption && (
-                        <div className='absolute bottom-0 left-0 right-0 p-2 bg-base-dark/70 text-xs text-white'>
-                          {image.caption}
+                    {project.description && (
+                      <p className='text-lg leading-relaxed'>
+                        {getLocalizedContent(
+                          project.description,
+                          project.descriptionJa
+                        )}
+                      </p>
+                    )}
+                    {project.note && (
+                      <p className='text-sm text-muted-foreground italic mt-4'>
+                        {getLocalizedContent(project.note, project.noteJa)}
+                      </p>
+                    )}
+                  </div>
+                </div>
+              </motion.section>
+
+              {/* Technical details */}
+              <motion.section variants={itemVariants} className='mb-20'>
+                <div className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
+                  <div className='md:col-span-2'>
+                    <div className='space-x-4'>
+                      <span className='font-mono text-primary text-sm tracking-wider'>
+                        002 /
+                      </span>
+                      <h2 className='text-3xl font-light mt-2 inline-block relative'>
+                        {t('projectPage.details')}
+                        <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
+                      </h2>
+                    </div>
+                  </div>
+
+                  <div className='md:col-span-4'>
+                    <div className='grid grid-cols-1 md:grid-cols-2 gap-12'>
+                      {/* Tech Stack */}
+                      {project.techStack && project.techStack.length > 0 && (
+                        <div>
+                          <h3 className='text-xl font-medium mb-4'>
+                            {t('projectPage.techStack')}
+                          </h3>
+                          <div className='grid grid-cols-2 md:grid-cols-1 gap-3'>
+                            {project.techStack.map((tech, index) => (
+                              <span
+                                key={index}
+                                className='px-3 py-1 bg-base-dark rounded text-foreground border border-border'>
+                                {tech}
+                              </span>
+                            ))}
+                          </div>
                         </div>
                       )}
-                    </motion.div>
-                  ))}
+
+                      {/* Features */}
+                      {((project.features && project.features.length > 0) ||
+                        (isJapanese &&
+                          project.featuresJa &&
+                          project.featuresJa.length > 0)) && (
+                        <div>
+                          <h3 className='text-xl font-medium mb-4'>
+                            {t('projectPage.keyFeatures')}
+                          </h3>
+                          <ul className='space-y-5'>
+                            {(isJapanese && project.featuresJa
+                              ? project.featuresJa
+                              : project.features
+                            )?.map((feature, index) => (
+                              <li
+                                key={index}
+                                className='flex items-center gap-8'>
+                                <span className='text-sm'>
+                                  {' '}
+                                  {String(index + 1).padStart(2, '0')}
+                                </span>
+                                <span className='text-muted-foreground'>
+                                  {feature}
+                                </span>
+                              </li>
+                            ))}
+                          </ul>
+                        </div>
+                      )}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-          </motion.section>
-        )}
+              </motion.section>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
 
       {/* Image lightbox */}
@@ -539,51 +711,48 @@ const ProjectPage: React.FC = () => {
             </button>
 
             {/* Previous image button */}
-            {filteredImages.length > 1 && (
-              <button
-                className='absolute left-4 top-1/2 -translate-y-1/2 text-white p-3 rounded-full bg-black/50 hover:bg-black/70 transition-colors'
-                onClick={showPrevImage}>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='24'
-                  height='24'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'>
-                  <polyline points='15 18 9 12 15 6'></polyline>
-                </svg>
-              </button>
-            )}
+            <button
+              className='absolute left-4 top-1/2 -translate-y-1/2 text-white p-3 rounded-full bg-black/50 hover:bg-black/70 transition-colors'
+              onClick={showPrevImage}>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'>
+                <polyline points='15 18 9 12 15 6'></polyline>
+              </svg>
+            </button>
 
             {/* Next image button */}
-            {filteredImages.length > 1 && (
-              <button
-                className='absolute right-4 top-1/2 -translate-y-1/2 text-white p-3 rounded-full bg-black/50 hover:bg-black/70 transition-colors'
-                onClick={showNextImage}>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='24'
-                  height='24'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'>
-                  <polyline points='9 18 15 12 9 6'></polyline>
-                </svg>
-              </button>
-            )}
+            <button
+              className='absolute right-4 top-1/2 -translate-y-1/2 text-white p-3 rounded-full bg-black/50 hover:bg-black/70 transition-colors'
+              onClick={showNextImage}>
+              <svg
+                xmlns='http://www.w3.org/2000/svg'
+                width='24'
+                height='24'
+                viewBox='0 0 24 24'
+                fill='none'
+                stroke='currentColor'
+                strokeWidth='2'
+                strokeLinecap='round'
+                strokeLinejoin='round'>
+                <polyline points='9 18 15 12 9 6'></polyline>
+              </svg>
+            </button>
 
             {/* Image counter */}
-            {filteredImages.length > 1 && (
-              <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/50 px-3 py-1 rounded-full text-sm'>
-                {activeImageIndex + 1} / {filteredImages.length}
-              </div>
-            )}
+            <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/50 px-3 py-1 rounded-full text-sm'>
+              {activeImageIndex + 1} /{' '}
+              {activeImageType === 'desktop'
+                ? project.desktopImages.length
+                : project.mobileImages.length}
+            </div>
 
             <img
               src={activeImageUrl}

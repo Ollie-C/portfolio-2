@@ -64,7 +64,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
       {/* Header - z-index above everything */}
       <header
-        className={`fixed top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${
+        className={`fixed py-2 top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${
           scrolled ? 'backdrop-blur-md bg-background/80 shadow-md' : ''
         }`}>
         <div className='container mx-auto flex justify-between items-center h-[60px] px-5'>
