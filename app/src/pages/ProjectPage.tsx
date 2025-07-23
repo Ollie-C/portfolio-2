@@ -7,21 +7,21 @@ import { useProject, useProjects } from '../hooks/useProjects';
 import SEO from '../components/SEO';
 import Breadcrumbs from '../components/Breadcrumbs';
 import {
-  SquareArrowOutUpRight,
-  ChevronDown,
-  ChevronUp,
+  ArrowLeft,
+  ExternalLink,
+  Github,
+  X,
   ChevronLeft,
   ChevronRight,
 } from 'lucide-react';
-// Import Swiper React components and styles
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, EffectFade } from 'swiper/modules';
+import { Navigation, Pagination } from 'swiper/modules';
 // @ts-ignore
 import 'swiper/css';
 // @ts-ignore
 import 'swiper/css/navigation';
 // @ts-ignore
-import 'swiper/css/effect-fade';
+import 'swiper/css/pagination';
 
 const ProjectPage: React.FC = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -30,39 +30,32 @@ const ProjectPage: React.FC = () => {
   const currentLanguage = i18n.language;
   const isJapanese = currentLanguage === 'ja';
 
-  // Scroll to top when component mounts or slug changes
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [slug]);
 
-  // Fetch current project data
   const {
     data: project,
     isLoading: isLoadingCurrent,
     error: errorCurrent,
   } = useProject(slug || '');
-  // Fetch all projects data for navigation
   const {
     data: allProjects,
     isLoading: isLoadingAll,
     error: errorAll,
   } = useProjects();
 
-  // Add a useEffect to handle the case when project is not found
   useEffect(() => {
     if (!isLoadingCurrent && !project && !errorCurrent) {
-      // This means the project wasn't found, but we're not in error state yet
-      // Wait a bit to make sure it's not just loading delay
       const timer = setTimeout(() => {
         if (!project) {
-          navigate('/'); // Redirect to home when project not found
+          navigate('/');
         }
       }, 2000);
       return () => clearTimeout(timer);
     }
   }, [isLoadingCurrent, project, errorCurrent, navigate]);
 
-  // Memoize calculation of prev/next slugs
   const { prevSlug, nextSlug } = useMemo(() => {
     if (!project || !allProjects || allProjects.length === 0) {
       return { prevSlug: null, nextSlug: null };
@@ -82,15 +75,12 @@ const ProjectPage: React.FC = () => {
     };
   }, [project, allProjects]);
 
-  // State for the lightbox and view mode
   const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
   const [activeImageType, setActiveImageType] = useState<'desktop' | 'mobile'>(
     'desktop'
   );
-  const [detailsExpanded, setDetailsExpanded] = useState<boolean>(false);
 
-  // Function to open lightbox
   const openLightbox = (
     imageUrl: string,
     index: number,
@@ -101,7 +91,6 @@ const ProjectPage: React.FC = () => {
     setActiveImageType(type);
   };
 
-  // Navigation functions for lightbox
   const showPrevImage = (e: React.MouseEvent) => {
     e.stopPropagation();
     const images =
@@ -134,12 +123,9 @@ const ProjectPage: React.FC = () => {
     navigate('/', { state: { scrollTo: 'projects' } });
   };
 
-  // Combine loading states
   const isLoading = isLoadingCurrent || isLoadingAll;
-  // Combine errors (simplified)
   const error = errorCurrent || errorAll || (!isLoading && !project);
 
-  // Function to get localized content
   const getLocalizedContent = (
     enContent: string | undefined,
     jaContent: string | undefined
@@ -154,11 +140,11 @@ const ProjectPage: React.FC = () => {
     return (
       <Layout>
         <SEO
-          title='Loading Project | Ollie Cross'
+          title='Loading Project | tom name'
           description='Loading project details...'
         />
         <div className='flex items-center justify-center min-h-[60vh]'>
-          <div className='animate-spin w-10 h-10 border-4 border-primary border-t-transparent rounded-full'></div>
+          <div className='w-8 h-8 border-2 border-primary/20 border-t-primary rounded-full animate-spin'></div>
         </div>
       </Layout>
     );
@@ -168,17 +154,18 @@ const ProjectPage: React.FC = () => {
     return (
       <Layout>
         <SEO
-          title='Project Not Found | Ollie Cross'
+          title='Project Not Found | tom name'
           description='The requested project could not be found.'
         />
         <div className='min-h-[60vh] flex flex-col items-center justify-center'>
-          <h2 className='text-2xl font-bold mb-4'>Project not found</h2>
+          <h2 className='text-2xl font-light mb-4'>Project not found</h2>
           <p className='text-muted-foreground mb-8'>
             Maybe it exists in another dimension?
           </p>
           <button
             onClick={handleBackClick}
-            className='bg-accent text-white px-6 py-2 rounded-md hover:bg-accent-dark transition-colors'>
+            className='text-primary hover:text-primary/80 transition-colors flex items-center gap-2'>
+            <ArrowLeft size={16} />
             {t('projectPage.back')}
           </button>
         </div>
@@ -188,7 +175,6 @@ const ProjectPage: React.FC = () => {
 
   if (!project) return null;
 
-  // Generate SEO metadata for the project
   const projectTitle = getLocalizedContent(project.title, project.titleJa);
   const projectDescription =
     getLocalizedContent(project.summary, project.summaryJa) ||
@@ -199,14 +185,13 @@ const ProjectPage: React.FC = () => {
     'project',
     'portfolio',
     'web development',
-    'ollie cross',
+    'tom name',
   ];
   const projectImage =
     project.desktopImages?.[0]?.url ||
     project.mobileImages?.[0]?.url ||
     '/og-image.jpg';
 
-  // Structured data for the project
   const projectStructuredData = {
     '@context': 'https://schema.org',
     '@type': 'CreativeWork',
@@ -214,11 +199,11 @@ const ProjectPage: React.FC = () => {
     description: projectDescription,
     author: {
       '@type': 'Person',
-      name: 'Ollie Cross',
+      name: 'tom name',
     },
     dateCreated: project.createdAt,
     dateModified: project.updatedAt,
-    url: `https://olliecross.dev/project/${project.slug}`,
+    url: `https://tomname.dev/project/${project.slug}`,
     ...(project.demoUrl && { url: project.demoUrl }),
     ...(project.sourceUrl && { codeRepository: project.sourceUrl }),
     ...(project.techStack && {
@@ -235,44 +220,20 @@ const ProjectPage: React.FC = () => {
   const hasMobileImages =
     project.mobileImages && project.mobileImages.length > 0;
 
-  // Define animation variants for page sections
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.2,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
-  const itemVariants = {
-    hidden: { opacity: 0, y: 20 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: { duration: 0.6, ease: 'easeOut' },
-    },
-  };
-
-  const expandVariants = {
-    hidden: { opacity: 0, height: 0, overflow: 'hidden' },
-    visible: {
-      opacity: 1,
-      height: 'auto',
-      transition: { duration: 0.3 },
-    },
+  const fadeIn = {
+    initial: { opacity: 0, y: 20 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.5 },
   };
 
   return (
     <Layout>
       <SEO
-        title={`${projectTitle} | Ollie Cross`}
+        title={`${projectTitle} | tom name`}
         description={projectDescription}
         keywords={projectKeywords}
         image={projectImage}
-        url={`https://olliecross.dev/project/${project.slug}`}
+        url={`https://tomname.dev/project/${project.slug}`}
         type='article'
         publishedTime={project.createdAt}
         modifiedTime={project.updatedAt}
@@ -280,19 +241,40 @@ const ProjectPage: React.FC = () => {
         tags={project.tags || []}
         structuredData={projectStructuredData}
       />
-      {/* Custom styles for Swiper navigation */}
+
       <style>
         {`
+          .swiper-pagination {
+            bottom: 20px !important;
+          }
+          
+          .swiper-pagination-bullet {
+            background: rgba(255, 255, 255, 0.5);
+            opacity: 1;
+            width: 6px;
+            height: 6px;
+          }
+          
+          .swiper-pagination-bullet-active {
+            background: white;
+            width: 24px;
+            border-radius: 3px;
+          }
+          
           .swiper-button-next,
           .swiper-button-prev {
-            color: var(--color-primary);
-            background: rgba(0, 0, 0, 0.3);
-            width: 35px;
-            height: 35px;
+            color: white;
+            width: 40px;
+            height: 40px;
+            background: rgba(0, 0, 0, 0.5);
             border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            backdrop-filter: blur(4px);
+            transition: all 0.3s ease;
+          }
+          
+          .swiper-button-next:hover,
+          .swiper-button-prev:hover {
+            background: rgba(0, 0, 0, 0.7);
           }
           
           .swiper-button-next:after,
@@ -301,136 +283,108 @@ const ProjectPage: React.FC = () => {
             font-weight: bold;
           }
           
-          .gallery-container {
-            display: flex;
-            flex-direction: column;
-            align-items: stretch;
-          }
-          
-          @media (min-width: 768px) {
-            .gallery-container {
-              flex-direction: row;
-              height: 400px;
-            }
-            
-            .desktop-container {
-              height: 100%;
-              width: 80%;
-            }
-            
-            .mobile-container {
-              height: 100%;
-              width: 20%;
-            }
-            
-            .swiper {
-              height: 100%;
-            }
-            
-            .swiper-slide {
-              height: 100%;
+          @media (max-width: 768px) {
+            .swiper-button-next,
+            .swiper-button-prev {
+              display: none;
             }
           }
         `}
       </style>
-      <motion.div
-        className='max-w-6xl mx-auto px-5 pt-10 pb-20 section-bg-dark'
-        variants={containerVariants}
-        initial='hidden'
-        animate='visible'>
-        {/* Breadcrumbs */}
-        <Breadcrumbs
-          items={[
-            { label: 'Home', href: '/' },
-            { label: 'Projects', href: '/#projects' },
-            { label: projectTitle },
-          ]}
-        />
 
-        {/* Navigation controls - Back button and project navigation */}
-        <motion.div className='flex items-center justify-between mb-10'>
-          {/* Back button */}
+      <motion.div initial='initial' animate='animate' className='min-h-screen'>
+        {/* Header Section */}
+        <div className='max-w-6xl mx-auto px-5 pt-10 pb-8'>
+          <Breadcrumbs
+            items={[
+              { label: 'Home', href: '/' },
+              { label: 'Projects', href: '/#projects' },
+              { label: projectTitle },
+            ]}
+          />
+
+          {/* Navigation */}
           <motion.div
-            className='flex items-center gap-2 text-sm text-primary cursor-pointer'
-            whileHover={{ x: -5 }}
-            transition={{ duration: 0.2 }}
-            onClick={handleBackClick}>
-            <svg
-              xmlns='http://www.w3.org/2000/svg'
-              width='16'
-              height='16'
-              viewBox='0 0 24 24'
-              fill='none'
-              className='rotate-180'
-              stroke='currentColor'
-              strokeWidth='2'
-              strokeLinecap='round'
-              strokeLinejoin='round'>
-              <path d='M5 12h14'></path>
-              <path d='m12 5 7 7-7 7'></path>
-            </svg>
-            <span>{t('projectPage.back')}</span>
+            {...fadeIn}
+            className='flex items-center justify-between mt-8 mb-12'>
+            <div className='flex items-center justify-end w-full gap-6'>
+              {prevSlug && (
+                <Link
+                  to={`/project/${prevSlug}`}
+                  className='text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2'>
+                  <ChevronLeft size={14} />
+                  {t('projectPage.previousProject')}
+                </Link>
+              )}
+              {nextSlug && (
+                <Link
+                  to={`/project/${nextSlug}`}
+                  className='text-sm text-muted-foreground hover:text-primary transition-colors flex items-center gap-2'>
+                  {t('projectPage.nextProject')}
+                  <ChevronRight size={14} />
+                </Link>
+              )}
+            </div>
           </motion.div>
 
-          {/* Project navigation */}
-          <div className='flex items-center gap-6'>
-            {prevSlug && (
-              <Link
-                to={`/project/${prevSlug}`}
-                className='group inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors'>
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='16'
-                  height='16'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  className='mr-2 transition-transform group-hover:-translate-x-1'>
-                  <polyline points='15 18 9 12 15 6' />
-                </svg>
-                {t('projectPage.previousProject')}
-              </Link>
-            )}
-            {nextSlug && (
-              <Link
-                to={`/project/${nextSlug}`}
-                className='group inline-flex items-center text-sm text-muted-foreground hover:text-primary transition-colors'>
-                {t('projectPage.nextProject')}
-                <svg
-                  xmlns='http://www.w3.org/2000/svg'
-                  width='16'
-                  height='16'
-                  viewBox='0 0 24 24'
-                  fill='none'
-                  stroke='currentColor'
-                  strokeWidth='2'
-                  strokeLinecap='round'
-                  strokeLinejoin='round'
-                  className='ml-2 transition-transform group-hover:translate-x-1'>
-                  <polyline points='9 18 15 12 9 6' />
-                </svg>
-              </Link>
-            )}
-          </div>
-        </motion.div>
+          {/* Title and Links */}
+          <motion.div {...fadeIn} transition={{ delay: 0.1 }} className='mb-12'>
+            <h1 className='text-5xl md:text-6xl font-light mb-6'>
+              {getLocalizedContent(project.title, project.titleJa)}
+            </h1>
 
-        {/* Image Gallery Carousels at the top */}
+            {project.summary && (
+              <p className='text-xl text-muted-foreground font-light max-w-3xl mb-8'>
+                {getLocalizedContent(project.summary, project.summaryJa)}
+              </p>
+            )}
+
+            <div className='flex gap-4'>
+              {project.demoUrl && (
+                <motion.a
+                  href={project.demoUrl}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors'
+                  whileHover={{ x: 2 }}
+                  whileTap={{ scale: 0.98 }}>
+                  <ExternalLink size={16} />
+                  Live Demo
+                </motion.a>
+              )}
+              {project.sourceUrl && (
+                <motion.a
+                  href={project.sourceUrl}
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className='flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors'
+                  whileHover={{ x: 2 }}
+                  whileTap={{ scale: 0.98 }}>
+                  <Github size={16} />
+                  Source Code
+                </motion.a>
+              )}
+            </div>
+          </motion.div>
+        </div>
+
+        {/* Full-width Image Gallery */}
         {(hasDesktopImages || hasMobileImages) && (
-          <motion.section variants={itemVariants} className='mb-16'>
-            <div className='gallery-container gap-4'>
-              {/* Desktop Carousel - 80% width */}
+          <motion.section
+            {...fadeIn}
+            transition={{ delay: 0.2 }}
+            className='w-full mb-20'>
+            <div className='flex flex-col md:flex-row gap-4 max-w-7xl xl:max-w-screen-2xl mx-auto'>
+              {/* Desktop Images */}
               {hasDesktopImages && (
-                <div className='desktop-container w-full'>
+                <div className='w-full md:w-3/4'>
                   <Swiper
-                    modules={[Navigation, EffectFade]}
-                    effect='fade'
+                    modules={[Navigation, Pagination]}
                     navigation={true}
-                    grabCursor={true}
+                    pagination={{ clickable: true }}
+                    spaceBetween={0}
                     slidesPerView={1}
-                    className='w-full h-full'>
+                    className='w-full aspect-video bg-base-dark'>
                     {project.desktopImages.map((image, index) => (
                       <SwiperSlide key={`desktop-${index}`}>
                         <div
@@ -443,27 +397,23 @@ const ProjectPage: React.FC = () => {
                             alt={image.alt || `Desktop view ${index + 1}`}
                             className='w-full h-full object-cover'
                           />
-                          <div className='absolute inset-0 bg-base-dark/20 opacity-0 hover:opacity-100 transition-opacity'></div>
                         </div>
                       </SwiperSlide>
                     ))}
                   </Swiper>
-                  <div className='mt-2 text-sm text-muted-foreground'>
-                    {t('projectPage.desktop')}
-                  </div>
                 </div>
               )}
 
-              {/* Mobile Carousel - 20% width */}
+              {/* Mobile Images */}
               {hasMobileImages && (
-                <div className='mobile-container w-full'>
+                <div className='w-full md:w-1/4 overflow-hidden'>
                   <Swiper
-                    modules={[Navigation, EffectFade]}
-                    effect='fade'
+                    modules={[Navigation, Pagination]}
                     navigation={true}
-                    grabCursor={true}
+                    pagination={{ clickable: true }}
+                    spaceBetween={0}
                     slidesPerView={1}
-                    className='w-full h-full'>
+                    className='w-full aspect-[9/16] bg-base-dark'>
                     {project.mobileImages.map((image, index) => (
                       <SwiperSlide key={`mobile-${index}`}>
                         <div
@@ -474,295 +424,137 @@ const ProjectPage: React.FC = () => {
                           <img
                             src={image.url}
                             alt={image.alt || `Mobile view ${index + 1}`}
-                            className='w-full h-full object-cover object-center'
+                            className='w-full h-full object-cover object-top'
                           />
-                          <div className='absolute inset-0 bg-base-dark/20 opacity-0 hover:opacity-100 transition-opacity'></div>
                         </div>
                       </SwiperSlide>
                     ))}
                   </Swiper>
-                  <div className='mt-2 text-sm text-muted-foreground'>
-                    {t('projectPage.mobile')}
-                  </div>
                 </div>
               )}
             </div>
           </motion.section>
         )}
 
-        {/* Project header */}
-        <motion.header variants={itemVariants} className='mb-10'>
-          <div className='flex items-center justify-between gap-4 mb-8'>
-            <div className='space-x-4 mt-4'>
-              <span className='font-mono text-primary text-sm tracking-wider'>
-                PROJECT /
-              </span>
-              <h1 className='text-4xl md:text-5xl font-light inline-block relative'>
-                {getLocalizedContent(project.title, project.titleJa)}
-                <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
-              </h1>
-            </div>
-
-            <div className='flex gap-3'>
-              {project.demoUrl && (
-                <motion.a
-                  href={project.demoUrl}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='inline-flex items-center justify-center p-2 px-3 font-medium text-sm text-gray-300 bg-card text-primary hover:bg-base-dark/80 rounded-md transition-colors border border-gray-700'
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}>
-                  <SquareArrowOutUpRight size={16} />
-                </motion.a>
-              )}
-              {project.sourceUrl && (
-                <motion.a
-                  href={project.sourceUrl}
-                  target='_blank'
-                  rel='noopener noreferrer'
-                  className='inline-flex items-center justify-center p-2 px-3 font-medium text-sm text-gray-300 bg-card text-primary hover:bg-base-dark/80 rounded-md transition-colors border border-gray-700'
-                  whileHover={{ scale: 1.1 }}
-                  whileTap={{ scale: 0.95 }}>
-                  <svg
-                    xmlns='http://www.w3.org/2000/svg'
-                    width='16'
-                    height='16'
-                    viewBox='0 0 24 24'
-                    fill='none'
-                    stroke='currentColor'
-                    strokeWidth='2'
-                    strokeLinecap='round'
-                    strokeLinejoin='round'>
-                    <path d='M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22' />
-                  </svg>
-                </motion.a>
-              )}
-            </div>
-          </div>
-
-          {/* Project Details Toggle Button */}
-          <motion.button
-            className='w-full flex items-center justify-center gap-2 py-3 px-4 bg-card hover:bg-card/80 text-primary border border-border rounded-md transition-colors'
-            onClick={() => setDetailsExpanded(!detailsExpanded)}
-            whileHover={{ y: -2 }}
-            whileTap={{ y: 0 }}>
-            {detailsExpanded ? (
-              <>
-                <span>{t('projectPage.hideDetails') || 'Hide Details'}</span>
-                <ChevronUp size={18} />
-              </>
-            ) : (
-              <>
-                <span>{t('projectPage.showDetails') || 'Show Details'}</span>
-                <ChevronDown size={18} />
-              </>
-            )}
-          </motion.button>
-        </motion.header>
-
-        {/* Expandable Project Details */}
-        <AnimatePresence>
-          {detailsExpanded && (
-            <motion.div
-              variants={expandVariants}
-              initial='hidden'
-              animate='visible'
-              exit='hidden'>
-              {/* Project overview */}
-              <motion.section variants={itemVariants} className='mb-20'>
-                <div className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
-                  <div className='md:col-span-2'>
-                    <div className='space-x-4'>
-                      <span className='font-mono text-primary text-sm tracking-wider'>
-                        001 /
-                      </span>
-                      <h2 className='text-3xl font-light inline-block relative'>
-                        {t('projectPage.overview')}
-                        <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
-                      </h2>
-                    </div>
-                  </div>
-
-                  <div className='md:col-span-4 text-muted-foreground'>
-                    {project.summary && (
-                      <p className='text-lg leading-relaxed font-medium mb-4'>
-                        {getLocalizedContent(
-                          project.summary,
-                          project.summaryJa
-                        )}
-                      </p>
-                    )}
-
-                    {project.description && (
-                      <p className='text-lg leading-relaxed'>
-                        {getLocalizedContent(
-                          project.description,
-                          project.descriptionJa
-                        )}
-                      </p>
-                    )}
-                    {project.note && (
-                      <p className='text-sm text-muted-foreground italic mt-4'>
-                        {getLocalizedContent(project.note, project.noteJa)}
-                      </p>
-                    )}
-                  </div>
-                </div>
-              </motion.section>
-
-              {/* Technical details */}
-              <motion.section variants={itemVariants} className='mb-20'>
-                <div className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
-                  <div className='md:col-span-2'>
-                    <div className='space-x-4'>
-                      <span className='font-mono text-primary text-sm tracking-wider'>
-                        002 /
-                      </span>
-                      <h2 className='text-3xl font-light mt-2 inline-block relative'>
-                        {t('projectPage.details')}
-                        <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
-                      </h2>
-                    </div>
-                  </div>
-
-                  <div className='md:col-span-4'>
-                    <div className='grid grid-cols-1 md:grid-cols-2 gap-12'>
-                      {/* Tech Stack */}
-                      {project.techStack && project.techStack.length > 0 && (
-                        <div>
-                          <h3 className='text-xl font-medium mb-4'>
-                            {t('projectPage.techStack')}
-                          </h3>
-                          <div className='grid grid-cols-2 md:grid-cols-1 gap-3'>
-                            {project.techStack.map((tech, index) => (
-                              <span
-                                key={index}
-                                className='px-3 py-1 bg-base-dark rounded text-foreground border border-border'>
-                                {tech}
-                              </span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-
-                      {/* Features */}
-                      {((project.features && project.features.length > 0) ||
-                        (isJapanese &&
-                          project.featuresJa &&
-                          project.featuresJa.length > 0)) && (
-                        <div>
-                          <h3 className='text-xl font-medium mb-4'>
-                            {t('projectPage.keyFeatures')}
-                          </h3>
-                          <ul className='space-y-5'>
-                            {(isJapanese && project.featuresJa
-                              ? project.featuresJa
-                              : project.features
-                            )?.map((feature, index) => (
-                              <li
-                                key={index}
-                                className='flex items-center gap-8'>
-                                <span className='text-sm'>
-                                  {' '}
-                                  {String(index + 1).padStart(2, '0')}
-                                </span>
-                                <span className='text-muted-foreground'>
-                                  {feature}
-                                </span>
-                              </li>
-                            ))}
-                          </ul>
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </motion.section>
-            </motion.div>
+        {/* Project Details */}
+        <div className='max-w-6xl mx-auto px-5 pb-20'>
+          {/* Description */}
+          {project.description && (
+            <motion.section
+              {...fadeIn}
+              transition={{ delay: 0.3 }}
+              className='mb-16'>
+              <h2 className='text-sm font-mono text-muted-foreground mb-6'>
+                ABOUT
+              </h2>
+              <p className='text-lg leading-relaxed text-foreground/80 max-w-3xl'>
+                {getLocalizedContent(
+                  project.description,
+                  project.descriptionJa
+                )}
+              </p>
+            </motion.section>
           )}
-        </AnimatePresence>
+
+          <div className='grid grid-cols-1 md:grid-cols-2 gap-16'>
+            {/* Tech Stack */}
+            {project.techStack && project.techStack.length > 0 && (
+              <motion.section {...fadeIn} transition={{ delay: 0.4 }}>
+                <h2 className='text-sm font-mono text-muted-foreground mb-6'>
+                  TECH STACK
+                </h2>
+                <div className='flex flex-wrap gap-2'>
+                  {project.techStack.map((tech, index) => (
+                    <span
+                      key={index}
+                      className='px-3 py-1.5 text-sm border border-border/50 text-foreground/70 hover:border-border hover:text-foreground transition-colors'>
+                      {tech}
+                    </span>
+                  ))}
+                </div>
+              </motion.section>
+            )}
+
+            {/* Features */}
+            {((project.features && project.features.length > 0) ||
+              (isJapanese &&
+                project.featuresJa &&
+                project.featuresJa.length > 0)) && (
+              <motion.section {...fadeIn} transition={{ delay: 0.5 }}>
+                <h2 className='text-sm font-mono text-muted-foreground mb-6'>
+                  KEY FEATURES
+                </h2>
+                <ul className='space-y-3'>
+                  {(isJapanese && project.featuresJa
+                    ? project.featuresJa
+                    : project.features
+                  )?.map((feature, index) => (
+                    <li
+                      key={index}
+                      className='flex items-start gap-3 text-foreground/80'>
+                      <span className='text-xs text-muted-foreground mt-1'>
+                        {String(index + 1).padStart(2, '0')}
+                      </span>
+                      <span>{feature}</span>
+                    </li>
+                  ))}
+                </ul>
+              </motion.section>
+            )}
+          </div>
+        </div>
       </motion.div>
 
-      {/* Image lightbox */}
-      {activeImageUrl && (
-        <div
-          className='fixed inset-0 bg-black/90 z-50 flex items-center justify-center p-4'
-          onClick={() => setActiveImageUrl(null)}>
-          <div className='relative max-w-6xl max-h-[90vh]'>
+      {/* Lightbox */}
+      <AnimatePresence>
+        {activeImageUrl && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className='fixed inset-0 bg-black/95 z-50 flex items-center justify-center'
+            onClick={() => setActiveImageUrl(null)}>
             <button
-              className='absolute top-4 right-4 text-white p-2 rounded-full bg-black/50 hover:bg-black/70 transition-colors'
+              className='absolute top-4 right-4 text-white/70 hover:text-white p-2 transition-colors'
               onClick={(e) => {
                 e.stopPropagation();
                 setActiveImageUrl(null);
               }}>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'>
-                <line x1='18' y1='6' x2='6' y2='18'></line>
-                <line x1='6' y1='6' x2='18' y2='18'></line>
-              </svg>
+              <X size={24} />
             </button>
 
-            {/* Previous image button */}
             <button
-              className='absolute left-4 top-1/2 -translate-y-1/2 text-white p-3 rounded-full bg-black/50 hover:bg-black/70 transition-colors'
+              className='absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors'
               onClick={showPrevImage}>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'>
-                <polyline points='15 18 9 12 15 6'></polyline>
-              </svg>
+              <ChevronLeft size={32} />
             </button>
 
-            {/* Next image button */}
             <button
-              className='absolute right-4 top-1/2 -translate-y-1/2 text-white p-3 rounded-full bg-black/50 hover:bg-black/70 transition-colors'
+              className='absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors'
               onClick={showNextImage}>
-              <svg
-                xmlns='http://www.w3.org/2000/svg'
-                width='24'
-                height='24'
-                viewBox='0 0 24 24'
-                fill='none'
-                stroke='currentColor'
-                strokeWidth='2'
-                strokeLinecap='round'
-                strokeLinejoin='round'>
-                <polyline points='9 18 15 12 9 6'></polyline>
-              </svg>
+              <ChevronRight size={32} />
             </button>
 
-            {/* Image counter */}
-            <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-white bg-black/50 px-3 py-1 rounded-full text-sm'>
+            <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm'>
               {activeImageIndex + 1} /{' '}
               {activeImageType === 'desktop'
                 ? project.desktopImages.length
                 : project.mobileImages.length}
             </div>
 
-            <img
+            <motion.img
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              transition={{ duration: 0.2 }}
               src={activeImageUrl}
               alt='Enlarged view'
-              className='max-h-[90vh] max-w-full object-contain'
+              className='max-h-[90vh] max-w-[90vw] object-contain'
               onClick={(e) => e.stopPropagation()}
             />
-          </div>
-        </div>
-      )}
+          </motion.div>
+        )}
+      </AnimatePresence>
     </Layout>
   );
 };

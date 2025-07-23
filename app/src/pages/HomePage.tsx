@@ -9,20 +9,33 @@ import SkillsSection from '../components/SkillsSection';
 import ContactForm from '../components/ContactForm';
 import Footer from '../components/Footer';
 import SEO from '../components/SEO';
+import TechLearningCard from '../components/TechLearningCard';
 
 // Define learning tech icons
 const learningTech = [
   {
     name: 'Svelte',
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/svelte/svelte-original.svg',
+    progress: 75,
+    description: 'Modern frontend framework with excellent performance',
+    learningSince: '2024',
+    difficulty: 'Intermediate' as const,
   },
   {
     name: 'Three.js',
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/threejs/threejs-original.svg',
+    progress: 60,
+    description: '3D graphics library for web applications',
+    learningSince: '2024',
+    difficulty: 'Advanced' as const,
   },
   {
     name: 'Astro',
     icon: 'https://cdn.jsdelivr.net/gh/devicons/devicon/icons/astro/astro-original.svg',
+    progress: 85,
+    description: 'Static site generator with component islands',
+    learningSince: '2023',
+    difficulty: 'Intermediate' as const,
   },
 ];
 
@@ -146,11 +159,11 @@ export default function HomePage() {
                   </div>
 
                   <div className='mb-10'>
-                    <h3 className='text-xl font-light text-foreground mb-4 flex items-center'>
+                    <h3 className='text-xl font-light text-foreground mb-6 flex items-center'>
                       <span className='w-6 h-px bg-primary mr-3'></span>
                       {t('sections.about.personalInterests')}
                     </h3>
-                    <p className='text-lg leading-relaxed mb-6'>
+                    <p className='text-lg leading-relaxed mb-8'>
                       {t('sections.about.paragraph2')}
                     </p>
                   </div>
@@ -172,36 +185,17 @@ export default function HomePage() {
                       {t('sections.about.currentlyLearning')}
                     </h3>
 
-                    <div className='flex gap-6'>
+                    <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
                       {learningTech.map((tech, index) => (
-                        <motion.div
+                        <TechLearningCard
                           key={tech.name}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ delay: index * 0.1, duration: 0.5 }}
-                          className='flex flex-col items-center gap-2'>
-                          <div className='rounded-full p-4 bg-card/80 border border-muted/30 shadow-inner w-16 h-16 flex items-center justify-center'>
-                            <img
-                              src={tech.icon}
-                              alt={tech.name}
-                              className='w-10 h-10 object-contain'
-                              onError={(e) => {
-                                // If image fails to load, show the first letter
-                                e.currentTarget.style.display = 'none';
-                                e.currentTarget.parentElement?.classList.add(
-                                  'show-letter'
-                                );
-                              }}
-                            />
-                            <span className='hidden text-lg font-mono'>
-                              {tech.name.charAt(0)}
-                            </span>
-                          </div>
-                          <span className='text-sm text-foreground/80'>
-                            {tech.name}
-                          </span>
-                        </motion.div>
+                          name={tech.name}
+                          icon={tech.icon}
+                          progress={tech.progress}
+                          description={tech.description}
+                          learningSince={tech.learningSince}
+                          difficulty={tech.difficulty}
+                        />
                       ))}
                     </div>
                   </div>
