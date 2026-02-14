@@ -8,7 +8,6 @@ import { useMediaQuery } from '../../hooks/useMediaQuery';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-  const [currentAnimation, setCurrentAnimation] = useState('none');
   const [scrolled, setScrolled] = useState(false);
   const isMobile = useMediaQuery('(max-width: 768px)');
 
@@ -40,10 +39,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
   const toggleMobileMenu = () => {
     setMobileMenuOpen(!mobileMenuOpen);
-  };
-
-  const handleAnimationChange = (animation: string) => {
-    setCurrentAnimation(animation);
   };
 
   const scrollToSection = (sectionId: string) => {
@@ -119,10 +114,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <div className='fixed bottom-4 md:bottom-10 left-0 right-0 py-4 z-10 pointer-events-none'>
         <div className='w-full container mx-auto flex justify-between items-end px-5'>
           {!isMobile && <SocialSidebar />}
-          <Options
-            onAnimationChange={handleAnimationChange}
-            currentAnimation={currentAnimation}
-          />
+          <Options />
         </div>
       </div>
 

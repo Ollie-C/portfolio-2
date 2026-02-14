@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
 import Layout from '../components/Layout/Layout';
 import { motion, AnimatePresence } from 'framer-motion';
@@ -39,9 +39,13 @@ const learningTech = [
   },
 ];
 
+const ABOUT_SLIDES_COUNT = 4;
+
 export default function HomePage() {
   const { t } = useTranslation();
   const location = useLocation();
+  const aboutScrollRef = useRef<HTMLDivElement>(null);
+  const [aboutSlideIndex, setAboutSlideIndex] = useState(0);
 
   // Subtle fade-in animation for content
   const fadeIn = {
@@ -93,6 +97,20 @@ export default function HomePage() {
     }
   }, [location.state]);
 
+  // Sync about section dot indicator with horizontal scroll position
+  useEffect(() => {
+    const el = aboutScrollRef.current;
+    if (!el) return;
+    const onScroll = () => {
+      const width = el.clientWidth;
+      const index = Math.round(el.scrollLeft / width);
+      setAboutSlideIndex(Math.min(index, ABOUT_SLIDES_COUNT - 1));
+    };
+    onScroll();
+    el.addEventListener('scroll', onScroll, { passive: true });
+    return () => el.removeEventListener('scroll', onScroll);
+  }, []);
+
   return (
     <Layout>
       <SEO
@@ -122,71 +140,113 @@ export default function HomePage() {
             <Hero />
           </section>
 
-          {/* About Section */}
+          {/* About Section - horizontal scroll, one paragraph per slide */}
           <section
             id='about'
-            className='md:px-28 py-24 section-bg-light min-h-[100vh] flex items-center'>
-            <div className='container mx-auto px-8'>
-              <motion.div
-                initial='hidden'
-                whileInView='visible'
-                viewport={{ once: true, margin: '-10%' }}
-                variants={staggeredContainer}
-                className='grid grid-cols-1 md:grid-cols-6 gap-8 items-start'>
-                <div className='md:col-span-2'>
-                  <motion.div variants={fadeIn} className='space-x-4'>
-                    <span className='font-mono text-primary text-sm tracking-wider'>
-                      001 /
-                    </span>
-                    <h2 className='text-3xl md:text-4xl font-light mt-2 inline-block relative'>
-                      {t('sections.about.title')}
-                      <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
-                    </h2>
-                  </motion.div>
-                </div>
-
+            className='section-bg-light min-h-[100vh] flex flex-col overflow-hidden'>
+            <div className='md:px-28 py-8 md:py-12 shrink-0'>
+              <div className='container mx-auto px-6 md:px-8'>
                 <motion.div
+                  initial='hidden'
+                  whileInView='visible'
+                  viewport={{ once: true, margin: '-10%' }}
                   variants={fadeIn}
-                  className='md:col-span-4 text-muted-foreground'>
-                  <div className='mb-10'>
+                  className='space-x-4'>
+                  <span className='font-mono text-primary text-sm tracking-wider'>
+                    001 /
+                  </span>
+                  <h2 className='text-3xl md:text-4xl font-light mt-2 inline-block relative'>
+                    {t('sections.about.title')}
+                    <span className='absolute -bottom-2 left-0 w-1/3 h-px bg-primary opacity-50'></span>
+                  </h2>
+                </motion.div>
+              </div>
+            </div>
+
+            <div
+              ref={aboutScrollRef}
+              className='flex-1 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth flex w-full min-h-0'
+              style={{ WebkitOverflowScrolling: 'touch' }}
+              role='region'
+              aria-label='About me sections'>
+              {/* Slide 1: My Journey */}
+              <div className='min-w-full w-full shrink-0 snap-start snap-always flex items-center justify-center'>
+                <div className='container mx-auto px-6 md:px-8 py-8 md:py-12 w-full flex justify-center'>
+                  <motion.div
+                    initial='hidden'
+                    whileInView='visible'
+                    viewport={{ once: true }}
+                    variants={fadeIn}
+                    className='max-w-2xl w-full mx-auto text-muted-foreground'>
                     <h3 className='text-xl font-light text-foreground mb-4 flex items-center'>
                       <span className='w-6 h-px bg-primary mr-3'></span>
                       {t('sections.about.myJourney')}
                     </h3>
-                    <p className='text-lg leading-relaxed mb-6'>
+                    <p className='text-lg leading-relaxed'>
                       {t('sections.about.paragraph1')}
                     </p>
-                  </div>
+                    <p className='text-xs text-muted-foreground/70 mt-6 uppercase tracking-widest font-mono'>
+                      Scroll or swipe for more →
+                    </p>
+                  </motion.div>
+                </div>
+              </div>
 
-                  <div className='mb-10'>
-                    <h3 className='text-xl font-light text-foreground mb-6 flex items-center'>
+              {/* Slide 2: Personal Interests */}
+              <div className='min-w-full w-full shrink-0 snap-start snap-always flex items-center justify-center'>
+                <div className='container mx-auto px-6 md:px-8 py-8 md:py-12 w-full flex justify-center'>
+                  <motion.div
+                    initial='hidden'
+                    whileInView='visible'
+                    viewport={{ once: true }}
+                    variants={fadeIn}
+                    className='max-w-2xl w-full mx-auto text-muted-foreground'>
+                    <h3 className='text-xl font-light text-foreground mb-4 flex items-center'>
                       <span className='w-6 h-px bg-primary mr-3'></span>
                       {t('sections.about.personalInterests')}
                     </h3>
-                    <p className='text-lg leading-relaxed mb-8'>
+                    <p className='text-lg leading-relaxed'>
                       {t('sections.about.paragraph2')}
                     </p>
-                  </div>
+                  </motion.div>
+                </div>
+              </div>
 
-                  <div className='mb-10'>
+              {/* Slide 3: Tech & Projects */}
+              <div className='min-w-full w-full shrink-0 snap-start snap-always flex items-center justify-center'>
+                <div className='container mx-auto px-6 md:px-8 py-8 md:py-12 w-full flex justify-center'>
+                  <motion.div
+                    initial='hidden'
+                    whileInView='visible'
+                    viewport={{ once: true }}
+                    variants={fadeIn}
+                    className='max-w-2xl w-full mx-auto text-muted-foreground'>
                     <h3 className='text-xl font-light text-foreground mb-4 flex items-center'>
                       <span className='w-6 h-px bg-primary mr-3'></span>
                       {t('sections.about.myTech')}
                     </h3>
-                    <p className='text-lg leading-relaxed mb-6'>
+                    <p className='text-lg leading-relaxed'>
                       {t('sections.about.paragraph3')}
                     </p>
-                  </div>
+                  </motion.div>
+                </div>
+              </div>
 
-                  {/* Currently Learning Section */}
-                  <div className='mt-12'>
+              {/* Slide 4: Currently Learning */}
+              <div className='min-w-full w-full shrink-0 snap-start snap-always flex items-center justify-center'>
+                <div className='container mx-auto px-6 md:px-8 py-8 md:py-12 w-full flex justify-center'>
+                  <motion.div
+                    initial='hidden'
+                    whileInView='visible'
+                    viewport={{ once: true }}
+                    variants={fadeIn}
+                    className='max-w-4xl w-full mx-auto'>
                     <h3 className='text-xl font-light text-foreground mb-6 flex items-center'>
                       <span className='w-6 h-px bg-primary mr-3'></span>
                       {t('sections.about.currentlyLearning')}
                     </h3>
-
                     <div className='grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6'>
-                      {learningTech.map((tech, index) => (
+                      {learningTech.map((tech) => (
                         <TechLearningCard
                           key={tech.name}
                           name={tech.name}
@@ -198,9 +258,24 @@ export default function HomePage() {
                         />
                       ))}
                     </div>
-                  </div>
-                </motion.div>
-              </motion.div>
+                  </motion.div>
+                </div>
+              </div>
+            </div>
+
+            {/* Dot indicators - reflect current slide */}
+            <div className='shrink-0 py-4 flex justify-center gap-2' aria-hidden>
+              {Array.from({ length: ABOUT_SLIDES_COUNT }).map((_, i) => (
+                <span
+                  key={i}
+                  className={`w-2 h-2 rounded-full transition-colors ${
+                    i === aboutSlideIndex
+                      ? 'bg-primary'
+                      : 'bg-muted-foreground/40'
+                  }`}
+                  title={`Slide ${i + 1}`}
+                />
+              ))}
             </div>
           </section>
 
