@@ -13,8 +13,6 @@ const baseUrl = 'https://olliecross.dev';
 
 async function generateSitemap() {
   try {
-    console.log('Generating sitemap...');
-
     const sitemap = [
       {
         url: baseUrl,
@@ -50,8 +48,6 @@ async function generateSitemap() {
         _updatedAt
       }
     `);
-
-    console.log(`Found ${projects.length} projects`);
 
     // Add project URLs to sitemap
     projects.forEach((project) => {
@@ -93,9 +89,6 @@ ${xmlUrls}
     // Write to public directory
     const outputPath = path.join(process.cwd(), 'public', 'sitemap.xml');
     fs.writeFileSync(outputPath, sitemapXML);
-
-    console.log(`Sitemap generated successfully at ${outputPath}`);
-    console.log(`Total URLs: ${sitemap.length}`);
   } catch (error) {
     console.error('Error generating sitemap:', error);
     process.exit(1);

@@ -58,18 +58,6 @@ export default function HomePage() {
     },
   };
 
-  // Staggered children animation
-  const staggeredContainer = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.3,
-        delayChildren: 0.1,
-      },
-    },
-  };
-
   useEffect(() => {
     if (location.state?.scrollTo) {
       const sectionId = location.state.scrollTo;
