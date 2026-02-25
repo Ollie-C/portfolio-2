@@ -48,6 +48,7 @@ export default {
       },
       fontFamily: {
         sans: ['Gotham', 'system-ui', 'sans-serif'],
+        hero: ['Outfit', 'Gotham', 'system-ui', 'sans-serif'],
       },
     },
   },

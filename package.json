@@ -11,6 +11,12 @@
   "engines": {
     "node": ">=20.0.0"
   },
+  "overrides": {
+    "react-helmet-async": {
+      "react": "$react",
+      "react-dom": "$react-dom"
+    }
+  },
   "devDependencies": {
     "@types/node": "^20.9.0",
     "@types/react": "^18.2.37",
@@ -19,7 +25,10 @@
   },
   "dependencies": {
     "@sanity/client": "^6.29.0",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
     "react-helmet-async": "^2.0.5",
+    "sanity": "^5.11.0",
     "swiper": "^11.2.7"
   }
 }

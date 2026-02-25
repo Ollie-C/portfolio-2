@@ -27,7 +27,7 @@ const ScrollIndicator: React.FC<ScrollIndicatorProps> = ({
 
   return (
     <motion.div
-      className={`absolute bottom-[15%] left-1/2 transform -translate-x-1/2 cursor-pointer p-4 min-w-[48px] min-h-[48px] flex items-center justify-center -m-4 ${className}`}
+      className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 cursor-pointer p-4 min-w-[48px] min-h-[48px] flex items-center justify-center -m-4 z-[1000] ${className}`}
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ delay: 1.5, duration: 0.8 }}

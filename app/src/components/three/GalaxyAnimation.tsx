@@ -4,8 +4,7 @@ import { useThemeStore } from '../../store/themeStore';
 
 export default function GalaxyAnimation() {
   const containerRef = useRef<HTMLDivElement>(null);
-  const { modeTheme } = useThemeStore();
-  const isDarkMode = modeTheme === 'dark';
+  const isDarkMode = useThemeStore((s) => s.modeTheme === 'dark');
 
   useEffect(() => {
     if (!containerRef.current) return;
@@ -18,7 +17,7 @@ export default function GalaxyAnimation() {
       90, // Wider FOV
       window.innerWidth / window.innerHeight,
       0.1,
-      100
+      100,
     );
     // Adjusted camera position for a better default view
     camera.position.set(3, 1, 4);
@@ -37,20 +36,13 @@ export default function GalaxyAnimation() {
     }
     containerRef.current.appendChild(renderer.domElement);
 
-    // Galaxy parameters - optimized for visual appeal
+    // Galaxy parameters - super multi-colored spiral
     const params = {
-      count: 12000, // Good balance of performance and visual density
-      size: 0.025, // Smaller particles for a more starry appearance
-      radius: 8, // Slightly larger radius for a wider galaxy
-      branches: 8, // 8 spiral arms looks good
-      // Different colors based on theme
-      colorInside: isDarkMode
-        ? new THREE.Color('#443223') // Dark mode: Warm center
-        : new THREE.Color('#111111'), // Light mode: Soft purple-blue center
-      colorOutside: isDarkMode
-        ? new THREE.Color('#25307f') // Dark mode: Deep blue edges
-        : new THREE.Color('#25307f'), // Light mode: Muted blue edges
-      randomnessPower: 4, // Increased for more natural spread
+      count: 12000,
+      size: 0.025,
+      radius: 8,
+      branches: 8,
+      randomnessPower: 4,
       insideColor: 0xffffff,
       outsideColor: 0xffffff,
     };
@@ -67,6 +59,12 @@ export default function GalaxyAnimation() {
         particlesMaterial.dispose();
         scene.remove(particles);
       }
+
+      // Light theme: use normal blending + lower opacity so centre doesn't blow out
+      const blending = isDarkMode
+        ? THREE.AdditiveBlending
+        : THREE.NormalBlending;
+      const opacity = isDarkMode ? 1.0 : 0.75;
 
       // Create geometry
       particlesGeometry = new THREE.BufferGeometry();
@@ -104,16 +102,11 @@ export default function GalaxyAnimation() {
         positions[i3 + 2] =
           Math.sin(branchAngle + spinAngle) * radius + randomZ;
 
-        // Color
-        const mixRatio = radius / params.radius;
-        const insideColor = params.colorInside;
-        const outsideColor = params.colorOutside;
-
-        const color = insideColor.clone().lerp(outsideColor, mixRatio);
-
-        colors[i3] = color.r;
-        colors[i3 + 1] = color.g;
-        colors[i3 + 2] = color.b;
+        // Color – same palette as particles: dark amber/moss to muted purple-red
+        const mixFactor = Math.random();
+        colors[i3] = mixFactor * 0.12 + (1 - mixFactor) * 0.4; // R
+        colors[i3 + 1] = mixFactor * 0.6 + (1 - mixFactor) * 0.18; // G
+        colors[i3 + 2] = mixFactor * 0.5 + (1 - mixFactor) * 0.32; // B
 
         // Scale - vary the size more for visual interest
         const isCenterStar = Math.random() > 0.996;
@@ -124,28 +117,27 @@ export default function GalaxyAnimation() {
 
       particlesGeometry.setAttribute(
         'position',
-        new THREE.BufferAttribute(positions, 3)
+        new THREE.BufferAttribute(positions, 3),
       );
       particlesGeometry.setAttribute(
         'color',
-        new THREE.BufferAttribute(colors, 3)
+        new THREE.BufferAttribute(colors, 3),
       );
       particlesGeometry.setAttribute(
         'scale',
-        new THREE.BufferAttribute(scales, 1)
+        new THREE.BufferAttribute(scales, 1),
       );
 
-      // Material - with adjusted blending based on theme
+      // Material – additive on dark (glow), normal on light (keeps colour in centre)
       particlesMaterial = new THREE.PointsMaterial({
         size: params.size,
         sizeAttenuation: true,
         depthWrite: false,
-        blending: THREE.AdditiveBlending,
+        blending,
         vertexColors: true,
         transparent: true,
         alphaMap: createCircleTexture(),
-        // Adjust opacity based on theme
-        opacity: isDarkMode ? 1.0 : 0.7,
+        opacity,
       });
 
       // Points
@@ -173,7 +165,7 @@ export default function GalaxyAnimation() {
         0,
         centerX,
         centerY,
-        radius
+        radius,
       );
 
       gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');

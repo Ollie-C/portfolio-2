@@ -1,9 +1,10 @@
-import { Link, useLocation } from 'react-router-dom';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { ChevronRight } from 'lucide-react';
 
 interface BreadcrumbItem {
   label: string;
   href?: string;
+  scrollTo?: string;
 }
 
 interface BreadcrumbsProps {
@@ -12,6 +13,7 @@ interface BreadcrumbsProps {
 
 const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items = [] }) => {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const generateBreadcrumbs = (): BreadcrumbItem[] => {
     const pathSegments = location.pathname.split('/').filter(Boolean);
@@ -41,6 +43,10 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items = [] }) => {
 
   const breadcrumbItems = items.length > 0 ? items : generateBreadcrumbs();
 
+  const handleScrollToClick = (href: string, scrollTo: string) => {
+    navigate(href, { state: { scrollTo } });
+  };
+
   return (
     <nav aria-label='Breadcrumb' className='mb-6'>
       <ol className='flex items-center space-x-2 text-sm text-muted-foreground'>
@@ -53,12 +59,23 @@ const Breadcrumbs: React.FC<BreadcrumbsProps> = ({ items = [] }) => {
               />
             )}
 
-            {item.href ? (
-              <Link
-                to={item.href}
-                className='text-secondary hover:text-primary transition-colors flex items-center gap-1'>
-                {item.label}
-              </Link>
+            {item.href !== undefined ? (
+              item.scrollTo ? (
+                <button
+                  type='button'
+                  onClick={() =>
+                    handleScrollToClick(item.href!, item.scrollTo!)
+                  }
+                  className='text-secondary hover:text-primary transition-colors flex items-center gap-1 bg-transparent border-none p-0 font-inherit cursor-pointer'>
+                  {item.label}
+                </button>
+              ) : (
+                <Link
+                  to={item.href}
+                  className='text-secondary hover:text-primary transition-colors flex items-center gap-1'>
+                  {item.label}
+                </Link>
+              )
             ) : (
               <span className='text-foreground font-medium flex items-center gap-1'>
                 {item.label}

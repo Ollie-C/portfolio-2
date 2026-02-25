@@ -15,9 +15,11 @@ import {
   ChevronRight,
 } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Pagination } from 'swiper/modules';
+import { Navigation, Pagination, EffectCards } from 'swiper/modules';
 // @ts-ignore
 import 'swiper/css';
+// @ts-ignore
+import 'swiper/css/effect-cards';
 // @ts-ignore
 import 'swiper/css/navigation';
 // @ts-ignore
@@ -78,13 +80,16 @@ const ProjectPage: React.FC = () => {
   const [activeImageUrl, setActiveImageUrl] = useState<string | null>(null);
   const [activeImageIndex, setActiveImageIndex] = useState<number>(0);
   const [activeImageType, setActiveImageType] = useState<'desktop' | 'mobile'>(
-    'desktop'
+    'desktop',
+  );
+  const [galleryView, setGalleryView] = useState<'desktop' | 'mobile'>(
+    'desktop',
   );
 
   const openLightbox = (
     imageUrl: string,
     index: number,
-    type: 'desktop' | 'mobile'
+    type: 'desktop' | 'mobile',
   ) => {
     setActiveImageUrl(imageUrl);
     setActiveImageIndex(index);
@@ -128,7 +133,7 @@ const ProjectPage: React.FC = () => {
 
   const getLocalizedContent = (
     enContent: string | undefined,
-    jaContent: string | undefined
+    jaContent: string | undefined,
   ) => {
     if (isJapanese && jaContent) {
       return jaContent;
@@ -140,7 +145,7 @@ const ProjectPage: React.FC = () => {
     return (
       <Layout>
         <SEO
-          title='Loading Project | tom name'
+          title='Loading Project | Ollie Cross'
           description='Loading project details...'
         />
         <div className='flex items-center justify-center min-h-[60vh]'>
@@ -154,7 +159,7 @@ const ProjectPage: React.FC = () => {
     return (
       <Layout>
         <SEO
-          title='Project Not Found | tom name'
+          title='Project Not Found | Ollie Cross'
           description='The requested project could not be found.'
         />
         <div className='min-h-[60vh] flex flex-col items-center justify-center'>
@@ -185,7 +190,7 @@ const ProjectPage: React.FC = () => {
     'project',
     'portfolio',
     'web development',
-    'tom name',
+    'Ollie Cross',
   ];
   const projectImage =
     project.desktopImages?.[0]?.url ||
@@ -199,11 +204,11 @@ const ProjectPage: React.FC = () => {
     description: projectDescription,
     author: {
       '@type': 'Person',
-      name: 'tom name',
+      name: 'Ollie Cross',
     },
     dateCreated: project.createdAt,
     dateModified: project.updatedAt,
-    url: `https://tomname.dev/project/${project.slug}`,
+    url: `https://olliecross.dev/project/${project.slug}`,
     ...(project.demoUrl && { url: project.demoUrl }),
     ...(project.sourceUrl && { codeRepository: project.sourceUrl }),
     ...(project.techStack && {
@@ -229,11 +234,11 @@ const ProjectPage: React.FC = () => {
   return (
     <Layout>
       <SEO
-        title={`${projectTitle} | tom name`}
+        title={`${projectTitle} | Ollie Cross`}
         description={projectDescription}
         keywords={projectKeywords}
         image={projectImage}
-        url={`https://tomname.dev/project/${project.slug}`}
+        url={`https://olliecross.dev/project/${project.slug}`}
         type='article'
         publishedTime={project.createdAt}
         modifiedTime={project.updatedAt}
@@ -242,63 +247,16 @@ const ProjectPage: React.FC = () => {
         structuredData={projectStructuredData}
       />
 
-      <style>
-        {`
-          .swiper-pagination {
-            bottom: 20px !important;
-          }
-          
-          .swiper-pagination-bullet {
-            background: rgba(255, 255, 255, 0.5);
-            opacity: 1;
-            width: 6px;
-            height: 6px;
-          }
-          
-          .swiper-pagination-bullet-active {
-            background: white;
-            width: 24px;
-            border-radius: 3px;
-          }
-          
-          .swiper-button-next,
-          .swiper-button-prev {
-            color: white;
-            width: 40px;
-            height: 40px;
-            background: rgba(0, 0, 0, 0.5);
-            border-radius: 50%;
-            backdrop-filter: blur(4px);
-            transition: all 0.3s ease;
-          }
-          
-          .swiper-button-next:hover,
-          .swiper-button-prev:hover {
-            background: rgba(0, 0, 0, 0.7);
-          }
-          
-          .swiper-button-next:after,
-          .swiper-button-prev:after {
-            font-size: 16px;
-            font-weight: bold;
-          }
-          
-          @media (max-width: 768px) {
-            .swiper-button-next,
-            .swiper-button-prev {
-              display: none;
-            }
-          }
-        `}
-      </style>
-
-      <motion.div initial='initial' animate='animate' className='min-h-screen'>
+      <motion.div
+        initial='initial'
+        animate='animate'
+        className='min-h-screen overflow-x-hidden'>
         {/* Header Section */}
         <div className='max-w-6xl mx-auto px-5 pt-10 pb-8'>
           <Breadcrumbs
             items={[
               { label: 'Home', href: '/' },
-              { label: 'Projects', href: '/#projects' },
+              { label: 'Projects', href: '/', scrollTo: 'projects' },
               { label: projectTitle },
             ]}
           />
@@ -331,6 +289,11 @@ const ProjectPage: React.FC = () => {
           <motion.div {...fadeIn} transition={{ delay: 0.1 }} className='mb-12'>
             <h1 className='text-5xl md:text-6xl font-light mb-6'>
               {getLocalizedContent(project.title, project.titleJa)}
+              {project.inProgress && (
+                <span className='ml-3 text-sm font-mono text-primary/80 align-middle'>
+                  {t('projectCard.inProgress')}
+                </span>
+              )}
             </h1>
 
             {project.summary && (
@@ -368,70 +331,120 @@ const ProjectPage: React.FC = () => {
           </motion.div>
         </div>
 
-        {/* Full-width Image Gallery */}
+        {/* Full-width Image Gallery - fan/cards style */}
         {(hasDesktopImages || hasMobileImages) && (
           <motion.section
             {...fadeIn}
             transition={{ delay: 0.2 }}
-            className='w-full mb-20'>
-            <div className='flex flex-col md:flex-row gap-4 max-w-7xl xl:max-w-screen-2xl mx-auto'>
-              {/* Desktop Images */}
-              {hasDesktopImages && (
-                <div className='w-full md:w-3/4'>
-                  <Swiper
-                    modules={[Navigation, Pagination]}
-                    navigation={true}
-                    pagination={{ clickable: true }}
-                    spaceBetween={0}
-                    slidesPerView={1}
-                    className='w-full aspect-video bg-base-dark'>
-                    {project.desktopImages.map((image, index) => (
-                      <SwiperSlide key={`desktop-${index}`}>
-                        <div
-                          className='relative w-full h-full cursor-pointer'
-                          onClick={() =>
-                            openLightbox(image.url, index, 'desktop')
-                          }>
-                          <img
-                            src={image.url}
-                            alt={image.alt || `Desktop view ${index + 1}`}
-                            className='w-full h-full object-cover'
-                          />
-                        </div>
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
+            className='w-full mb-20 project-page-gallery'>
+            <div className='w-full max-w-7xl xl:max-w-screen-2xl mx-auto px-5'>
+              {/* Desktop / Mobile toggle - same style as Recent / Legacy */}
+              {hasDesktopImages && hasMobileImages && (
+                <div className='flex justify-start mb-6'>
+                  <div className='flex items-center gap-2 text-base max-w-6xl'>
+                    <span
+                      role='button'
+                      tabIndex={0}
+                      onClick={() => setGalleryView('desktop')}
+                      onKeyDown={(e) =>
+                        e.key === 'Enter' && setGalleryView('desktop')
+                      }
+                      className={`cursor-pointer transition-all duration-200 ${
+                        galleryView === 'desktop'
+                          ? 'font-bold text-foreground'
+                          : 'opacity-50 text-muted-foreground hover:opacity-70'
+                      }`}>
+                      {t('projectPage.desktop')}
+                    </span>
+                    <span className='text-muted-foreground mx-1'>/</span>
+                    <span
+                      role='button'
+                      tabIndex={0}
+                      onClick={() => setGalleryView('mobile')}
+                      onKeyDown={(e) =>
+                        e.key === 'Enter' && setGalleryView('mobile')
+                      }
+                      className={`cursor-pointer transition-all duration-200 ${
+                        galleryView === 'mobile'
+                          ? 'font-bold text-foreground'
+                          : 'opacity-50 text-muted-foreground hover:opacity-70'
+                      }`}>
+                      {t('projectPage.mobile')}
+                    </span>
+                  </div>
                 </div>
               )}
 
-              {/* Mobile Images */}
-              {hasMobileImages && (
-                <div className='w-full md:w-1/4 overflow-hidden'>
-                  <Swiper
-                    modules={[Navigation, Pagination]}
-                    navigation={true}
-                    pagination={{ clickable: true }}
-                    spaceBetween={0}
-                    slidesPerView={1}
-                    className='w-full aspect-[9/16] bg-base-dark'>
-                    {project.mobileImages.map((image, index) => (
-                      <SwiperSlide key={`mobile-${index}`}>
-                        <div
-                          className='relative w-full h-full cursor-pointer'
-                          onClick={() =>
-                            openLightbox(image.url, index, 'mobile')
-                          }>
-                          <img
-                            src={image.url}
-                            alt={image.alt || `Mobile view ${index + 1}`}
-                            className='w-full h-full object-cover object-top'
-                          />
-                        </div>
-                      </SwiperSlide>
-                    ))}
-                  </Swiper>
-                </div>
-              )}
+              {/* Single full-width fan-style carousel */}
+              {hasDesktopImages &&
+                (galleryView === 'desktop' || !hasMobileImages) && (
+                  <div className='project-gallery-wrapper'>
+                    <Swiper
+                      key='desktop-gallery'
+                      modules={[EffectCards, Navigation, Pagination]}
+                      effect='cards'
+                      grabCursor
+                      navigation
+                      pagination={{ clickable: true }}
+                      className='w-full aspect-video bg-base-dark rounded-lg overflow-hidden'
+                      cardsEffect={{
+                        perSlideOffset: 8,
+                        perSlideRotate: 2,
+                        slideShadows: true,
+                      }}>
+                      {project.desktopImages.map((image, index) => (
+                        <SwiperSlide key={`desktop-${index}`}>
+                          <div
+                            className='relative w-full h-full cursor-pointer'
+                            onClick={() =>
+                              openLightbox(image.url, index, 'desktop')
+                            }>
+                            <img
+                              src={image.url}
+                              alt={image.alt || `Desktop view ${index + 1}`}
+                              className='w-full h-full object-cover'
+                            />
+                          </div>
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  </div>
+                )}
+
+              {hasMobileImages &&
+                (galleryView === 'mobile' || !hasDesktopImages) && (
+                  <div className='project-gallery-wrapper'>
+                    <Swiper
+                      key='mobile-gallery'
+                      modules={[EffectCards, Navigation, Pagination]}
+                      effect='cards'
+                      grabCursor
+                      navigation
+                      pagination={{ clickable: true }}
+                      className='w-full max-w-sm mx-auto aspect-[9/16] bg-base-dark rounded-lg overflow-hidden'
+                      cardsEffect={{
+                        perSlideOffset: 8,
+                        perSlideRotate: 2,
+                        slideShadows: true,
+                      }}>
+                      {project.mobileImages.map((image, index) => (
+                        <SwiperSlide key={`mobile-${index}`}>
+                          <div
+                            className='relative w-full h-full cursor-pointer'
+                            onClick={() =>
+                              openLightbox(image.url, index, 'mobile')
+                            }>
+                            <img
+                              src={image.url}
+                              alt={image.alt || `Mobile view ${index + 1}`}
+                              className='w-full h-full object-cover object-top'
+                            />
+                          </div>
+                        </SwiperSlide>
+                      ))}
+                    </Swiper>
+                  </div>
+                )}
             </div>
           </motion.section>
         )}
@@ -450,7 +463,7 @@ const ProjectPage: React.FC = () => {
               <p className='text-lg leading-relaxed text-foreground/80 max-w-3xl'>
                 {getLocalizedContent(
                   project.description,
-                  project.descriptionJa
+                  project.descriptionJa,
                 )}
               </p>
             </motion.section>
@@ -514,28 +527,38 @@ const ProjectPage: React.FC = () => {
             exit={{ opacity: 0 }}
             className='fixed inset-0 bg-black/95 z-50 flex items-center justify-center'
             onClick={() => setActiveImageUrl(null)}>
+            {/* Prev/Next - top right, simple chevrons (render first so Close sits on top) */}
             <button
-              className='absolute top-4 right-4 text-white/70 hover:text-white p-2 transition-colors'
+              className='absolute top-4 right-20 z-10 p-1 text-white/70 hover:text-white transition-colors bg-transparent'
+              onClick={(e) => {
+                e.stopPropagation();
+                showPrevImage(e);
+              }}
+              aria-label='Previous image'>
+              <ChevronLeft size={24} />
+            </button>
+            <button
+              className='absolute top-4 right-10 z-10 p-1 text-white/70 hover:text-white transition-colors bg-transparent'
+              onClick={(e) => {
+                e.stopPropagation();
+                showNextImage(e);
+              }}
+              aria-label='Next image'>
+              <ChevronRight size={24} />
+            </button>
+
+            <button
+              className='absolute top-4 right-4 z-20 flex items-center gap-2 text-white/70 hover:text-white p-2 rounded-md hover:bg-white/10 transition-colors'
               onClick={(e) => {
                 e.stopPropagation();
                 setActiveImageUrl(null);
-              }}>
+              }}
+              aria-label='Close'>
               <X size={24} />
+              <span className='text-sm'>Close</span>
             </button>
 
-            <button
-              className='absolute left-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors'
-              onClick={showPrevImage}>
-              <ChevronLeft size={32} />
-            </button>
-
-            <button
-              className='absolute right-4 top-1/2 -translate-y-1/2 text-white/70 hover:text-white p-2 transition-colors'
-              onClick={showNextImage}>
-              <ChevronRight size={32} />
-            </button>
-
-            <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm'>
+            <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm z-10'>
               {activeImageIndex + 1} /{' '}
               {activeImageType === 'desktop'
                 ? project.desktopImages.length
@@ -549,8 +572,11 @@ const ProjectPage: React.FC = () => {
               transition={{ duration: 0.2 }}
               src={activeImageUrl}
               alt='Enlarged view'
-              className='max-h-[90vh] max-w-[90vw] object-contain'
-              onClick={(e) => e.stopPropagation()}
+              className='max-h-[90vh] max-w-[90vw] object-contain cursor-pointer'
+              onClick={(e) => {
+                e.stopPropagation();
+                setActiveImageUrl(null);
+              }}
             />
           </motion.div>
         )}

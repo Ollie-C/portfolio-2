@@ -130,8 +130,9 @@ const SEO: React.FC<SEOProps> = ({
       </script>
 
       {/* Additional SEO improvements */}
-      <meta name='theme-color' content='#4752a8' />
-      <meta name='msapplication-TileColor' content='#4752a8' />
+      <meta name='theme-color' content='#171717' />
+      <meta name='msapplication-TileColor' content='#171717' />
+      <meta name='mobile-web-app-capable' content='yes' />
       <meta name='apple-mobile-web-app-capable' content='yes' />
       <meta name='apple-mobile-web-app-status-bar-style' content='default' />
       <meta name='apple-mobile-web-app-title' content='Ollie Cross' />

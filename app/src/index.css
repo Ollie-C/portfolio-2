@@ -17,77 +17,77 @@
 
 @layer base {
   :root {
-    /* Core theme colors */
-    --background: 221 21% 3%;
-    --foreground: 220 10% 93%;
-    --card: 222 18% 17%;
-    --card-foreground: 220 10% 98%;
+    /* Dark: black, greys, white */
+    --background: 0 0% 4%;
+    --foreground: 0 0% 95%;
+    --card: 0 0% 10%;
+    --card-foreground: 0 0% 96%;
 
-    /* Primary colors - teal shades */
-    --primary: 174 80% 50%;
-    --primary-light: 174 80% 65%;
-    --primary-dark: 174 80% 35%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary – light grey for links/highlights */
+    --primary: 0 0% 78%;
+    --primary-light: 0 0% 88%;
+    --primary-dark: 0 0% 62%;
+    --primary-foreground: 0 0% 6%;
 
-    /* Secondary colors */
-    --secondary: 200 20% 40%;
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary – mid grey */
+    --secondary: 0 0% 42%;
+    --secondary-foreground: 0 0% 96%;
 
-    /* Muted/subtle backgrounds and text */
-    --muted: 220 20% 20%;
-    --muted-foreground: 220 10% 70%;
+    /* Muted – grey surfaces and subdued text */
+    --muted: 0 0% 14%;
+    --muted-foreground: 0 0% 58%;
 
-    /* Accent/highlight colors */
-    --accent: 190 80% 50%;
-    --accent-light: 190 80% 65%;
-    --accent-dark: 190 80% 35%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent – soft grey */
+    --accent: 0 0% 72%;
+    --accent-light: 0 0% 82%;
+    --accent-dark: 0 0% 55%;
+    --accent-foreground: 0 0% 8%;
 
-    /* Destructive colors for errors */
+    /* Destructive */
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
 
-    /* UI element colors */
-    --border: 220 20% 25%;
-    --input: 220 20% 18%;
-    --ring: 174 80% 50%;
+    /* UI – grey borders and inputs */
+    --border: 0 0% 20%;
+    --input: 0 0% 14%;
+    --ring: 0 0% 72%;
   }
 
   .light {
-    /* Core theme colors */
-    --background: 0 0% 93%;
-    --foreground: 220 10% 15%;
-    --card: 0 0% 95%;
-    --card-foreground: 220 10% 20%;
+    /* Light: white, greys, black */
+    --background: 0 0% 98%;
+    --foreground: 0 0% 9%;
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 12%;
 
-    /* Primary colors - teal shades */
-    --primary: 174 70% 40%;
-    --primary-light: 174 70% 55%;
-    --primary-dark: 174 70% 30%;
-    --primary-foreground: 0 0% 100%;
+    /* Primary – dark grey for links/highlights */
+    --primary: 0 0% 28%;
+    --primary-light: 0 0% 38%;
+    --primary-dark: 0 0% 18%;
+    --primary-foreground: 0 0% 98%;
 
-    /* Secondary colors */
-    --secondary: 200 15% 50%;
-    --secondary-foreground: 0 0% 100%;
+    /* Secondary – mid grey */
+    --secondary: 0 0% 48%;
+    --secondary-foreground: 0 0% 98%;
 
-    /* Muted/subtle backgrounds and text */
-    --muted: 220 15% 90%;
-    --muted-foreground: 220 10% 40%;
+    /* Muted – light grey surfaces and subdued text */
+    --muted: 0 0% 92%;
+    --muted-foreground: 0 0% 42%;
 
-    /* Accent/highlight colors */
-    --accent: 190 70% 40%;
-    --accent-light: 190 70% 55%;
-    --accent-dark: 190 70% 30%;
-    --accent-foreground: 0 0% 100%;
+    /* Accent */
+    --accent: 0 0% 32%;
+    --accent-light: 0 0% 42%;
+    --accent-dark: 0 0% 22%;
+    --accent-foreground: 0 0% 98%;
 
-    /* Destructive colors for errors */
+    /* Destructive */
     --destructive: 0 70% 50%;
     --destructive-foreground: 0 0% 100%;
 
-    /* UI element colors */
-    --border: 220 15% 85%;
-    --input: 220 15% 92%;
-    --ring: 174 70% 40%;
+    /* UI – grey borders and inputs */
+    --border: 0 0% 86%;
+    --input: 0 0% 90%;
+    --ring: 0 0% 28%;
   }
 }
 
@@ -130,8 +130,17 @@ body {
   min-height: 100vh;
   background-color: hsl(var(--background));
   color: hsl(var(--foreground));
-  font-family: 'Gotham', system-ui, -apple-system, BlinkMacSystemFont,
-    'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+  font-family:
+    'Gotham',
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    sans-serif;
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -185,7 +194,7 @@ button {
   background-image: url('data:image/png;base64,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');
   opacity: 0.8;
   pointer-events: none;
-  z-index: 0;
+  z-index: 9998;
 }
 
 .gradient-blob {
@@ -195,7 +204,7 @@ button {
   border-radius: 90%;
   background: radial-gradient(
     circle,
-    rgba(71, 82, 168, 0.2) 0%,
+    rgba(128, 128, 128, 0.15) 0%,
     rgba(18, 18, 18, 0) 80%
   );
   top: 35%;
@@ -236,4 +245,77 @@ button {
 
 .isolate-blur {
   isolation: isolate;
+}
+
+/* Show first letter when skill/tech icon fails to load */
+.show-letter span.hidden {
+  display: inline-block !important;
+}
+
+/* Project page gallery – Swiper cards + nav overrides */
+.project-gallery-wrapper {
+  position: relative;
+  padding-right: 4rem;
+}
+.project-gallery-wrapper .swiper {
+  overflow: visible;
+}
+.project-gallery-wrapper .swiper-button-next,
+.project-gallery-wrapper .swiper-button-prev {
+  top: -2rem;
+  width: auto;
+  height: auto;
+  background: none !important;
+  border-radius: 0;
+  backdrop-filter: none;
+  color: hsl(var(--foreground));
+  opacity: 0.7;
+}
+.project-gallery-wrapper .swiper-button-next:hover,
+.project-gallery-wrapper .swiper-button-prev:hover {
+  opacity: 1;
+  color: hsl(var(--primary));
+}
+.project-gallery-wrapper .swiper-button-prev {
+  left: auto;
+  right: 2.5rem;
+}
+.project-gallery-wrapper .swiper-button-next {
+  right: 0;
+}
+.project-gallery-wrapper .swiper-button-next:after,
+.project-gallery-wrapper .swiper-button-prev:after {
+  font-size: 16px;
+  font-weight: 300;
+}
+.project-gallery-wrapper .swiper-pagination {
+  bottom: 20px !important;
+}
+.project-gallery-wrapper .swiper-pagination-bullet {
+  background: rgba(255, 255, 255, 0.5);
+  opacity: 1;
+  width: 6px;
+  height: 6px;
+}
+.project-gallery-wrapper .swiper-pagination-bullet-active {
+  background: white;
+  width: 24px;
+  border-radius: 3px;
+}
+@media (max-width: 768px) {
+  .project-gallery-wrapper .swiper-button-next,
+  .project-gallery-wrapper .swiper-button-prev {
+    display: none;
+  }
+  .project-gallery-wrapper {
+    padding-right: 1rem;
+  }
+}
+
+.swiper-slide {
+  opacity: 0.8;
+  transition: opacity 0.3s ease-in-out;
+}
+.swiper-slide-active {
+  opacity: 1;
 }

@@ -1,22 +1,13 @@
-import React, { useRef } from 'react';
+import { useRef } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslation } from 'react-i18next';
 import { useSkills } from '../hooks/useSkills';
 import { urlFor, SanityImageSource } from '../lib/sanity';
 
 // Import necessary icons from react-icons or another icon library
-import {
-  CodeBracketIcon,
-  ServerIcon,
-  CircleStackIcon,
-  WrenchScrewdriverIcon,
-  UserGroupIcon,
-} from '@heroicons/react/24/outline';
-
 interface SkillCategory {
   key: string;
   title: string;
-  icon: React.ReactElement;
   color: string;
 }
 
@@ -113,49 +104,37 @@ export default function SkillsSection() {
   const { data: allSkills, isLoading } = useSkills();
   const sectionRef = useRef<HTMLDivElement>(null);
 
-  // Skill category definitions
+  // Skill category definitions (order matches Sanity: core, strong_working_experience, familiar_with)
   const categories: SkillCategory[] = [
     {
-      key: 'frontend',
-      title: t('sections.skills.frontend'),
-      icon: <CodeBracketIcon className='w-6 h-6' />,
+      key: 'core',
+      title: t('sections.skills.core'),
       color: 'hsl(var(--primary))',
     },
     {
-      key: 'fullstack',
-      title: t('sections.skills.fullstack'),
-      icon: <ServerIcon className='w-6 h-6' />,
+      key: 'strong_working_experience',
+      title: t('sections.skills.strongWorkingExperience'),
       color: 'hsl(var(--accent))',
     },
     {
-      key: 'tooling',
-      title: t('sections.skills.tooling'),
-      icon: <CircleStackIcon className='w-6 h-6' />,
+      key: 'familiar_with',
+      title: t('sections.skills.familiarWith'),
       color: 'hsl(var(--secondary))',
-    },
-    {
-      key: 'cms',
-      title: t('sections.skills.cms'),
-      icon: <WrenchScrewdriverIcon className='w-6 h-6' />,
-      color: 'hsl(var(--muted-foreground))',
-    },
-    {
-      key: 'collaboration',
-      title: t('sections.skills.collaboration'),
-      icon: <UserGroupIcon className='w-6 h-6' />,
-      color: 'hsl(var(--muted-foreground))',
     },
   ];
 
   // Group skills by category
-  const skillsByCategory = allSkills?.reduce((acc, skill) => {
-    const category = skill.category.toLowerCase();
-    if (!acc[category]) {
-      acc[category] = [];
-    }
-    acc[category].push(skill);
-    return acc;
-  }, {} as Record<string, typeof allSkills>);
+  const skillsByCategory = allSkills?.reduce(
+    (acc, skill) => {
+      const category = skill.category.toLowerCase();
+      if (!acc[category]) {
+        acc[category] = [];
+      }
+      acc[category].push(skill);
+      return acc;
+    },
+    {} as Record<string, typeof allSkills>,
+  );
 
   const getSkillIconUrl = (skill: SkillData): string | undefined => {
     // First priority: Use image from Sanity if available
@@ -223,98 +202,88 @@ export default function SkillsSection() {
         </h2>
       </motion.div>
 
-      <div className='mt-16 space-y-1'>
-        {categories.map((category) => {
-          const skills = skillsByCategory?.[category.key] || [];
-
-          // Skip empty categories
-          if (!skills.length) return null;
-
-          return (
-            <motion.div
-              key={category.key}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true, margin: '-10%' }}
-              transition={{ duration: 0.5, ease: 'easeOut' }}
-              className='py-6'>
-              <div className='grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-10'>
-                {/* Category title */}
-                <div className='md:col-span-3'>
-                  <h3 className='text-xl font-light text-foreground mb-1 flex items-center gap-3'>
-                    <span
-                      className='w-6 h-px'
-                      style={{ backgroundColor: category.color }}
-                    />
-                    {category.title}
-                  </h3>
-                </div>
-
-                {/* Skills */}
-                <div className='md:col-span-9'>
-                  <div className='grid grid-cols-3 md:grid-cols-4 lg:grid-cols-6 xl:grid-cols-7 gap-3'>
-                    {skills.map((skill, index) => {
-                      const iconUrl = getSkillIconUrl(skill);
-
-                      return (
-                        <motion.div
-                          key={skill.id}
-                          className='flex flex-col items-center gap-2'
-                          whileHover={{
-                            y: -5,
-                          }}
-                          initial={{ opacity: 0, y: 10 }}
-                          animate={{ opacity: 1, y: 0 }}
-                          transition={{
-                            delay: index * 0.05 + 0.1,
-                            duration: 0.3,
-                          }}>
-                          {/* Icon container - matching Currently Learning style */}
-                          <div className='rounded-full p-4 bg-card/80 border border-muted/30 shadow-inner w-16 h-16 flex items-center justify-center'>
-                            {iconUrl ? (
-                              <img
-                                src={iconUrl}
-                                alt={skill.name}
-                                className='w-10 h-10 object-contain'
-                                onError={(e) => {
-                                  // If image fails to load, try to use fallback or default to first letter
-                                  const fallbackUrl =
-                                    skillIconsMap[skill.name.toLowerCase()];
-                                  if (
-                                    fallbackUrl &&
-                                    e.currentTarget.src !== fallbackUrl
-                                  ) {
-                                    e.currentTarget.src = fallbackUrl;
-                                  } else {
-                                    // If both Sanity and fallback fail, hide the img and show the letter
-                                    e.currentTarget.style.display = 'none';
-                                    e.currentTarget.parentElement?.classList.add(
-                                      'show-letter'
-                                    );
-                                  }
-                                }}
-                              />
-                            ) : (
-                              <span className='text-lg font-mono'>
-                                {skill.name.charAt(0)}
-                              </span>
-                            )}
-                          </div>
-
-                          {/* Skill name */}
-                          <span className='text-sm text-foreground/80'>
-                            {skill.name}
+      {/* Each category on its own row; label below icon, visible on hover */}
+      {categories.map((category, colIndex) => {
+        const skills = skillsByCategory?.[category.key] || [];
+        return (
+          <motion.div
+            key={category.key}
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-10%' }}
+            transition={{
+              duration: 0.5,
+              ease: 'easeOut',
+              delay: colIndex * 0.1,
+            }}
+            className='mt-16 pl-16'>
+            <h3 className='text-lg font-light text-foreground mb-4 flex items-center gap-3'>
+              <span
+                className='w-6 h-px shrink-0'
+                style={{ backgroundColor: category.color }}
+              />
+              {category.title}
+            </h3>
+            <div className='flex flex-wrap gap-6'>
+              {skills.map((skill, index) => {
+                const iconUrl = getSkillIconUrl(skill);
+                const level = Math.min(10, Math.max(1, skill.level ?? 5));
+                const scale = 0.9 + (level / 10) * 0.4;
+                return (
+                  <motion.div
+                    key={skill.id}
+                    className='group flex flex-col items-center gap-2'
+                    whileHover={{ y: -2 }}
+                    initial={{ opacity: 0, y: 10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    transition={{
+                      delay: index * 0.04 + 0.1,
+                      duration: 0.3,
+                    }}>
+                    <div className='rounded-full p-3 bg-card/80 border border-muted/30 shadow-inner w-16 h-16 flex items-center justify-center shrink-0'>
+                      <span
+                        className='inline-flex items-center justify-center'
+                        style={{ transform: `scale(${scale})` }}>
+                        {iconUrl ? (
+                          <img
+                            src={iconUrl}
+                            alt={skill.name}
+                            className='w-7 h-7 object-contain'
+                            onError={(e) => {
+                              const fallbackUrl =
+                                skillIconsMap[skill.name.toLowerCase()];
+                              if (
+                                fallbackUrl &&
+                                e.currentTarget.src !== fallbackUrl
+                              ) {
+                                e.currentTarget.src = fallbackUrl;
+                              } else {
+                                e.currentTarget.style.display = 'none';
+                                e.currentTarget.parentElement?.classList.add(
+                                  'show-letter',
+                                );
+                              }
+                            }}
+                          />
+                        ) : (
+                          <span className='text-sm font-mono'>
+                            {skill.name.charAt(0)}
                           </span>
-                        </motion.div>
-                      );
-                    })}
-                  </div>
-                </div>
-              </div>
-            </motion.div>
-          );
-        })}
-      </div>
+                        )}
+                      </span>
+                    </div>
+                    <span
+                      className='text-sm text-foreground/80 opacity-0 group-hover:opacity-100 transition-opacity duration-200 text-center max-w-[6rem] truncate'
+                      title={skill.name}>
+                      {skill.name}
+                    </span>
+                  </motion.div>
+                );
+              })}
+            </div>
+          </motion.div>
+        );
+      })}
     </div>
   );
 }

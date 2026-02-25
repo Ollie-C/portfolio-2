@@ -26,22 +26,24 @@ export const skillType = defineType({
     defineField({
       name: 'category',
       type: 'string',
+      title: 'Category',
+      description: 'How you want this skill displayed: Core, Strong working experience, or Familiar with',
       options: {
         list: [
-          {title: 'Frontend', value: 'frontend'},
-          {title: 'Full-stack', value: 'fullstack'},
-          {title: 'Tooling & Infrastructure', value: 'tooling'},
-          {title: 'Collaboration', value: 'collaboration'},
-          {title: 'CMS', value: 'cms'},
+          {title: 'Core', value: 'core'},
+          {title: 'Strong working experience', value: 'strong_working_experience'},
+          {title: 'Familiar with', value: 'familiar_with'},
         ],
       },
+      validation: (Rule) => Rule.required(),
     }),
     defineField({
       name: 'proficiency',
       type: 'number',
-      description: 'Proficiency level from 1-5',
-      validation: (Rule) => Rule.min(1).max(5),
-      initialValue: 3,
+      title: 'Proficiency',
+      description: 'Proficiency level from 1–10 (higher = more proficient). Within each category, skills are ordered by this value, then alphabetically by name.',
+      validation: (Rule) => Rule.min(1).max(10),
+      initialValue: 5,
     }),
     defineField({
       name: 'featured',
@@ -53,8 +55,20 @@ export const skillType = defineType({
   preview: {
     select: {
       title: 'name',
-      subtitle: 'category',
+      category: 'category',
       media: 'icon',
+    },
+    prepare({title, category, media}) {
+      const categoryLabels: Record<string, string> = {
+        core: 'Core',
+        strong_working_experience: 'Strong working experience',
+        familiar_with: 'Familiar with',
+      }
+      return {
+        title,
+        subtitle: category ? categoryLabels[category] ?? category : undefined,
+        media,
+      }
     },
   },
 })

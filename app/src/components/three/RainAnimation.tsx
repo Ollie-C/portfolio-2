@@ -18,7 +18,7 @@ export default function RainAnimation() {
       95,
       window.innerWidth / window.innerHeight,
       0.1,
-      1000
+      1000,
     );
     camera.position.z = 5;
 
@@ -63,7 +63,7 @@ export default function RainAnimation() {
 
     rainGeometry.setAttribute(
       'position',
-      new THREE.BufferAttribute(positions, 3)
+      new THREE.BufferAttribute(positions, 3),
     );
     rainGeometry.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 

@@ -89,13 +89,10 @@ export default function ProjectsList() {
     const hash = title.split('').reduce((acc, char) => {
       return char.charCodeAt(0) + ((acc << 5) - acc);
     }, 0);
-    const hue = Math.abs(hash % 360);
-
+    const lightness = 25 + (Math.abs(hash % 30));
     return {
-      background: `linear-gradient(135deg, hsla(${hue}, 70%, 40%, 0.8), hsla(${
-        (hue + 40) % 360
-      }, 70%, 40%, 0.4))`,
-      color: `hsl(${hue}, 80%, 85%)`,
+      background: `linear-gradient(135deg, hsla(0, 0%, ${lightness}%, 0.9), hsla(0, 0%, ${lightness + 15}%, 0.5))`,
+      color: 'hsl(0, 0%, 95%)',
     };
   };
 
@@ -321,6 +318,11 @@ export default function ProjectsList() {
                     }}
                     onClick={() => handleProjectClick(project.id, index)}>
                     {getLocalizedTitle(project)}
+                    {project.inProgress && (
+                      <span className='ml-2 text-xs font-mono text-primary/80'>
+                        {t('projectCard.inProgress')}
+                      </span>
+                    )}
 
                     {/* Add project links */}
                     <span className='inline-flex ml-4 gap-4'>

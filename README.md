@@ -1,54 +1,78 @@
-# React + TypeScript + Vite.
+Welcome to my portfolio. If for some reason you want this running locally on your machine then by all means, keep reading. Or if you are in fact myself, and have forgotten a thing or two, then I'm here for you.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+# Local setup
 
-Currently, two official plugins are available:
+## Requirements
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- **Node.js** ≥ 20.0.0
 
-## Expanding the ESLint configuration
+Check versions:
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-});
+```bash
+node -v
+npm -v
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+## Install
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x';
-import reactDom from 'eslint-plugin-react-dom';
+From the root:
 
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-});
+```bash
+npm install
+cd app && npm install && cd ..
+cd studio && npm install && cd ..
 ```
+
+## Sanity
+
+### 1. Accessing Sanity
+
+- Go to [sanity.io/manage](https://sanity.io/manage)
+- Note **Project ID** and **Dataset**
+
+### 2. Studio environment
+
+In `studio/`:
+
+```bash
+cp .env.example .env
+```
+
+Edit `studio/.env` and set:
+
+- `SANITY_STUDIO_PROJECT_ID` – Sanity project ID
+- `SANITY_STUDIO_DATASET` – e.g. `production`
+
+### 3. App environment
+
+In `app/`:
+
+```bash
+cp .env.example .env
+```
+
+Edit `app/.env` and set at least:
+
+- `VITE_SANITY_PROJECT_ID` – same project ID as the studio
+- `VITE_SANITY_DATASET` – same dataset (e.g. `production`)
+- `VITE_SANITY_STUDIO_HOST` – host where Sanity Studio is served (e.g. `localhost:3333` for local dev)
+
+## Run locally
+
+From the project root:
+
+| Command              | Description                     |
+| -------------------- | ------------------------------- |
+| `npm run dev`        | Start the app (Vite dev server) |
+| `npm run dev:studio` | Start Sanity Studio             |
+
+Run both in separate terminals to develop with live content from Sanity.
+
+## Build
+
+```bash
+npm run build
+npm run build:studio
+```
+
+That wasn't too bad. If the above doesn't work, rewrite reality and try again

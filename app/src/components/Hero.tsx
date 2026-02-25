@@ -1,3 +1,4 @@
+import { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
@@ -25,6 +26,12 @@ export default function Hero() {
       ? heroUpdate.messageJa
       : heroUpdate?.message;
 
+  const [typingComplete, setTypingComplete] = useState(false);
+
+  useEffect(() => {
+    setTypingComplete(false);
+  }, [updateMessage]);
+
   const cycleBackgroundAnimation = () => {
     const idx = ANIMATION_ORDER.indexOf(animationTheme);
     const next = ANIMATION_ORDER[(idx + 1) % ANIMATION_ORDER.length];
@@ -34,12 +41,12 @@ export default function Hero() {
   return (
     <section
       id='top'
-      className='relative min-h-[85vh] flex items-center justify-end md:justify-end overflow-hidden pb-32 md:pb-40 px-4 sm:px-6 md:px-8'>
-      {/* Clickable background overlay - cycle animation (sits behind hero content) */}
+      className='relative min-h-[85vh] flex items-center justify-end md:justify-end overflow-hidden lg:px-4'>
+      {/* Clickable background overlay - cycle animation; right padding so link stays clickable */}
       <button
         type='button'
         onClick={cycleBackgroundAnimation}
-        className='absolute inset-0 z-[1] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset bg-transparent'
+        className='absolute inset-0 right-56 md:right-72 z-[100] cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary focus-visible:ring-inset bg-transparent'
         aria-label='Change background animation'
       />
       {/* Main content */}
@@ -51,11 +58,11 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}>
-            <span className='block uppercase tracking-widest mb-2 text-[#4752a8] text-2xl sm:text-4xl md:text-7xl'>
+            <span className='font-hero block uppercase text-foreground text-[100px] md:text-[200px] lg:text-[200px] font-bold'>
               {t('hero.title')}
             </span>
             <div className='text-3xl sm:text-4xl md:text-6xl lg:text-9xl mt-0'>
-              <span className='block text-text-primary'>
+              <span className='block text-muted-foreground'>
                 {t('hero.subtitle')}
               </span>
             </div>
@@ -63,7 +70,7 @@ export default function Hero() {
 
           {/* Hero Update Message - positioned underneath "Developer" */}
           {heroUpdate?.enabled && updateMessage && (
-            <div className='mt-8 md:mt-12 pr-2'>
+            <div className='pr-2'>
               <div className='flex flex-wrap items-center justify-start md:justify-end gap-1'>
                 {'"'}
                 <TypingAnimation
@@ -71,13 +78,17 @@ export default function Hero() {
                   speed={40}
                   delay={2}
                   className='text-xs md:text-sm text-muted-foreground'
+                  onComplete={() => setTypingComplete(true)}
                 />
-                {heroUpdate.link && (
+                {heroUpdate.link && typingComplete && (
                   <motion.a
                     href={heroUpdate.link}
                     target='_blank'
                     rel='noopener noreferrer'
-                    className='inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors ml-2 min-h-[44px] min-w-[44px] items-center'
+                    className='inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors ml-2 min-h-[44px] min-w-[44px] items-center relative z-[1000]'
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.3 }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     aria-label={heroUpdate.linkText || 'View'}>

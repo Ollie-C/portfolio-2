@@ -20,15 +20,15 @@
       "paragraph2": "I'm extremely passionate about biodiversity and the environment and love to travel. I lived in Tokyo and Fukuoka for a few years from where a lot of my inspiration is now derived. I love gaming, snowboarding, coffee and movies (and ranking them). But spending time with my son makes all of that pale in comparison.",
       "myTech": "Tech & Projects",
       "paragraph3": "I work with React most of the time but I'm always looking at ways to make code cleaner, faster and more efficient. I've produced work for companies such as Sony, Lenovo, Hitachi and Juniper ranging from landing pages to full-blown full-stack applications. I've built Express APIs and worked with Symfony. I've also built smaller apps and games in Svelte and Three.js.",
-      "currentlyLearning": "Currently Learning"
+      "currentlyLearning": "Currently Learning",
+      "ai": "My approach to AI-driven development",
+      "paragraph4": "I don't vibe code. I use tools like Cursor and Claude to improve my workflow and any developer not using tools like this today are putting themselves at a huge disadvantage. Keys to success and to not lose youself to AI: verify output and stay accountable for accuracy and use this new efficiency to amplify your own learning."
     },
     "skills": {
       "title": "Skills",
-      "frontend": "Frontend",
-      "fullstack": "Full-stack",
-      "tooling": "Tooling & Infrastructure",
-      "cms": "CMS",
-      "collaboration": "Collaboration"
+      "core": "Core",
+      "strongWorkingExperience": "Strong working experience",
+      "familiarWith": "Familiar with"
     },
     "projects": {
       "title": "Projects",
@@ -43,7 +43,8 @@
   },
   "projectCard": {
     "viewProject": "View Project",
-    "featured": "Featured"
+    "featured": "Featured",
+    "inProgress": "In progress"
   },
   "contactForm": {
     "name": "Name",

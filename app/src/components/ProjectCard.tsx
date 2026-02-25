@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 
 interface ProjectCardProps {
   title: string;
@@ -9,6 +10,7 @@ interface ProjectCardProps {
   tags?: string[];
   slug: string;
   featured?: boolean;
+  inProgress?: boolean;
   category?: string;
 }
 
@@ -19,8 +21,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   tags,
   slug,
   featured,
+  inProgress,
   category,
 }) => {
+  const { t } = useTranslation();
   const [imageError, setImageError] = useState(false);
 
   // Generate a gradient background based on the project title (for consistency)
@@ -29,11 +33,10 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
     const hash = title.split('').reduce((acc, char) => {
       return char.charCodeAt(0) + ((acc << 5) - acc);
     }, 0);
-    const hue = Math.abs(hash % 360);
-
+    const lightness = 25 + (Math.abs(hash % 30));
     return {
-      background: `linear-gradient(135deg, hsla(${hue}, 70%, 40%, 0.7), hsla(${(hue + 40) % 360}, 70%, 40%, 0.3))`,
-      color: `hsl(${hue}, 80%, 85%)`,
+      background: `linear-gradient(135deg, hsla(0, 0%, ${lightness}%, 0.9), hsla(0, 0%, ${lightness + 15}%, 0.5))`,
+      color: 'hsl(0, 0%, 95%)',
     };
   };
 
@@ -72,11 +75,18 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
               {title}
             </h3>
 
-            {featured && (
-              <span className='text-xs font-mono text-primary opacity-80'>
-                FEATURED
-              </span>
-            )}
+            <span className='flex items-center gap-2'>
+              {inProgress && (
+                <span className='text-xs font-mono text-primary/80'>
+                  {t('projectCard.inProgress')}
+                </span>
+              )}
+              {featured && (
+                <span className='text-xs font-mono text-primary opacity-80'>
+                  FEATURED
+                </span>
+              )}
+            </span>
           </div>
 
           <p className='text-sm text-muted-foreground line-clamp-2 mb-3'>
@@ -103,15 +113,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           {category && (
             <div className='mt-3 flex items-center'>
               <div
-                className='w-2 h-2 rounded-full mr-2'
-                style={{
-                  backgroundColor:
-                    category === 'REACT'
-                      ? 'hsl(var(--primary))'
-                      : category === 'FULL-STACK'
-                        ? 'hsl(var(--accent))'
-                        : 'hsl(var(--secondary))',
-                }}
+                className='w-2 h-2 rounded-full mr-2 bg-foreground/70'
               />
               <span className='text-xs uppercase font-mono text-muted-foreground/70'>
                 {category}

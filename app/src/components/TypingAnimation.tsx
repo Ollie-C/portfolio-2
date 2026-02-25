@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { motion } from 'framer-motion';
 
 interface TypingAnimationProps {
@@ -19,6 +19,8 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
   const [displayedText, setDisplayedText] = useState('');
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isTyping, setIsTyping] = useState(false);
+  const onCompleteRef = useRef(onComplete);
+  onCompleteRef.current = onComplete;
 
   useEffect(() => {
     if (!text) return;
@@ -33,7 +35,7 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
           if (prevIndex >= text.length) {
             clearInterval(interval);
             setIsTyping(false);
-            onComplete?.();
+            queueMicrotask(() => onCompleteRef.current?.());
             return prevIndex;
           }
           return prevIndex + 1;
@@ -44,7 +46,7 @@ const TypingAnimation: React.FC<TypingAnimationProps> = ({
     }, delay);
 
     return () => clearTimeout(timer);
-  }, [text, speed, delay, onComplete]);
+  }, [text, speed, delay]);
 
   useEffect(() => {
     setDisplayedText(text.slice(0, currentIndex));

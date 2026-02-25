@@ -45,12 +45,11 @@ export default function BackgroundAnimation() {
       positions[i + 1] = (Math.random() - 0.5) * 10; // y
       positions[i + 2] = (Math.random() - 0.5) * 10; // z
 
-      // Colors - significantly reduced blue, more muted tones
+      // Colors – amber/moss to purple-red, more vibrant
       const mixFactor = Math.random();
-      // More dark amber/moss to muted purple-red (less blue tones)
-      colors[i] = mixFactor * 0.12 + (1 - mixFactor) * 0.4; // R (increased red)
-      colors[i + 1] = mixFactor * 0.6 + (1 - mixFactor) * 0.18; // G (muted green)
-      colors[i + 2] = mixFactor * 0.5 + (1 - mixFactor) * 0.32; // B (significantly reduced blue)
+      colors[i] = mixFactor * 0.35 + (1 - mixFactor) * 0.75; // R
+      colors[i + 1] = mixFactor * 0.82 + (1 - mixFactor) * 0.4; // G
+      colors[i + 2] = mixFactor * 0.7 + (1 - mixFactor) * 0.55; // B
     }
 
     particlesGeometry.setAttribute(

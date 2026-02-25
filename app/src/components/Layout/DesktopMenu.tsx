@@ -15,7 +15,7 @@ const DesktopMenu: React.FC<DesktopMenuProps> = ({ scrollToSection }) => {
   if (!isHomePage) return null;
 
   return (
-    <nav className='hidden md:flex gap-8'>
+    <nav className='hidden gap-8'>
       <button
         onClick={() => scrollToSection('skills')}
         className='rounded text-muted-foreground hover:text-foreground relative group uppercase text-sm tracking-wider font-light bg-transparent cursor-pointer px-0'>

@@ -17,14 +17,15 @@ export interface Project {
   titleJa?: string;
   description: string;
   descriptionJa?: string;
-  slug: {
+  slug?: {
     current: string;
-  };
+  } | null;
   category: string;
   tags: string[];
   featured: boolean;
   active: boolean;
   legacy?: boolean;
+  inProgress?: boolean;
   demoUrl?: string;
   sourceUrl?: string;
   image?: SanityImageSource;
@@ -60,6 +61,7 @@ export interface NormalizedProject {
   featured: boolean;
   active: boolean;
   legacy?: boolean;
+  inProgress?: boolean;
   demoUrl?: string;
   sourceUrl?: string;
   imageUrl?: string;
@@ -119,6 +121,7 @@ export interface CMSContent {
 }
 
 const normalizeProject = (project: Project): NormalizedProject => {
+  const slug = project.slug?.current ?? '';
   // First try to use the main image, then try the first project image,
   // then try the first desktop image, then use empty string to trigger fallback
   let mainImageUrl = '';
@@ -137,12 +140,13 @@ const normalizeProject = (project: Project): NormalizedProject => {
     titleJa: project.titleJa || project.title, // Fallback to English if Japanese not available
     description: project.description,
     descriptionJa: project.descriptionJa || project.description, // Fallback to English if Japanese not available
-    slug: project.slug.current,
+    slug,
     category: project.category,
     tags: project.tags || [],
     featured: project.featured || false,
     active: project.active !== undefined ? project.active : true,
     legacy: project.legacy || false,
+    inProgress: project.inProgress || false,
     demoUrl: project.demoUrl,
     sourceUrl: project.sourceUrl,
     imageUrl: mainImageUrl,
@@ -207,6 +211,7 @@ export async function fetchProjects(): Promise<NormalizedProject[]> {
         featured,
         active,
         legacy,
+        inProgress,
         demoUrl,
         sourceUrl,
         techStack,
@@ -239,7 +244,9 @@ export async function fetchProjects(): Promise<NormalizedProject[]> {
       }
     `);
 
-    return projects.map(normalizeProject);
+    return projects
+      .filter((p): p is Project => p != null && p.slug?.current != null)
+      .map(normalizeProject);
   } catch (error) {
     console.error('Error fetching projects:', error);
 
@@ -312,11 +319,11 @@ export async function fetchContent(): Promise<CMSContent> {
 export async function fetchSkills(): Promise<NormalizedSkill[]> {
   try {
     const skills = await client.fetch<Skill[]>(`
-      *[_type == "skill"] {
+      *[_type == "skill"] | order(category asc, proficiency desc, name asc) {
         _id,
         name,
         category,
-        level,
+        "level": proficiency,
         "icon": icon
       }
     `);
@@ -327,16 +334,12 @@ export async function fetchSkills(): Promise<NormalizedSkill[]> {
 
     // Return mock data if the API is not available
     return [
-      { id: '1', name: 'React', category: 'Frontend', level: 5 },
-      { id: '2', name: 'TypeScript', category: 'Languages', level: 5 },
-      { id: '3', name: 'Node.js', category: 'Backend', level: 4 },
-      { id: '4', name: 'Express', category: 'Backend', level: 4 },
-      { id: '5', name: 'GraphQL', category: 'Backend', level: 3 },
-      { id: '6', name: 'MongoDB', category: 'Database', level: 4 },
-      { id: '7', name: 'PostgreSQL', category: 'Database', level: 3 },
-      { id: '8', name: 'Tailwind CSS', category: 'Frontend', level: 5 },
-      { id: '9', name: 'Next.js', category: 'Frontend', level: 4 },
-      { id: '10', name: 'Astro', category: 'Frontend', level: 3 },
+      { id: '1', name: 'React', category: 'core', level: 5 },
+      { id: '2', name: 'TypeScript', category: 'core', level: 5 },
+      { id: '3', name: 'Node.js', category: 'strong_working_experience', level: 4 },
+      { id: '4', name: 'Tailwind CSS', category: 'core', level: 5 },
+      { id: '5', name: 'Next.js', category: 'strong_working_experience', level: 4 },
+      { id: '6', name: 'Astro', category: 'familiar_with', level: 3 },
     ];
   }
 }

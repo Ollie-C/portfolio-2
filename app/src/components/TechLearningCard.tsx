@@ -23,13 +23,13 @@ const TechLearningCard: React.FC<TechLearningCardProps> = ({
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty) {
       case 'Beginner':
-        return 'text-green-500';
+        return 'text-muted-foreground';
       case 'Intermediate':
-        return 'text-yellow-500';
+        return 'text-foreground/80';
       case 'Advanced':
-        return 'text-red-500';
+        return 'text-foreground';
       default:
-        return 'text-blue-500';
+        return 'text-muted-foreground';
     }
   };
 
@@ -59,7 +59,7 @@ const TechLearningCard: React.FC<TechLearningCardProps> = ({
         </div>
 
         {/* Progress indicator */}
-        <div className='absolute -bottom-1 -right-1 w-6 h-6 rounded-full bg-background border-2 border-primary flex items-center justify-center'>
+        <div className='absolute -bottom-3 -right-3 p-1 rounded-full bg-background border-2 border-primary flex items-center justify-center'>
           <span className='text-xs font-bold text-primary'>{progress}%</span>
         </div>
       </div>

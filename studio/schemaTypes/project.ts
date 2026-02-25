@@ -73,6 +73,13 @@ export const projectType = defineType({
       initialValue: false,
     }),
     defineField({
+      name: 'inProgress',
+      title: 'In progress',
+      description: 'Show an "In progress" tag next to the project title',
+      type: 'boolean',
+      initialValue: false,
+    }),
+    defineField({
       name: 'techStack',
       title: 'Tech Stack',
       description: 'Technologies used in this project',
