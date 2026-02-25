@@ -1,4 +1,4 @@
-Welcome to my portfolio. If for some reason you want this running locally on your machine then by all means, keep reading. Or if you are in fact myself, and have forgotten a thing or two, then I'm here for you.
+Welcome to my portfolio. If for some reason you want this running locally on your machine then by all means, keep reading. Or if you are in fact myself, and have forgotten a thing or two, then I'm here for you!
 
 # Local setup
 
