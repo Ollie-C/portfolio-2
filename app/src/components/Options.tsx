@@ -16,7 +16,6 @@ const Options = (_props: OptionsProps) => {
 
   return (
     <div className='relative flex items-center gap-2 pointer-events-auto'>
-      <LanguageSelector />
       <button
         type='button'
         onClick={toggleLightDarkMode}
@@ -30,6 +29,7 @@ const Options = (_props: OptionsProps) => {
           <Moon size={18} aria-hidden />
         )}
       </button>
+      <LanguageSelector />
     </div>
   );
 };

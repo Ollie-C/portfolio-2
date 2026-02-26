@@ -62,7 +62,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
         className={`fixed py-2 top-0 left-0 right-0 w-full z-50 transition-all duration-300 ${
           scrolled ? 'backdrop-blur-md bg-background/80 shadow-md' : ''
         }`}>
-        <div className='container mx-auto flex justify-between items-center h-[60px] px-5'>
+        <div className='container mx-auto flex justify-between items-center h-[60px] px-5 xl:px-8'>
           <div
             onClick={() => scrollToSection('top')}
             className='text-lg font-bolder text-muted-foreground hover:text-primary transition-colors cursor-pointer'>
@@ -112,7 +112,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
       {/* Sidebars - Only visible on desktop */}
       <div className='fixed bottom-4 md:bottom-10 left-0 right-0 py-4 z-10 pointer-events-none'>
-        <div className='w-full container mx-auto flex justify-between items-end px-5'>
+        <div className='w-full container mx-auto flex justify-between items-end px-5 xl:px-8'>
           {!isMobile && <SocialSidebar />}
           <Options />
         </div>

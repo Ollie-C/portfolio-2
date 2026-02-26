@@ -26,28 +26,30 @@ const ScrollIndicator: React.FC<ScrollIndicatorProps> = ({
   };
 
   return (
-    <motion.div
-      className={`absolute bottom-0 left-1/2 transform -translate-x-1/2 cursor-pointer p-4 min-w-[48px] min-h-[48px] flex items-center justify-center -m-4 z-[1000] ${className}`}
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 1.5, duration: 0.8 }}
-      onClick={scrollToSection}
-      whileHover={{ y: 5 }}
-      whileTap={{ scale: 0.95 }}>
-      <div className='flex flex-col items-center space-y-2'>
-        <motion.div
-          className='text-xs uppercase tracking-widest text-muted-foreground font-mono'
-          animate={{ opacity: [0.5, 1, 0.5] }}
-          transition={{ duration: 2, repeat: Infinity }}>
-          Scroll
-        </motion.div>
-        <motion.div
-          animate={{ y: [0, 8, 0] }}
-          transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}>
-          <ChevronDown size={20} className='text-muted-foreground' />
-        </motion.div>
-      </div>
-    </motion.div>
+    <div
+      className={`absolute bottom-[25%] md:bottom-[20%] left-0 right-0 flex justify-center z-[1000] pointer-events-none ${className}`}
+      aria-hidden>
+      <motion.div
+        className='pointer-events-auto cursor-pointer p-4 min-w-[48px] min-h-[48px] flex items-center justify-center -m-4'
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ delay: 1.5, duration: 0.8 }}
+        onClick={scrollToSection}
+        whileHover={{ y: 5 }}
+        whileTap={{ scale: 0.95 }}>
+        <div className='flex flex-col items-center space-y-2'>
+          <motion.div
+            className='text-xs uppercase tracking-widest text-muted-foreground font-mono'
+            animate={{ opacity: [0.5, 1, 0.5] }}
+            transition={{ duration: 2, repeat: Infinity }}>
+            Scroll
+          </motion.div>
+          <div className='scroll-arrow-bounce'>
+            <ChevronDown size={20} className='text-muted-foreground' />
+          </div>
+        </div>
+      </motion.div>
+    </div>
   );
 };
 

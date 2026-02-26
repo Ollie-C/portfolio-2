@@ -216,7 +216,7 @@ export default function SkillsSection() {
               ease: 'easeOut',
               delay: colIndex * 0.1,
             }}
-            className='mt-16 pl-16'>
+            className='mt-16 pl-6 md:pl-16'>
             <h3 className='text-lg font-light text-foreground mb-4 flex items-center gap-3'>
               <span
                 className='w-6 h-px shrink-0'
@@ -224,7 +224,7 @@ export default function SkillsSection() {
               />
               {category.title}
             </h3>
-            <div className='flex flex-wrap gap-6'>
+            <div className='flex flex-wrap gap-1 md:gap-6'>
               {skills.map((skill, index) => {
                 const iconUrl = getSkillIconUrl(skill);
                 const level = Math.min(10, Math.max(1, skill.level ?? 5));

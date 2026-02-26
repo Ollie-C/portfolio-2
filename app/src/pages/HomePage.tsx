@@ -124,14 +124,14 @@ export default function HomePage() {
           {/* Hero Section */}
           <section
             id='hero'
-            className='container mx-auto px-4 text-center relative'>
+            className='container mx-auto px-4 xl:px-8 text-center relative min-h-screen'>
             <Hero />
           </section>
 
-          {/* About Section - horizontal scroll, one paragraph per slide */}
+          {/* About Section - horizontal slides, section can extend beyond viewport */}
           <section
             id='about'
-            className='section-bg-light min-h-[80vh] flex flex-col overflow-hidden'>
+            className='section-bg-light min-h-[80vh] flex flex-col'>
             <div className='md:px-28 py-8 md:py-12 shrink-0'>
               <div className='container mx-auto px-6 md:px-8'>
                 <motion.div
@@ -153,11 +153,11 @@ export default function HomePage() {
 
             <div
               ref={aboutScrollRef}
-              className='flex-1 overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth flex w-full min-h-0 no-scrollbar'
+              className='overflow-x-auto overflow-y-hidden snap-x snap-mandatory scroll-smooth flex w-full no-scrollbar'
               style={{ WebkitOverflowScrolling: 'touch' }}
               role='region'
               aria-label='About me sections'>
-              {/* Slide 1: My Journey + Personal Interests (side by side) */}
+              {/* Slide 1: My Journey + Personal Interests */}
               <div className='min-w-full w-full shrink-0 snap-start snap-always flex items-start justify-center'>
                 <div className='container mx-auto px-6 md:px-8 py-8 md:py-12 w-full'>
                   <div className='grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 max-w-5xl mx-auto'>
@@ -196,7 +196,7 @@ export default function HomePage() {
                 </div>
               </div>
 
-              {/* Slide 2: Tech & Projects + Currently Learning (side by side) */}
+              {/* Slide 2: Tech & Projects + Currently Learning */}
               <div className='min-w-full w-full shrink-0 snap-start snap-always flex items-start justify-center'>
                 <div className='container mx-auto px-6 md:px-8 py-8 md:py-12 w-full'>
                   <div className='grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-12 max-w-6xl mx-auto'>
@@ -262,7 +262,7 @@ export default function HomePage() {
               </div>
             </div>
 
-            {/* Dot indicators - reflect current slide */}
+            {/* Dot indicators */}
             <div
               className='shrink-0 py-4 flex justify-center gap-2'
               aria-hidden>
@@ -283,14 +283,14 @@ export default function HomePage() {
           {/* Skills Section */}
           <section
             id='skills'
-            className='md:px-28 py-24 section-bg-dark overflow-hidden'>
+            className='md:px-28 py-20 md:py-28 section-bg-dark overflow-hidden'>
             <SkillsSection />
           </section>
 
           {/* Projects Section - Ensure padding is pt-20 pb-32 */}
           <section
             id='projects'
-            className='md:px-28 pt-20 pb-48 section-bg-light flex'>
+            className='md:px-28 py-20 md:py-28 section-bg-light flex'>
             <div className='container mx-auto px-4 md:px-8 isolate-blur'>
               <motion.div
                 initial='hidden'
@@ -316,7 +316,7 @@ export default function HomePage() {
           {/* Contact Section */}
           <section
             id='contact'
-            className='section-bg-dark min-h-[100vh] flex flex-col'>
+            className='section-bg-dark flex flex-col py-20 md:py-28'>
             <div className='md:px-28 py-8 md:py-12 shrink-0'>
               <div className='container mx-auto px-6 md:px-8'>
                 <motion.div

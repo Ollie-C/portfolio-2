@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 import { ExternalLink } from 'lucide-react';
 import TypingAnimation from './TypingAnimation';
 import ScrollIndicator from './ScrollIndicator';
-import { useSiteSettings } from '../hooks/useSiteSettings';
+// import { useSiteSettings } from '../hooks/useSiteSettings';
 import { useThemeStore, AnimationTheme } from '../store/themeStore';
 
 const ANIMATION_ORDER: AnimationTheme[] = [
@@ -16,11 +16,18 @@ const ANIMATION_ORDER: AnimationTheme[] = [
 
 export default function Hero() {
   const { t, i18n } = useTranslation();
-  const { data: siteSettings } = useSiteSettings();
+  // const { data: siteSettings } = useSiteSettings();
   const { animationTheme, setAnimationTheme } = useThemeStore();
   const isJapanese = i18n.language === 'ja';
 
-  const heroUpdate = siteSettings?.heroUpdate;
+  // const heroUpdate = siteSettings?.heroUpdate;
+  const heroUpdate = {
+    enabled: false,
+    message: '',
+    messageJa: '',
+    link: '',
+    linkText: '',
+  };
   const updateMessage =
     isJapanese && heroUpdate?.messageJa
       ? heroUpdate.messageJa
@@ -41,7 +48,7 @@ export default function Hero() {
   return (
     <section
       id='top'
-      className='relative min-h-[85vh] flex items-center justify-end md:justify-end overflow-hidden lg:px-4'>
+      className='relative min-h-screen h-screen flex items-center justify-end md:justify-end overflow-hidden lg:px-4'>
       {/* Clickable background overlay - cycle animation; right padding so link stays clickable */}
       <button
         type='button'
@@ -50,7 +57,7 @@ export default function Hero() {
         aria-label='Change background animation'
       />
       {/* Main content */}
-      <div className='container mx-auto relative z-10 w-full'>
+      <div className='container mx-auto relative z-10 w-full pb-20 xl:pb-0'>
         <div className='text-left md:text-right'>
           {/* Main title - smaller on mobile for readability and to avoid overflow */}
           <motion.h1
@@ -58,10 +65,10 @@ export default function Hero() {
             initial={{ opacity: 0, y: 30 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.2, duration: 0.8 }}>
-            <span className='font-hero block uppercase text-foreground text-[100px] md:text-[200px] lg:text-[200px] font-bold'>
+            <span className='font-hero block uppercase text-foreground text-[75px] md:text-[100px] lg:text-[130px] xl:text-[200px] font-bold'>
               {t('hero.title')}
             </span>
-            <div className='text-3xl sm:text-4xl md:text-6xl lg:text-9xl mt-0'>
+            <div className='text-3xl sm:text-4xl md:text-6xl lg:text-7xl xl:text-9xl mt-0'>
               <span className='block text-muted-foreground'>
                 {t('hero.subtitle')}
               </span>
