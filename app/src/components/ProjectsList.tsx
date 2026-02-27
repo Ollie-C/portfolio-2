@@ -26,7 +26,7 @@ export default function ProjectsList() {
   const { data: projects, isLoading, error } = useProjects();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
   const [projectFilter, setProjectFilter] = useState<'recent' | 'legacy'>(
-    'recent'
+    'recent',
   );
   const isDesktop = useMediaQuery('(min-width: 1200px)');
   const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -51,7 +51,7 @@ export default function ProjectsList() {
       projectFilter === 'recent'
     ) {
       const filteredProjects = projects.filter((project) =>
-        projectFilter === 'recent' ? !project.legacy : project.legacy
+        projectFilter === 'recent' ? !project.legacy : project.legacy,
       );
 
       if (filteredProjects.length > 0) {
@@ -82,14 +82,14 @@ export default function ProjectsList() {
 
   // Filter projects based on the selected filter
   const filteredProjects = projects.filter((project) =>
-    projectFilter === 'recent' ? !project.legacy : project.legacy
+    projectFilter === 'recent' ? !project.legacy : project.legacy,
   );
 
   const generateGradient = (title: string) => {
     const hash = title.split('').reduce((acc, char) => {
       return char.charCodeAt(0) + ((acc << 5) - acc);
     }, 0);
-    const lightness = 25 + (Math.abs(hash % 30));
+    const lightness = 25 + Math.abs(hash % 30);
     return {
       background: `linear-gradient(135deg, hsla(0, 0%, ${lightness}%, 0.9), hsla(0, 0%, ${lightness + 15}%, 0.5))`,
       color: 'hsl(0, 0%, 95%)',
@@ -238,7 +238,7 @@ export default function ProjectsList() {
               variants={itemVariants}
               className='relative mb-14 cursor-pointer'>
               {isDesktop && (
-                <div className='absolute right-0 top-[50%] -translate-y-1/2 z-20'>
+                <div className='absolute right-0 top-0 -translate-y-1/2 z-20'>
                   <AnimatePresence mode='wait'>
                     {selectedProject && selectedProject === project.id && (
                       <motion.div
@@ -247,7 +247,7 @@ export default function ProjectsList() {
                         animate={{ opacity: 1, y: 0 }}
                         exit={{ opacity: 0, y: -20 }}
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
-                        className='relative bg-background/20 backdrop-blur-md p-6 rounded-sm border border-muted/20 shadow-sm w-[750px] z-50 isolate-blur'>
+                        className='relative bg-background/20 backdrop-blur-md p-6 rounded-sm border border-muted/20 shadow-sm md:w-[500px] xl:w-[750px] z-50 isolate-blur'>
                         <div key={project.id}>
                           <div className='aspect-video rounded overflow-hidden mb-6 shadow-lg border border-muted/10'>
                             {project.imageUrl ? (
@@ -260,7 +260,7 @@ export default function ProjectsList() {
                               <div
                                 className='w-full h-full flex items-center justify-center'
                                 style={generateGradient(
-                                  getLocalizedTitle(project)
+                                  getLocalizedTitle(project),
                                 )}>
                                 <span className='text-4xl font-light'>
                                   {getTitleFirstLetter(project)}
@@ -401,7 +401,7 @@ export default function ProjectsList() {
                           <div
                             className='w-full h-full flex items-center justify-center'
                             style={generateGradient(
-                              getLocalizedTitle(project)
+                              getLocalizedTitle(project),
                             )}>
                             <span className='text-4xl font-light'>
                               {getTitleFirstLetter(project)}

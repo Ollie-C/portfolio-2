@@ -131,15 +131,14 @@ export default function ContactForm() {
             <motion.button
               type='submit'
               disabled={isSubmitting}
-              className='group relative flex items-center gap-2 bg-transparent text-primary'
-              whileHover={{ x: 5 }}
-              transition={{ duration: 0.2 }}>
+              className='group relative flex items-center gap-2 bg-transparent text-primary'>
               <span className='text-sm font-light'>
                 {isSubmitting
                   ? t('contactForm.sending')
                   : t('contactForm.send').toUpperCase()}
               </span>
               <svg
+                className='transition-transform duration-200 group-hover:translate-x-1'
                 xmlns='http://www.w3.org/2000/svg'
                 width='16'
                 height='16'

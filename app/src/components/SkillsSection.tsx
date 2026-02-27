@@ -248,7 +248,7 @@ export default function SkillsSection() {
                           <img
                             src={iconUrl}
                             alt={skill.name}
-                            className='w-7 h-7 object-contain'
+                            className='w-7 h-7 md:w-9 md:h-9 object-contain'
                             onError={(e) => {
                               const fallbackUrl =
                                 skillIconsMap[skill.name.toLowerCase()];

@@ -35,7 +35,7 @@ const TechLearningCard: React.FC<TechLearningCardProps> = ({
 
   return (
     <motion.div
-      className='flex flex-col items-center gap-3 p-4 rounded-lg bg-card/50 border border-border/50 hover:border-primary/30 transition-all duration-300 group'
+      className='relative flex flex-col items-center gap-3 p-4 rounded-lg bg-card/50 border border-border/50 hover:border-primary/30 transition-all duration-300 group overflow-visible'
       onHoverStart={() => setIsHovered(true)}
       onHoverEnd={() => setIsHovered(false)}
       whileHover={{ y: -5, scale: 1.02 }}
@@ -87,14 +87,13 @@ const TechLearningCard: React.FC<TechLearningCardProps> = ({
         {difficulty}
       </span>
 
-      {/* Expanded info on hover */}
+      {/* Expanded info on hover - slides up from bottom of card over the top */}
       <motion.div
-        className='absolute top-full left-0 right-0 bg-card border border-border rounded-lg p-4 shadow-lg z-10 mt-2'
-        initial={{ opacity: 0, y: 10, scale: 0.95 }}
+        className='absolute bottom-0 left-0 right-0 bg-card border border-border rounded-lg p-4 shadow-lg z-10'
+        initial={{ opacity: 0, y: '100%' }}
         animate={{
           opacity: isHovered ? 1 : 0,
-          y: isHovered ? 0 : 10,
-          scale: isHovered ? 1 : 0.95,
+          y: isHovered ? 0 : '100%',
         }}
         transition={{ duration: 0.2 }}
         style={{ pointerEvents: isHovered ? 'auto' : 'none' }}>

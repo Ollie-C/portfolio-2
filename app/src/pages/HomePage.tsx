@@ -132,7 +132,7 @@ export default function HomePage() {
           <section
             id='about'
             className='section-bg-light min-h-[80vh] flex flex-col'>
-            <div className='md:px-28 py-8 md:py-12 shrink-0'>
+            <div className='px-8 xl:px-28 py-8 md:py-12 shrink-0'>
               <div className='container mx-auto px-6 md:px-8'>
                 <motion.div
                   initial='hidden'
@@ -283,7 +283,7 @@ export default function HomePage() {
           {/* Skills Section */}
           <section
             id='skills'
-            className='md:px-28 py-20 md:py-28 section-bg-dark overflow-hidden'>
+            className='px-8 xl:px-28 py-20 md:py-28 section-bg-dark overflow-hidden'>
             <SkillsSection />
           </section>
 
@@ -317,7 +317,7 @@ export default function HomePage() {
           <section
             id='contact'
             className='section-bg-dark flex flex-col py-20 md:py-28'>
-            <div className='md:px-28 py-8 md:py-12 shrink-0'>
+            <div className='px-8 xl:px-28 py-8 md:py-12 shrink-0'>
               <div className='container mx-auto px-6 md:px-8'>
                 <motion.div
                   initial='hidden'

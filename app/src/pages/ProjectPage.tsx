@@ -525,40 +525,45 @@ const ProjectPage: React.FC = () => {
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            className='fixed inset-0 bg-black/95 z-50 flex items-center justify-center'
-            onClick={() => setActiveImageUrl(null)}>
-            {/* Prev/Next - top right, simple chevrons (render first so Close sits on top) */}
-            <button
-              className='absolute top-4 right-20 z-10 p-1 text-white/70 hover:text-white transition-colors bg-transparent'
-              onClick={(e) => {
-                e.stopPropagation();
-                showPrevImage(e);
-              }}
-              aria-label='Previous image'>
-              <ChevronLeft size={24} />
-            </button>
-            <button
-              className='absolute top-4 right-10 z-10 p-1 text-white/70 hover:text-white transition-colors bg-transparent'
-              onClick={(e) => {
-                e.stopPropagation();
-                showNextImage(e);
-              }}
-              aria-label='Next image'>
-              <ChevronRight size={24} />
-            </button>
+            className='fixed inset-0 z-50 flex items-center justify-center pointer-events-none'>
+            {/* Backdrop that handles outside clicks */}
+            <div
+              className='absolute inset-0 bg-black/95 pointer-events-auto'
+              onClick={() => setActiveImageUrl(null)}
+            />
 
-            <button
-              className='absolute top-4 right-4 z-20 flex items-center gap-2 text-white/70 hover:text-white p-2 rounded-md hover:bg-white/10 transition-colors'
-              onClick={(e) => {
-                e.stopPropagation();
-                setActiveImageUrl(null);
-              }}
-              aria-label='Close'>
-              <X size={24} />
-              <span className='text-sm'>Close</span>
-            </button>
+            {/* Prev/Next/Close controls centered at top */}
+            <div className='absolute bottom-14 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 pointer-events-auto'>
+              <button
+                className='p-1 text-white hover:text-white transition-colors bg-transparent'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  showPrevImage(e);
+                }}
+                aria-label='Previous image'>
+                <ChevronLeft size={24} />
+              </button>
+              <button
+                className='z-20 flex items-center gap-2 text-white/70 hover:text-white p-2 rounded-md transition-colors bg-transparent'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setActiveImageUrl(null);
+                }}
+                aria-label='Close'>
+                <X size={24} />
+              </button>
+              <button
+                className='p-1 text-white hover:text-white transition-colors bg-transparent'
+                onClick={(e) => {
+                  e.stopPropagation();
+                  showNextImage(e);
+                }}
+                aria-label='Next image'>
+                <ChevronRight size={24} />
+              </button>
+            </div>
 
-            <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm z-10'>
+            <div className='absolute bottom-4 left-1/2 -translate-x-1/2 text-white/70 text-sm z-40 pointer-events-auto'>
               {activeImageIndex + 1} /{' '}
               {activeImageType === 'desktop'
                 ? project.desktopImages.length
@@ -572,7 +577,7 @@ const ProjectPage: React.FC = () => {
               transition={{ duration: 0.2 }}
               src={activeImageUrl}
               alt='Enlarged view'
-              className='max-h-[90vh] max-w-[90vw] object-contain cursor-pointer'
+              className='max-h-[90vh] max-w-[90vw] object-contain cursor-pointer z-40 pointer-events-auto'
               onClick={(e) => {
                 e.stopPropagation();
                 setActiveImageUrl(null);
