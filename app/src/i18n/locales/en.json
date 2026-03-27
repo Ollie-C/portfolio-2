@@ -34,7 +34,10 @@
       "title": "Projects",
       "subtitle": "A collection of my recent work showcasing my skills in web development and design.",
       "recent": "Recent",
-      "legacy": "Legacy"
+      "miniApps": "Mini-apps",
+      "miniAppsDescription": "AI-assisted mini builds (1-2 days)",
+      "legacy": "Legacy",
+      "legacyDescription": "Where it all began."
     },
     "contact": {
       "title": "Get In Touch",
@@ -45,6 +48,15 @@
     "viewProject": "View Project",
     "featured": "Featured",
     "inProgress": "In progress"
+  },
+  "projectContribution": {
+    "writtenByMe": "Built by me",
+    "aiAssisted": "AI assisted",
+    "ariaLabel": "Code contribution split: {{writtenByMe}} percent built by me and {{aiAssisted}} percent AI assisted"
+  },
+  "projectType": {
+    "client": "Client",
+    "personal": "Personal"
   },
   "contactForm": {
     "name": "Name",

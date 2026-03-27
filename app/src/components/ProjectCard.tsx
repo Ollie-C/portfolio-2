@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
+import ProjectContributionBar from './ProjectContributionBar';
+import ProjectTypeLabel from './ProjectTypeLabel';
 
 interface ProjectCardProps {
   title: string;
@@ -12,6 +14,8 @@ interface ProjectCardProps {
   featured?: boolean;
   inProgress?: boolean;
   category?: string;
+  projectType?: 'client' | 'personal';
+  codeWrittenPercentage?: number;
 }
 
 const ProjectCard: React.FC<ProjectCardProps> = ({
@@ -23,6 +27,8 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
   featured,
   inProgress,
   category,
+  projectType,
+  codeWrittenPercentage,
 }) => {
   const { t } = useTranslation();
   const [imageError, setImageError] = useState(false);
@@ -70,6 +76,9 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
 
         {/* Content */}
         <div className='flex-1 flex flex-col'>
+          {projectType && (
+            <ProjectTypeLabel projectType={projectType} className='mb-2' />
+          )}
           <div className='flex items-center justify-between mb-2'>
             <h3 className='text-lg font-medium text-foreground group-hover:text-primary transition-colors'>
               {title}
@@ -92,6 +101,13 @@ const ProjectCard: React.FC<ProjectCardProps> = ({
           <p className='text-sm text-muted-foreground line-clamp-2 mb-3'>
             {description}
           </p>
+
+          {typeof codeWrittenPercentage === 'number' && (
+            <ProjectContributionBar
+              codeWrittenPercentage={codeWrittenPercentage}
+              className='mb-3'
+            />
+          )}
 
           {/* Tags */}
           {tags && tags.length > 0 && (

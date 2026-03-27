@@ -38,7 +38,7 @@ export default function GalaxyAnimation() {
 
     // Galaxy parameters - super multi-colored spiral
     const params = {
-      count: 12000,
+      count: 5400,
       size: 0.025,
       radius: 8,
       branches: 8,

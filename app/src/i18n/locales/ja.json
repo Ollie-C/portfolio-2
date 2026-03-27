@@ -34,7 +34,10 @@
       "title": "プロジェクト",
       "subtitle": "ウェブ開発とデザインのスキルを紹介する最近の作品集です。",
       "recent": "過去事例",
-      "legacy": "直近の事例"
+      "miniApps": "ミニアプリ",
+      "miniAppsDescription": "AI支援のミニ制作",
+      "legacy": "直近の事例",
+      "legacyDescription": "すべてはここから始まりました。"
     },
     "contact": {
       "title": "連絡先",
@@ -45,6 +48,15 @@
     "viewProject": "プロジェクトを見る",
     "featured": "おすすめ",
     "inProgress": "進行中"
+  },
+  "projectContribution": {
+    "writtenByMe": "自分で実装",
+    "aiAssisted": "AI補助",
+    "ariaLabel": "コード比率: 自分で実装 {{writtenByMe}} パーセント、AI補助 {{aiAssisted}} パーセント"
+  },
+  "projectType": {
+    "client": "クライアント",
+    "personal": "個人制作"
   },
   "contactForm": {
     "name": "氏名",

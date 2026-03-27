@@ -26,6 +26,9 @@ export interface Project {
   active: boolean;
   legacy?: boolean;
   inProgress?: boolean;
+  projectType?: 'client' | 'personal';
+  projectCollection?: 'recent' | 'mini-apps' | 'legacy';
+  codeWrittenPercentage?: number;
   demoUrl?: string;
   sourceUrl?: string;
   image?: SanityImageSource;
@@ -62,6 +65,9 @@ export interface NormalizedProject {
   active: boolean;
   legacy?: boolean;
   inProgress?: boolean;
+  projectType?: 'client' | 'personal';
+  projectCollection: 'recent' | 'mini-apps' | 'legacy';
+  codeWrittenPercentage?: number;
   demoUrl?: string;
   sourceUrl?: string;
   imageUrl?: string;
@@ -134,6 +140,9 @@ const normalizeProject = (project: Project): NormalizedProject => {
     mainImageUrl = urlFor(project.desktopImages[0]).url();
   }
 
+  const projectCollection =
+    project.projectCollection || (project.legacy ? 'legacy' : 'recent');
+
   return {
     id: project._id,
     title: project.title,
@@ -147,6 +156,9 @@ const normalizeProject = (project: Project): NormalizedProject => {
     active: project.active !== undefined ? project.active : true,
     legacy: project.legacy || false,
     inProgress: project.inProgress || false,
+    projectType: project.projectType,
+    projectCollection,
+    codeWrittenPercentage: project.codeWrittenPercentage,
     demoUrl: project.demoUrl,
     sourceUrl: project.sourceUrl,
     imageUrl: mainImageUrl,
@@ -212,6 +224,9 @@ export async function fetchProjects(): Promise<NormalizedProject[]> {
         active,
         legacy,
         inProgress,
+        projectType,
+        projectCollection,
+        codeWrittenPercentage,
         demoUrl,
         sourceUrl,
         techStack,

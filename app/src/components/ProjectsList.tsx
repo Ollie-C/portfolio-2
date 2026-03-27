@@ -6,6 +6,8 @@ import { useMediaQuery } from '../hooks/useMediaQuery';
 import { ArrowRightIcon } from '@heroicons/react/24/outline';
 import { useTranslation } from 'react-i18next';
 import { SquareArrowOutUpRight } from 'lucide-react';
+import ProjectContributionBar from './ProjectContributionBar';
+import ProjectTypeLabel from './ProjectTypeLabel';
 // Define a type for project data structure
 interface ProjectData {
   id: string;
@@ -16,18 +18,22 @@ interface ProjectData {
   slug: string;
   tags?: string[];
   imageUrl?: string;
+  inProgress?: boolean;
+  projectType?: 'client' | 'personal';
+  projectCollection?: 'recent' | 'mini-apps' | 'legacy';
+  codeWrittenPercentage?: number;
   sourceUrl?: string; // GitHub URL
   demoUrl?: string; // Live demo URL
 }
+
+type ProjectFilter = 'recent' | 'mini-apps' | 'legacy';
 
 export default function ProjectsList() {
   const { i18n, t } = useTranslation();
 
   const { data: projects, isLoading, error } = useProjects();
   const [selectedProject, setSelectedProject] = useState<string | null>(null);
-  const [projectFilter, setProjectFilter] = useState<'recent' | 'legacy'>(
-    'recent',
-  );
+  const [projectFilter, setProjectFilter] = useState<ProjectFilter>('recent');
   const isDesktop = useMediaQuery('(min-width: 1200px)');
   const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
   const sectionRef = useRef<HTMLDivElement>(null);
@@ -47,11 +53,10 @@ export default function ProjectsList() {
       isInView &&
       !firstProjectShown.current &&
       isDesktop &&
-      projects?.length &&
-      projectFilter === 'recent'
+      projects?.length
     ) {
-      const filteredProjects = projects.filter((project) =>
-        projectFilter === 'recent' ? !project.legacy : project.legacy,
+      const filteredProjects = projects.filter(
+        (project) => project.projectCollection === projectFilter,
       );
 
       if (filteredProjects.length > 0) {
@@ -81,9 +86,16 @@ export default function ProjectsList() {
   }
 
   // Filter projects based on the selected filter
-  const filteredProjects = projects.filter((project) =>
-    projectFilter === 'recent' ? !project.legacy : project.legacy,
+  const filteredProjects = projects.filter(
+    (project) => project.projectCollection === projectFilter,
   );
+
+  const projectFilterDescription =
+    projectFilter === 'recent'
+      ? ''
+      : projectFilter === 'mini-apps'
+        ? t('sections.projects.miniAppsDescription')
+        : t('sections.projects.legacyDescription');
 
   const generateGradient = (title: string) => {
     const hash = title.split('').reduce((acc, char) => {
@@ -197,26 +209,44 @@ export default function ProjectsList() {
     <div className='relative gap-x-8 min-h-[50vh] py-10' ref={sectionRef}>
       {/* Project filter toggle */}
       <div className='flex justify-start mb-8 pl-16 md:pl-28'>
-        <div className='flex items-center gap-2 text-base'>
-          <span
-            onClick={() => setProjectFilter('recent')}
-            className={`cursor-pointer transition-all duration-200 ${
-              projectFilter === 'recent'
-                ? 'font-bold text-foreground'
-                : 'opacity-50 text-muted-foreground'
-            }`}>
-            {t('sections.projects.recent')}
-          </span>
-          <span className='text-muted-foreground mx-1'>/</span>
-          <span
-            onClick={() => setProjectFilter('legacy')}
-            className={`cursor-pointer transition-all duration-200 ${
-              projectFilter === 'legacy'
-                ? 'font-bold text-foreground'
-                : 'opacity-50 text-muted-foreground'
-            }`}>
-            {t('sections.projects.legacy')}
-          </span>
+        <div>
+          <div className='flex items-center gap-2 text-base'>
+            <span
+              onClick={() => setProjectFilter('recent')}
+              className={`cursor-pointer transition-all duration-200 ${
+                projectFilter === 'recent'
+                  ? 'font-bold text-foreground'
+                  : 'opacity-50 text-muted-foreground'
+              }`}>
+              {t('sections.projects.recent')}
+            </span>
+            <span className='text-muted-foreground mx-1'>/</span>
+            <span
+              onClick={() => setProjectFilter('mini-apps')}
+              className={`cursor-pointer transition-all duration-200 ${
+                projectFilter === 'mini-apps'
+                  ? 'font-bold text-foreground'
+                  : 'opacity-50 text-muted-foreground'
+              }`}>
+              {t('sections.projects.miniApps')}
+            </span>
+            <span className='text-muted-foreground mx-1'>/</span>
+            <span
+              onClick={() => setProjectFilter('legacy')}
+              className={`cursor-pointer transition-all duration-200 ${
+                projectFilter === 'legacy'
+                  ? 'font-bold text-foreground'
+                  : 'opacity-50 text-muted-foreground'
+              }`}>
+              {t('sections.projects.legacy')}
+            </span>
+          </div>
+
+          {projectFilterDescription && (
+            <p className='mt-2 text-sm text-muted-foreground/80'>
+              {projectFilterDescription}
+            </p>
+          )}
         </div>
       </div>
 
@@ -249,6 +279,12 @@ export default function ProjectsList() {
                         transition={{ duration: 0.3, ease: 'easeInOut' }}
                         className='relative bg-background/20 backdrop-blur-md p-6 rounded-sm border border-muted/20 shadow-sm md:w-[500px] xl:w-[750px] z-50 isolate-blur'>
                         <div key={project.id}>
+                          {project.projectType && (
+                            <ProjectTypeLabel
+                              projectType={project.projectType}
+                              className='mb-3'
+                            />
+                          )}
                           <div className='aspect-video rounded overflow-hidden mb-6 shadow-lg border border-muted/10'>
                             {project.imageUrl ? (
                               <img
@@ -274,6 +310,15 @@ export default function ProjectsList() {
                               ? project.descriptionJa
                               : project.description}
                           </p>
+                          {typeof project.codeWrittenPercentage ===
+                            'number' && (
+                            <ProjectContributionBar
+                              codeWrittenPercentage={
+                                project.codeWrittenPercentage
+                              }
+                              className='mb-6'
+                            />
+                          )}
                           <Link
                             to={`/project/${project.slug}`}
                             className='group inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors'>
@@ -305,6 +350,12 @@ export default function ProjectsList() {
                     duration: 0.5,
                     delay: 0.1 * index,
                   }}>
+                  {project.projectType && (
+                    <ProjectTypeLabel
+                      projectType={project.projectType}
+                      className='mb-2'
+                    />
+                  )}
                   <motion.h3
                     className={`text-2xl font-medium transition-all duration-300 max-w-[240px] mb-2 ${
                       selectedProject === project.id
@@ -390,6 +441,12 @@ export default function ProjectsList() {
                       exit={{ height: 0, opacity: 0 }}
                       transition={{ duration: 0.3 }}
                       className='mt-4 overflow-hidden'>
+                      {project.projectType && (
+                        <ProjectTypeLabel
+                          projectType={project.projectType}
+                          className='mb-3'
+                        />
+                      )}
                       <div className='aspect-video rounded-md overflow-hidden mb-6 shadow-sm'>
                         {project.imageUrl ? (
                           <img
@@ -415,6 +472,13 @@ export default function ProjectsList() {
                           ? project.descriptionJa
                           : project.description}
                       </p>
+
+                      {typeof project.codeWrittenPercentage === 'number' && (
+                        <ProjectContributionBar
+                          codeWrittenPercentage={project.codeWrittenPercentage}
+                          className='mb-6'
+                        />
+                      )}
 
                       <Link to={`/project/${project.slug}`} className='block'>
                         <div className='mt-4 mb-8 flex justify-start'>

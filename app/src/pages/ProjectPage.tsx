@@ -6,6 +6,8 @@ import Layout from '../components/Layout/Layout';
 import { useProject, useProjects } from '../hooks/useProjects';
 import SEO from '../components/SEO';
 import Breadcrumbs from '../components/Breadcrumbs';
+import ProjectContributionBar from '../components/ProjectContributionBar';
+import ProjectTypeLabel from '../components/ProjectTypeLabel';
 import {
   ArrowLeft,
   ExternalLink,
@@ -287,6 +289,12 @@ const ProjectPage: React.FC = () => {
 
           {/* Title and Links */}
           <motion.div {...fadeIn} transition={{ delay: 0.1 }} className='mb-12'>
+            {project.projectType && (
+              <ProjectTypeLabel
+                projectType={project.projectType}
+                className='mb-4'
+              />
+            )}
             <h1 className='text-5xl md:text-6xl font-light mb-6'>
               {getLocalizedContent(project.title, project.titleJa)}
               {project.inProgress && (
@@ -300,6 +308,13 @@ const ProjectPage: React.FC = () => {
               <p className='text-xl text-muted-foreground font-light max-w-3xl mb-8'>
                 {getLocalizedContent(project.summary, project.summaryJa)}
               </p>
+            )}
+
+            {typeof project.codeWrittenPercentage === 'number' && (
+              <ProjectContributionBar
+                codeWrittenPercentage={project.codeWrittenPercentage}
+                className='mb-8 max-w-xl'
+              />
             )}
 
             <div className='flex gap-4'>

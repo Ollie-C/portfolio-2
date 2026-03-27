@@ -80,6 +80,43 @@ export const projectType = defineType({
       initialValue: false,
     }),
     defineField({
+      name: 'projectType',
+      title: 'Project type',
+      description: 'Choose whether this was client work or a personal project.',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Client', value: 'client'},
+          {title: 'Personal', value: 'personal'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'personal',
+      validation: (Rule) => Rule.required(),
+    }),
+    defineField({
+      name: 'projectCollection',
+      title: 'Projects section',
+      description: 'Choose which tab this project appears under in the Projects section.',
+      type: 'string',
+      options: {
+        list: [
+          {title: 'Recent', value: 'recent'},
+          {title: 'Mini-apps', value: 'mini-apps'},
+          {title: 'Legacy', value: 'legacy'},
+        ],
+        layout: 'radio',
+      },
+      initialValue: 'recent',
+    }),
+    defineField({
+      name: 'codeWrittenPercentage',
+      title: 'Code written by me (%)',
+      description: 'Enter the percentage of code you wrote yourself. AI-assisted is calculated automatically as the remainder to 100.',
+      type: 'number',
+      validation: (Rule) => Rule.min(0).max(100).precision(0),
+    }),
+    defineField({
       name: 'techStack',
       title: 'Tech Stack',
       description: 'Technologies used in this project',
