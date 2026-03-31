@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { motion, AnimatePresence } from 'framer-motion';
 import CodewarsIcon from '../../assets/codewars.svg';
 import CodewarsIconWhite from '../../assets/codewars-white.svg';
-import CV from '../../assets/ollie_cross_cv.pdf';
+import CV from '../../assets/oliver_cross_cv.pdf';
 import { useThemeStore } from '../../store/themeStore';
 
 type MobileMenuProps = {
@@ -179,7 +179,7 @@ const MobileMenu = ({
                           </div>
                           <div className='h-px w-full bg-muted-foreground/10 mt-3'></div>
                         </motion.button>
-                      )
+                      ),
                     )}
                   </>
                 ) : (
@@ -208,7 +208,7 @@ const MobileMenu = ({
                     href={CV}
                     target='_blank'
                     rel='noopener noreferrer'
-                    download='ollie_cross_cv.pdf'
+                    download='oliver_cross_cv.pdf'
                     className='flex items-center group'>
                     <span className='font-mono text-primary text-xs opacity-60 w-12'>
                       CV /

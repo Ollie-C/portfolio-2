@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation } from 'react-router-dom';
 import { useTranslation } from 'react-i18next';
-import CV from '../../assets/ollie_cross_cv.pdf';
+import CV from '../../assets/oliver_cross_cv.pdf';
 
 type DesktopMenuProps = {
   scrollToSection: (sectionId: string) => void;
@@ -36,7 +36,7 @@ const DesktopMenu: React.FC<DesktopMenuProps> = ({ scrollToSection }) => {
       </button>
       <a
         href={CV}
-        download='ollie_cross_cv.pdf'
+        download='oliver_cross_cv.pdf'
         target='_blank'
         rel='noopener noreferrer'
         className='rounded text-foreground hover:text-foreground relative group uppercase text-xs tracking-wider font-light bg-transparent cursor-pointer flex items-center gap-2 ml-8'>
